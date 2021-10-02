@@ -1,0 +1,11 @@
+import sys
+
+class LeaderElection():
+    def elect_reputation_leader(qc):
+        pass
+
+    def update_leaders(qc):
+        pass
+
+    def get_leader(round):
+        pass
