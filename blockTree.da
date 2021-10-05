@@ -1,3 +1,4 @@
+#type: ignore
 class VoteInfo():                                                                       # VoteInfo
     def __init__(self, id, round, parent_id, parent_round, exec_state_id):  
         self.id = id                                                                    #   id, round; // Id and round of block
@@ -21,12 +22,12 @@ class VoteMsg():                                                                
 
 # QC is VoteMsg with multiple signatures
 class QC():                                                                             # QC
-    def __init__(self, vote_info, led, payload, qc, id):
-        self.author = author                                                            #   author; // The author of the block, may not be the same as qc.author after view-change
-        self.round = round                                                              #   round; // The round that generated this proposal
-        self.payload = payload                                                          #   payload; // Proposed transaction(s)
-        self.qc = qc                                                                    #   qc; // QC for parent block
-        self.id = id                                                                    #   id; // A unique digest of author, round, payload, qc.vote_info.id and qc.signatures
+    def __init__(self, vote_info, ledger_commit_info, signatures):
+        self.vote_info = vote_info                                                      #   vote_info;
+        self.ledger_commit_info = ledger_commit_info                                    #   ledger_commit_info;
+        self.signatures = signatures                                                    #   signatures; // A quorum of signatures
+        self.author = u                                                                 #   author <- u; // The validator that produced the qc
+        self.author_signature = sign_u(signatures)                                      #   author_signature <- sign_u(signatures);
 
 class Block():                                                                          # Block
     def __init__(self, author, round, payload, qc, id):
@@ -36,7 +37,7 @@ class Block():                                                                  
         self.qc = qc                                                                    #   qc; // QC for parent block
         self.id = id                                                                    #   id; // A unique digest of author, round, payload, qc.vote_info.id and qc.signatures
 
-class Block_Tree():
+class Block_Tree():                                                                     # Block-Tree()
     def __init__(self, pending_block_tree, pending_votes, high_qc, high_commit_qc):
         self.pending_block_tree = pending_block_tree                                    #   pending_block_tree; // tree of blocks pending commitment
         self.pending_votes = pending_votes                                              #   pending_votes; // collected votes per block indexed by their LedgerInfo hash
@@ -72,4 +73,4 @@ class Block_Tree():
             round = current_round,                                                      #           round <- current_round,
             payload = txns,                                                             #           payload <- txns,
             qc = high_qc,                                                               #           qc <- high_qc,
-            id = hash(author || round || payload || qc.vote_info.id || qc.signature))   #           id <- hash(author || round || payload || qc.vote_info.id || qc.signature)>
+            id = hash(author || round || payload || qc.vote_info.id || qc.signature))   #           id <- hash(author || round || payload || qc.vote_info.id || qc.signature)
