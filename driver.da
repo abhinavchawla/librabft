@@ -1,0 +1,42 @@
+import sys
+from nacl.signing import SigningKey
+class Client(process):
+    pass
+
+class Validator(process):
+    def setup(id,private_key,public_keys):
+        pass
+    def run():
+        # output(private_key)
+        # # output(public_keys)
+        # signed = private_key.sign(b"Attack at Dawn")
+        # output(signed)
+        # public_keys[2].verify(signed)
+        pass
+
+    def sign(message):
+        return private_key.sign(message)
+    def verify(message, id):
+        public_keys[id].verify(message)
+
+def main():
+    nvalidators = int(sys.argv[1]) if len(sys.argv) > 1 else 5
+    nclients = int(sys.argv[2]) if len(sys.argv) > 2 else 3
+    maxtimeout = int(sys.argv[4]) if len(sys.argv) > 3 else 3000
+
+    clients = new(Client, num=nclients)
+    validators = new(Validator, num=nvalidators)
+    public_keys=[]
+    private_keys=[]
+    for _ in range(nvalidators):
+        sk = SigningKey.generate()
+        pk = sk.verify_key
+        public_keys.append(pk)
+        private_keys.append(sk)
+
+    for i, v in enumerate(validators):
+        setup({v}, (i, private_keys[i], public_keys))
+    
+    for v in validators:
+        start(v)
+

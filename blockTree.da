@@ -22,7 +22,7 @@ class VoteMsg():                                                                
 
 # QC is VoteMsg with multiple signatures
 class QC():                                                                             # QC
-    def __init__(self, vote_info, ledger_commit_info, signatures):
+    def __init__(self, vote_info, ledger_commit_info, signaturesz):
         self.vote_info = vote_info                                                      #   vote_info;
         self.ledger_commit_info = ledger_commit_info                                    #   ledger_commit_info;
         self.signatures = signatures                                                    #   signatures; // A quorum of signatures
