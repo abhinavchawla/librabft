@@ -1,5 +1,6 @@
 import sys
 from nacl.signing import SigningKey
+import pickle
 class Client(process):
     pass
 
@@ -7,17 +8,17 @@ class Validator(process):
     def setup(id,private_key,public_keys):
         pass
     def run():
-        # output(private_key)
-        # # output(public_keys)
-        # signed = private_key.sign(b"Attack at Dawn")
-        # output(signed)
-        # public_keys[2].verify(signed)
-        pass
+        signed = sign(lst)
+        verify(signed, id)
 
     def sign(message):
+        bytes = pickle.dumps(message)  # Convert any object to bytes
         return private_key.sign(message)
     def verify(message, id):
-        public_keys[id].verify(message)
+        try:
+            public_keys[id].verify(message)
+        except:
+            output("Unable to verify signature")
 
 def main():
     nvalidators = int(sys.argv[1]) if len(sys.argv) > 1 else 5
