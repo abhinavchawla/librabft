@@ -1,0 +1,6 @@
+class Safety():
+    def __init__(self):
+        pass
+
+    def make_vote(b, last_tc):
+        return None

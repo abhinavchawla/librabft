@@ -1,0 +1,6 @@
+class MemPool():
+    ### reimplement
+    def get_transactions(self):
+        print('inside mempool.get_transactions')
+        txns = 'sampleTxn'
+        return txns

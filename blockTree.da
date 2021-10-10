@@ -37,19 +37,21 @@ class Block():                                                                  
         self.qc = qc                                                                    #   qc; // QC for parent block
         self.id = id                                                                    #   id; // A unique digest of author, round, payload, qc.vote_info.id and qc.signatures
 
-class Block_Tree():                                                                     # Block-Tree()
-    def __init__(self, pending_block_tree, pending_votes, high_qc, high_commit_qc):
+class BlockTree():                                                                     # Block-Tree()
+    def __init__(self, pending_block_tree, pending_votes, high_qc, high_commit_qc, author):
         self.pending_block_tree = pending_block_tree                                    #   pending_block_tree; // tree of blocks pending commitment
         self.pending_votes = pending_votes                                              #   pending_votes; // collected votes per block indexed by their LedgerInfo hash
         self.high_qc = high_qc                                                          #   high_qc; // highest known QC
         self.high_commit_qc = high_commit_qc                                            #   high_commit_qc; // highest QC that serves as a commit certificate
+        self.author = author
 
     def process_qc(qc):                                                                 #   Procedure process_qc(qc)
-        if qc.ledger_commit_info.commit_state_id is not None:                           #       if qc.ledger_commit_info.commit_state_id ≠ ⊥ then
-            Ledger.commit(qc.vote_info.parent_id)                                       #           Ledger.commit(qc.vote_info.parent_id)
-            pending_block_tree.prune(qc.vote_info.parent_id)                            #           pending_block_tree.prune(qc.vote_info.parent_id) // parent id becomes the new root of pending
-            high_commit_qc = max{qc, high_commit_qc}                                    #           high_commit_qc <- max_round{qc, high_commit_qc}
-        high_qc = max{qc, high_qc}                                                      #       high_qc <- max_round{qc, high_qc}
+        # if qc.ledger_commit_info.commit_state_id is not None:                           #       if qc.ledger_commit_info.commit_state_id ≠ ⊥ then
+        #     Ledger.commit(qc.vote_info.parent_id)                                       #           Ledger.commit(qc.vote_info.parent_id)
+        #     pending_block_tree.prune(qc.vote_info.parent_id)                            #           pending_block_tree.prune(qc.vote_info.parent_id) // parent id becomes the new root of pending
+        #     high_commit_qc = max{qc, high_commit_qc}                                    #           high_commit_qc <- max_round{qc, high_commit_qc}
+        # high_qc = max{qc, high_qc}                                                      #       high_qc <- max_round{qc, high_qc}
+        pass
 
     def execute_and_insert(b):                                                          #   Procedure execute_and_insert(b)
         Ledger.speculate(b.qc.block_id, b.id, b.payload)                                #       Ledger.speculate(b.qc.block_id, b.id, b.payload)
@@ -67,10 +69,12 @@ class Block_Tree():                                                             
             return qc                                                                   #           return qc
         return None                                                                     #       return ⊥
 
-    def generate_block(txns, current_round):                                            #   Function generate_block(txns, current_round)
+    def generate_block(self, txns, current_round):                                            #   Function generate_block(txns, current_round)
+        print('inside blockTree.generate_block')
         return Block(                                                                   #       return Block<
-            author = u,                                                                 #           author <- u,
+            author = self.author,                                                                 #           author <- u,
             round = current_round,                                                      #           round <- current_round,
             payload = txns,                                                             #           payload <- txns,
-            qc = high_qc,                                                               #           qc <- high_qc,
-            id = hash(author || round || payload || qc.vote_info.id || qc.signature))   #           id <- hash(author || round || payload || qc.vote_info.id || qc.signature)
+            qc = self.high_qc,                                                               #           qc <- high_qc,
+            ### check here
+            id = hash((self.author, current_round, txns, None, None)))         #           id <- hash(author || round || payload || qc.vote_info.id || qc.signature)

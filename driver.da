@@ -1,6 +1,9 @@
 import sys
+from memPool import MemPool
 from nacl.signing import SigningKey
-import pickle
+from leaderElection import LeaderElection
+from blockTree import BlockTree
+from pacemaker import Pacemaker
 
 class Message:	
     pass
@@ -32,24 +35,23 @@ class ProposalMsg(Message):				                                    # ProposalMsg
         self.signature = signature				                            #   signature <- sign_u(block.id)
 
 class Client(process):
-    pass
+    def setup():
+        pass
+
+    def run():
+        pass
 
 class Validator(process):
-    def setup(id,private_key,public_keys, validators:set):
-        self.id = id
+    def setup(v_id, private_key, public_keys, validators:set):
+        self.v_id = v_id
         self.validators = validators
         self.private_key = private_key
         self.public_keys = public_keys
-        
-    def sign(message):
-        bytes = pickle.dumps(message)  # Convert any object to bytes
-        return private_key.sign(message)
-    
-    def verify(message, id):
-        try:
-            public_keys[id].verify(message)
-        except:
-            output("Unable to verify signature")
+        self.n = len(validators)
+        self.leaderElection = LeaderElection(validators)
+        self.blockTree = BlockTree(None, None, None, None, self)
+        self.memPool = MemPool()
+        self.pacemaker = Pacemaker()
 
     def process_certificate_qc(qc):                                     # Procedure process_certificate_qc(qc) ### Check for qc being None
         blockTree.process_qc(qc)                                        #   BlockTree.process_qc(qc)
@@ -57,10 +59,11 @@ class Validator(process):
         pacemaker.advance_round(qc.vote_info_round)                     #   Pacemaker.advance_round(qc.vote_info_round)
 
     def process_proposal_msg(P):                                        # Procedure process_proposal_msg(P)
+        output('inside process_proposal_msg ', P)
         process_certificate_qc(P.block.qc)                              #   process_certificate_qc(P.block.qc)
         process_certificate_qc(P.high_commit_qc)                        #   process_certificate_qc(P.high_commit_qc)
         pacemaker.advance_round_tc(P.last_round_tc)                     #   Pacemaker.advance_round_tc(P.last_round_tc)
-        round = pacemaker.current_round                                 #   round <- Pacemaker.current_round
+        current_round = pacemaker.current_round                                 #   round <- Pacemaker.current_round
         leader = leaderElection.get_leader(current_round)               #   leader = LeaderElection.get_leader(current_round)
         if P.block.round != round or P.sender != leader \
             or P.block.author != leader:                                #   if P.block.round ≠ round ∨ P.sender ≠ leader ∨ P.block.author ≠ leader then
@@ -87,30 +90,43 @@ class Validator(process):
             process_new_round_event(None)                               #       process_new_round_event(⊥)
 
     def process_new_round_event(last_tc):                               # Procedure process_new_round_event(last_tc)
-        if self == leaderElection.get_leader(pacemaker.current_round):  #   if u = LeaderElection.get_leader(pacemaker.current_round) then
+        output('inside process_new_round_event')
+        current_round = pacemaker.current_round
+        if self == leaderElection.get_leader(current_round):  #   if u = LeaderElection.get_leader(pacemaker.current_round) then
                                                                         #   // Leader code: generate proposal
             b = blockTree.generate_block(memPool.get_transactions(), \
                 pacemaker.current_round)                                #       b <- Block-Tree.generate_block(MemPool.get_transactions(), Pacemaker.current_round)
+            output('message being sent ', b)
             send(('proposalMessage',(b,last_tc, blockTree.high_commit_qc)), to= validators) # broadcast ProposalMsg<b,last_tc,Blcok-Tree.high_commit_qc>
 
-    def receive(msg=('localTimeout', m,), from_= p):                    # if M is a local timeout then 
+    def receive(msg=('localTimeout', m,), from_= p):                    # if M is a local timeout then
+        output('in localTimeout receive ', m)
         pacemaker.local_timeout_round()                                 #   Pacemaker.local_timeout_round() ### will have to pass validators while creating pacemaker object
 
     def receive(msg=('proposalMessage', m,), from_= p):                 # if M is a proposal message then
+        output('in proposalMessage receive ', m)
         process_proposal_msg(m)                                         #   process_proposal_msg(M)
 
-    def receive(msg=('voteMessage', m,), from_= p):                     # if M is a vote message then 
+    def receive(msg=('voteMessage', m,), from_= p):                     # if M is a vote message then
+        output('in voteMessage receive ', m)
         process_vote_msg(m)                                             #   process_vote_msg(M)                                                        
 
     def receive(msg=('timeoutMessage', m,), from_= p):                  # if M is a timeout message then
+        output('in timeoutMessage receive ', m)
         process_timeout_message(m)                                      #   process_timeout_message(M)
     
     def run():
-        signed = sign(lst)
-        verify(signed, id)
+        # signed = sign(lst)
+        # verify(public_keys[id], signed)
+        if v_id == 0:
+            process_new_round_event(None)
+        else:
+            await(False)
+
+
 
 def main():
-    nvalidators = int(sys.argv[1]) if len(sys.argv) > 1 else 5
+    nvalidators = int(sys.argv[1]) if len(sys.argv) > 1 else 4
     nclients = int(sys.argv[2]) if len(sys.argv) > 2 else 3
     maxtimeout = int(sys.argv[4]) if len(sys.argv) > 3 else 3000
 
@@ -125,7 +141,7 @@ def main():
         private_keys.append(sk)
 
     for i, v in enumerate(validators):
-        setup({v}, (i, private_keys[i], public_keys))
+        setup({v}, (i, private_keys[i], public_keys, validators))
     
     for v in validators:
         start(v)

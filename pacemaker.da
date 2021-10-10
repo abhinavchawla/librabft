@@ -1,0 +1,6 @@
+class Pacemaker():
+    ### check initialization
+    def __init__(self):
+        self.current_round = 0
+        self.last_round_tc = None
+        self.pending_timeouts = None

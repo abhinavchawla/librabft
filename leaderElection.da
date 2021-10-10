@@ -1,11 +1,11 @@
 import math
 
 class LeaderElection():
-    validators = []                             # validators; // The list of current validators
-    window_size = None                          # window_size; // A parameter for the leader reputation algorithm
-    exclude_size = None                         # exclude_size; // Between f and 2f, number of excluded authors of last committed blocks
-    reputation_leaders = None                   # reputation_leaders; // Map from round numbers to leaders elected due to the reputaton scheme
-
+    def __init__(self, validators):
+        self.validators = validators            # validators; // The list of current validators
+        self.window_size = None                 # window_size; // A parameter for the leader reputation algorithm
+        self.exclude_size = None                # exclude_size; // Between f and 2f, number of excluded authors of last committed blocks
+        self.reputation_leaders = None          # reputation_leaders; // Map from round numbers to leaders elected due to the reputaton scheme
 
     def elect_reputation_leader(qc):            # Function elect_reputation_leader(qc)
         active_validators = None                #   active_validators <- ∅ // validators that signed the last window_size committed blocks
@@ -34,8 +34,9 @@ class LeaderElection():
         if extended_round+1 == qc_round and qc_round+1 == current_round:                #   if extended_round + 1 = qc_round ^ qc_round + 1 = current_round then
             reputation_leaders[current_round+1] = elect_reputation_leader(qc)           #       reputation_leaders[current_round + 1] <- elect_reputation_leader(qc)
 
-    def get_leader(round):                                                              # Function get_leader(round)
-        if (round, leader) in reputation_leaders:                                       #   if <round,leader> ∈ reputation_leaders then
-            return leader                                                               #       return leader // Reputation-based leader
-        return validators[math.floor(round/2) % len(validators)]                        #   return validators[⌊round/2⌋ mod |validtors|] // Round-robin leader (two rounds per leader)
-        pass
+    ### uncomment
+    def get_leader(self, round):                                                              # Function get_leader(round)
+        # if (round, leader) in reputation_leaders:                                       #   if <round,leader> ∈ reputation_leaders then
+        #     return leader                                                               #       return leader // Reputation-based leader
+        # return validators[math.floor(round/2) % len(validators)]                        #   return validators[⌊round/2⌋ mod |validtors|] // Round-robin leader (two rounds per leader)
+        return list(self.validators)[0]
