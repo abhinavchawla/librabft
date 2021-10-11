@@ -4,6 +4,10 @@ from nacl.signing import SigningKey
 from leaderElection import LeaderElection
 from blockTree import BlockTree
 from pacemaker import Pacemaker
+from verificationHelper import sign, verify
+import string
+import random
+import pickle
 
 class Message:	
     pass
@@ -34,6 +38,11 @@ class ProposalMsg(Message):				                                    # ProposalMsg
         self.high_commit_qc = high_commit_qc					            #   high_commit_qc; // QC to synchronize on committed blocks
         self.signature = signature				                            #   signature <- sign_u(block.id)
 
+class RequestMsg(Message):				                                    # ProposalMsg 
+    def __init__(self, txn):
+        self.transaction = txn 			                            #   signature <- sign_u(block.id)
+
+
 class Client(process):
     def setup(c_id,private_key, public_keys, validators):
         self.c_id = c_id
@@ -42,7 +51,10 @@ class Client(process):
         self.validators =validators
 
     def run():
-        pass
+        letters = string.ascii_lowercase
+        for i in range(1):
+            request = sign(self.private_key, ''.join(random.choice(letters) for i in range(10)))
+            send(('requestMessage',(request, self.c_id)), to= validators)           #       send vote_msg to LeaderElection.get_leader(current_round+1)
 
 class Validator(process):
     def setup(v_id, private_key, public_keys_validators, public_keys_clients, validators:set):
@@ -96,6 +108,12 @@ class Validator(process):
             process_certificate_qc(qc)                                  #       process_certificate_qc(qc)
             process_new_round_event(None)                               #       process_new_round_event(⊥)
 
+    def process_request_msg(signed_txn, c_id):
+        output(signed_txn.message)
+        self.public_keys_clients[c_id].verify(signed_txn)
+        txn = pickle.loads(signed_txn.message)
+        output("Request Received from client", c_id,": ", v_id, txn)
+
     def process_new_round_event(last_tc):                               # Procedure process_new_round_event(last_tc)
         output('inside process_new_round_event')
         current_round = pacemaker.current_round
@@ -122,6 +140,9 @@ class Validator(process):
         output('in timeoutMessage receive ', m)
         process_timeout_message(m)                                      #   process_timeout_message(M)
     
+    def receive(msg=('requestMessage', m), from_= p):
+        process_request_msg(m[0], m[1])
+
     def run():
         # signed = sign(lst)
         # verify(public_keys[id], signed)
@@ -160,5 +181,6 @@ def main():
     for i, c in enumerate(clients):
         setup({c}, (i, private_keys_clients[i], public_keys_validators, validators))
 
+    start(clients)
     start(validators)
 
