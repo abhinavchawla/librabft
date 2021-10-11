@@ -35,18 +35,23 @@ class ProposalMsg(Message):				                                    # ProposalMsg
         self.signature = signature				                            #   signature <- sign_u(block.id)
 
 class Client(process):
-    def setup():
-        pass
+    def setup(c_id,private_key, public_keys, validators):
+        self.c_id = c_id
+        self.private_key = private_key
+        self.public_keys = public_keys
+        self.validators =validators
 
     def run():
         pass
 
 class Validator(process):
-    def setup(v_id, private_key, public_keys, validators:set):
+    def setup(v_id, private_key, public_keys_validators, public_keys_clients, validators:set):
         self.v_id = v_id
         self.validators = validators
         self.private_key = private_key
-        self.public_keys = public_keys
+        self.public_keys_validators = public_keys_validators
+        self.public_keys_clients = public_keys_clients
+
         self.n = len(validators)
         self.leaderElection = LeaderElection(validators)
         self.blockTree = BlockTree(None, None, None, None, self)
@@ -60,15 +65,15 @@ class Validator(process):
             leaderElection.update_leaders(qc)                               #   LeaderElection.update_leaders(qc)
             pacemaker.advance_round(qc.vote_info_round)                     #   Pacemaker.advance_round(qc.vote_info_round)
 
-    def process_proposal_msg(P):                                        # Procedure process_proposal_msg(P)
+    def process_proposal_msg(P, sender):                                        # Procedure process_proposal_msg(P)
         output('inside process_proposal_msg ', P)
         process_certificate_qc(P.block.qc)                              #   process_certificate_qc(P.block.qc)
         process_certificate_qc(P.high_commit_qc)                        #   process_certificate_qc(P.high_commit_qc)
         pacemaker.advance_round_tc(P.last_round_tc)                     #   Pacemaker.advance_round_tc(P.last_round_tc)
         current_round = pacemaker.current_round                                 #   round <- Pacemaker.current_round
         leader = leaderElection.get_leader(current_round)               #   leader = LeaderElection.get_leader(current_round)
-        if P.block.round != round or P.sender != leader \
-            or P.block.author != leader:                                #   if P.block.round ≠ round ∨ P.sender ≠ leader ∨ P.block.author ≠ leader then
+
+        if P.block.round != current_round or sender != leader or P.block.author != leader:                                #   if P.block.round ≠ round ∨ P.sender ≠ leader ∨ P.block.author ≠ leader then
             return                                                      #       return
         blockTree.execute_and_insert(P)                                 #   Block-Tree.execute_and_insert(P) // Adds a new speculative state to the Ledger
         vote_msg = safety.make_vote(P.block, P.last_round_tc)           #   vote_msg <- Safety.make_vote(P.block, P.last_round_tc)
@@ -107,7 +112,7 @@ class Validator(process):
 
     def receive(msg=('proposalMessage', m,), from_= p):                 # if M is a proposal message then
         output('in proposalMessage receive ', m)
-        process_proposal_msg(m)                                         #   process_proposal_msg(M)
+        process_proposal_msg(m, p)                                         #   process_proposal_msg(M)
 
     def receive(msg=('voteMessage', m,), from_= p):                     # if M is a vote message then
         output('in voteMessage receive ', m)
@@ -134,16 +139,26 @@ def main():
 
     clients = new(Client, num=nclients)
     validators = new(Validator, num=nvalidators)
-    public_keys=[]
-    private_keys=[]
+    public_keys_validators=[]
+    private_keys_validators=[]
     for _ in range(nvalidators):
         sk = SigningKey.generate()
         pk = sk.verify_key
-        public_keys.append(pk)
-        private_keys.append(sk)
+        public_keys_validators.append(pk)
+        private_keys_validators.append(sk)
+    
+    public_keys_clients=[]
+    private_keys_clients=[]
+    for _ in range(nvalidators):
+        sk = SigningKey.generate()
+        pk = sk.verify_key
+        public_keys_clients.append(pk)
+        private_keys_clients.append(sk)
     output(validators)
     for i, v in enumerate(validators):
-        setup({v}, (i, private_keys[i], public_keys, validators))
-    
+        setup({v}, (i, private_keys_validators[i], public_keys_validators, public_keys_clients, validators))
+    for i, c in enumerate(clients):
+        setup({c}, (i, private_keys_clients[i], public_keys_validators, validators))
+
     start(validators)
 

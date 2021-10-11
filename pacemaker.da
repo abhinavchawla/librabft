@@ -4,3 +4,11 @@ class Pacemaker():
         self.current_round = 0
         self.last_round_tc = None
         self.pending_timeouts = None
+    
+    def advance_round_tc(self, tc):
+
+        if tc == None or tc.round<self.current_round: # if tc = ⊥ ∨ tc.round < current round then
+            return False                              # return false
+        last_round_tc =tc                             # last round tc ← tc
+                                                      # start timer(tc.round + 1)
+        return true                                   # return true

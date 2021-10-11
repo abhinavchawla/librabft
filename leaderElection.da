@@ -15,7 +15,7 @@ class LeaderElection():
         for i in range (0, window_size):                                                # for i = 0; i < window_size ∨ |last_authors| < exclude_size; i <- i+1 do
             if i >= window_size or len(last_authors) >= exclude_size:
                 break
-
+            print(i)
             current_block = Ledger.committed_block(current_qc.vote_info.parent_id)      #   current_block <- Ledger.committed_block(current_qc.vote_info.parent_id)
             block_author = current_block.author                                         #   block_author <- current_block.author
             if i < window_size:                                                         #   if i < window_size then

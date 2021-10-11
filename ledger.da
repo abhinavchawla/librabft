@@ -1,0 +1,12 @@
+class Ledger():
+    def __init__(self) :
+        pass
+    def speculate(self, prev_block_id, block_id, txns): #// apply txns speculatively
+        pass
+    
+    def pending_state(self, block_id):                  #// find the pending state for the given block id or ⊥ if not present
+        pass
+    def commit(block_id):                               #// commit the pending prefix of the given block id and prune other branches
+        pass
+    def committed_block(block_id):                      #// returns a committed block given its id
+        pass
