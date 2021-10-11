@@ -110,7 +110,7 @@ class Validator(process):
 
     def process_request_msg(signed_txn, c_id):
         output(signed_txn.message)
-        self.public_keys_clients[c_id].verify(signed_txn)
+        verify(self.public_keys_clients[c_id], signed_txn)
         txn = pickle.loads(signed_txn.message)
         output("Request Received from client", c_id,": ", v_id, txn)
 
