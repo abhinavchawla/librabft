@@ -9,6 +9,9 @@ from safety import Safety
 from messages import *
 from verificationHelper import *
 
+import string
+import random
+
 class Client(process):
     def setup(c_id,private_key, public_keys, validators):
         self.c_id = c_id
