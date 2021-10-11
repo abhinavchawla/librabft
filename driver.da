@@ -4,44 +4,10 @@ from nacl.signing import SigningKey
 from leaderElection import LeaderElection
 from blockTree import BlockTree
 from pacemaker import Pacemaker
-from verificationHelper import sign, verify
-import string
-import random
-import pickle
-
-class Message:	
-    pass
-
-class TimeoutInfo(Message):                                                 # TimeoutInfo
-    def __init__(self, round, high_qc, sender, signature):  
-        self.round = round                                                  #   round;
-        self.high_qc = high_qc                                              #   high_qc;
-        self.sender = sender                                                #   sender <- u; // Added automatically when constructed
-        self.signature = signature                                          #   signature <- sign_u(round,high_qc.round); // Signed automatically when constructed
-
-class TC(Message):                                                          # TC
-    def __init__(self, round, tmo_high_qc_rounds, tmo_signatures):
-        self.round = round                                                  #   round; // All timeout messages that form TC have the same round
-        self.tmo_high_qc_rounds = tmo_high_qc_rounds                        #   tmo_high_qc_rounds; // A vector of 2f+1 high qc round numbers of timeout messages that form TC
-        self.tmo_signatures = tmo_signatures                                #   tmo_signatures; // A vector of 2f+1 validator signatures on (round, respective high qc round)
-
-class TimeoutMsg(Message):                                                  # TimeoutMsg
-    def __init__(self, tmo_info, last_round_tc, high_commit_qc):
-        self.tmo_info = tmo_info                                            #   tmo_info; // TimeoutInfo for some round with a high_qc
-        self.last_round_tc = last_round_tc                                  #   last_round_tc; // TC for tmo_info.round-1 if tmo_info.high_qc.round ≠ tmo_info.round-1, else ⊥
-        self.high_commit_qc = high_commit_qc                                #   high_commit_qc; // QC to synchronize on committed blocks
-
-class ProposalMsg(Message):				                                    # ProposalMsg 
-    def __init__(self, block, last_round_tc, high_commit_qc, signature=None):
-        self.block = block			                                        #   block;
-        self.last_round_tc = last_round_tc				                    #   last_round_tc; // TC for block.round-1 if block.qc.vote_info.round ≠ block.round-1, else ⊥
-        self.high_commit_qc = high_commit_qc					            #   high_commit_qc; // QC to synchronize on committed blocks
-        self.signature = signature				                            #   signature <- sign_u(block.id)
-
-class RequestMsg(Message):				                                    # ProposalMsg 
-    def __init__(self, txn):
-        self.transaction = txn 			                            #   signature <- sign_u(block.id)
-
+from ledger import Ledger
+from safety import Safety
+from messages import *
+from verificationHelper import *
 
 class Client(process):
     def setup(c_id,private_key, public_keys, validators):
@@ -65,10 +31,12 @@ class Validator(process):
         self.public_keys_clients = public_keys_clients
 
         self.n = len(validators)
+        self.ledger = Ledger()
         self.leaderElection = LeaderElection(validators)
-        self.blockTree = BlockTree(None, None, None, None, self)
+        self.blockTree = BlockTree(self, self.ledger)
         self.memPool = MemPool()
-        self.pacemaker = Pacemaker()
+        self.pacemaker = Pacemaker()        
+        self.safety = Safety(private_key, public_keys_validators, 0, self.ledger, self.blockTree, self)
 
     def process_certificate_qc(qc):                                     # Procedure process_certificate_qc(qc) ### Check for qc being None
         output('Processing certificate qc ', qc)
@@ -87,10 +55,14 @@ class Validator(process):
 
         if P.block.round != current_round or sender != leader or P.block.author != leader:                                #   if P.block.round ≠ round ∨ P.sender ≠ leader ∨ P.block.author ≠ leader then
             return                                                      #       return
-        blockTree.execute_and_insert(P)                                 #   Block-Tree.execute_and_insert(P) // Adds a new speculative state to the Ledger
+        output('checkpoint 2 inside process_proposal_msg')
+        blockTree.execute_and_insert(P.block)                                 #   Block-Tree.execute_and_insert(P) // Adds a new speculative state to the Ledger
+        output('checkpoint 3 inside process_proposal_msg')
         vote_msg = safety.make_vote(P.block, P.last_round_tc)           #   vote_msg <- Safety.make_vote(P.block, P.last_round_tc)
+        output('checkpoint 4 inside process_proposal_msg')
         if vote_msg is not None:                                        #   if vote_msg ≠ ⊥ then
             next_leader = leaderElection.get_leader(current_round+1)
+            output('checkpoint 5 inside process_proposal_msg')
             send(('voteMessage',(vote_msg)), to= next_leader)           #       send vote_msg to LeaderElection.get_leader(current_round+1)
 
     def process_timeout_msg(M):                                         # Procedure process_timeout_msg(M)
@@ -146,7 +118,7 @@ class Validator(process):
     def run():
         # signed = sign(lst)
         # verify(public_keys[id], signed)
-        if v_id == 0:
+        if self == self.leaderElection.get_leader(pacemaker.current_round):
             process_new_round_event(None)
         else:
             await(False)

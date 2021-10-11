@@ -3,7 +3,10 @@ import pickle
 def sign(private_key, message):
         bytes = pickle.dumps(message)  # Convert any object to bytes
         return private_key.sign(bytes)
-    
+
+def valid_signatures(b, last_tc):
+    return True
+
 def verify(public_key, message):
     try:
         public_key.verify(message)

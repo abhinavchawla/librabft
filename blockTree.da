@@ -13,12 +13,12 @@ class LedgerCommitInfo():                                                       
         self.vote_info_hash = vote_info_hash                                            #   vote_info_hash; // Hash of VoteMsg.vote_info
 
 class VoteMsg():                                                                        # VoteMsg
-    def __init__(self, vote_info, ledger_commit_info, high_commit_qc):                  
+    def __init__(self, vote_info, ledger_commit_info, high_commit_qc, u, signature):                  
         self.vote_info = vote_info                                                      #   vote_info; // A VoteInfo record
         self.ledger_commit_info = ledger_commit_info                                    #   ledger_commit_info; // Speculated ledger info
         self.high_commit_qc = high_commit_qc                                            #   high_commit_qc; // QC to synchronize on committed blocks
         self.sender = u                                                                 #   sender <- u; // Added automatically when constructed
-        self.signature = signU(ledger_commit_info)                                      #   signature <- sign_u(ledger_commit_info); // Signed automatically when constructed
+        self.signature = signature                                                      #   signature <- sign_u(ledger_commit_info); // Signed automatically when constructed
 
 # QC is VoteMsg with multiple signatures
 class QC():                                                                             # QC
@@ -38,26 +38,32 @@ class Block():                                                                  
         self.id = id                                                                    #   id; // A unique digest of author, round, payload, qc.vote_info.id and qc.signatures
 
 class BlockTree():                                                                     # Block-Tree()
-    def __init__(self, pending_block_tree, pending_votes, high_qc, high_commit_qc, author):
-        self.pending_block_tree = pending_block_tree                                    #   pending_block_tree; // tree of blocks pending commitment
-        self.pending_votes = pending_votes                                              #   pending_votes; // collected votes per block indexed by their LedgerInfo hash
-        self.high_qc = high_qc                                                          #   high_qc; // highest known QC
-        self.high_commit_qc = high_commit_qc                                            #   high_commit_qc; // highest QC that serves as a commit certificate
+    def __init__(self, author, ledger):
+        self.pending_block_tree = []                                                    #   pending_block_tree; // tree of blocks pending commitment
+        self.pending_votes = []                                              #   pending_votes; // collected votes per block indexed by their LedgerInfo hash
+        self.high_qc = None                                                          #   high_qc; // highest known QC
+        self.high_commit_qc = None                                            #   high_commit_qc; // highest QC that serves as a commit certificate
         self.author = author
+        self.ledger = ledger
 
     def process_qc(self, qc):                                                               #   Procedure process_qc(qc)
         print(qc)
         print("Process_qc called", qc)
         # if qc.ledger_commit_info.commit_state_id is not None:                           #       if qc.ledger_commit_info.commit_state_id ≠ ⊥ then
-        #     Ledger.commit(qc.vote_info.parent_id)                                       #           Ledger.commit(qc.vote_info.parent_id)
+        #     ledger.commit(qc.vote_info.parent_id)                                       #           Ledger.commit(qc.vote_info.parent_id)
         #     pending_block_tree.prune(qc.vote_info.parent_id)                            #           pending_block_tree.prune(qc.vote_info.parent_id) // parent id becomes the new root of pending
         #     high_commit_qc = max{qc, high_commit_qc}                                    #           high_commit_qc <- max_round{qc, high_commit_qc}
         # high_qc = max{qc, high_qc}                                                      #       high_qc <- max_round{qc, high_qc}
         
 
     def execute_and_insert(self, b):                                                          #   Procedure execute_and_insert(b)
-        Ledger.speculate(b.qc.block_id, b.id, b.payload)                                #       Ledger.speculate(b.qc.block_id, b.id, b.payload)
-        pending_block_tree.add(b)                                                       #       pending_block_tree.add(b)
+        print('checkpoint 1 execute_and_insert')
+        if b and b.qc:
+            print('checkpoint 4 execute_and_insert')
+            self.ledger.speculate(b.qc.block_id, b.id, b.payload)                                #       Ledger.speculate(b.qc.block_id, b.id, b.payload)
+        print('checkpoint 2 execute_and_insert')
+        self.pending_block_tree.append(b)                                                       #       pending_block_tree.add(b)
+        print('checkpoint 3 execute_and_insert pending_block_tree', self.pending_block_tree)
 
     def process_vote(self, v):                                                                #   Function process_vote(v)
         process_qc(v.high_commit_qc)                                                    #       process_qc(v.high_commit_qc)

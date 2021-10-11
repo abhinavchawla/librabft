@@ -1,0 +1,32 @@
+class Message:	
+    pass
+
+class TimeoutInfo(Message):                                                 # TimeoutInfo
+    def __init__(self, round, high_qc, sender, signature):  
+        self.round = round                                                  #   round;
+        self.high_qc = high_qc                                              #   high_qc;
+        self.sender = sender                                                #   sender <- u; // Added automatically when constructed
+        self.signature = signature                                          #   signature <- sign_u(round,high_qc.round); // Signed automatically when constructed
+
+class TC(Message):                                                          # TC
+    def __init__(self, round, tmo_high_qc_rounds, tmo_signatures):
+        self.round = round                                                  #   round; // All timeout messages that form TC have the same round
+        self.tmo_high_qc_rounds = tmo_high_qc_rounds                        #   tmo_high_qc_rounds; // A vector of 2f+1 high qc round numbers of timeout messages that form TC
+        self.tmo_signatures = tmo_signatures                                #   tmo_signatures; // A vector of 2f+1 validator signatures on (round, respective high qc round)
+
+class TimeoutMsg(Message):                                                  # TimeoutMsg
+    def __init__(self, tmo_info, last_round_tc, high_commit_qc):
+        self.tmo_info = tmo_info                                            #   tmo_info; // TimeoutInfo for some round with a high_qc
+        self.last_round_tc = last_round_tc                                  #   last_round_tc; // TC for tmo_info.round-1 if tmo_info.high_qc.round ≠ tmo_info.round-1, else ⊥
+        self.high_commit_qc = high_commit_qc                                #   high_commit_qc; // QC to synchronize on committed blocks
+
+class ProposalMsg(Message):				                                    # ProposalMsg 
+    def __init__(self, block, last_round_tc, high_commit_qc, signature=None):
+        self.block = block			                                        #   block;
+        self.last_round_tc = last_round_tc				                    #   last_round_tc; // TC for block.round-1 if block.qc.vote_info.round ≠ block.round-1, else ⊥
+        self.high_commit_qc = high_commit_qc					            #   high_commit_qc; // QC to synchronize on committed blocks
+        self.signature = signature				                            #   signature <- sign_u(block.id)
+
+class RequestMsg(Message):				                                    # ProposalMsg 
+    def __init__(self, txn):
+        self.transaction = txn 			                            #   signature <- sign_u(block.id)
