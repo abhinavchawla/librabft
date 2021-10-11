@@ -28,7 +28,7 @@ class TimeoutMsg(Message):                                                  # Ti
         self.high_commit_qc = high_commit_qc                                #   high_commit_qc; // QC to synchronize on committed blocks
 
 class ProposalMsg(Message):				                                    # ProposalMsg 
-    def __init__(self, block, last_round_tc, high_commit_qc, signature):
+    def __init__(self, block, last_round_tc, high_commit_qc, signature=None):
         self.block = block			                                        #   block;
         self.last_round_tc = last_round_tc				                    #   last_round_tc; // TC for block.round-1 if block.qc.vote_info.round ≠ block.round-1, else ⊥
         self.high_commit_qc = high_commit_qc					            #   high_commit_qc; // QC to synchronize on committed blocks
@@ -54,9 +54,11 @@ class Validator(process):
         self.pacemaker = Pacemaker()
 
     def process_certificate_qc(qc):                                     # Procedure process_certificate_qc(qc) ### Check for qc being None
-        blockTree.process_qc(qc)                                        #   BlockTree.process_qc(qc)
-        leaderElection.update_leaders(qc)                               #   LeaderElection.update_leaders(qc)
-        pacemaker.advance_round(qc.vote_info_round)                     #   Pacemaker.advance_round(qc.vote_info_round)
+        output('Processing certificate qc ', qc)
+        if qc:
+            blockTree.process_qc(qc)                                        #   BlockTree.process_qc(qc)
+            leaderElection.update_leaders(qc)                               #   LeaderElection.update_leaders(qc)
+            pacemaker.advance_round(qc.vote_info_round)                     #   Pacemaker.advance_round(qc.vote_info_round)
 
     def process_proposal_msg(P):                                        # Procedure process_proposal_msg(P)
         output('inside process_proposal_msg ', P)
@@ -97,7 +99,7 @@ class Validator(process):
             b = blockTree.generate_block(memPool.get_transactions(), \
                 pacemaker.current_round)                                #       b <- Block-Tree.generate_block(MemPool.get_transactions(), Pacemaker.current_round)
             output('message being sent ', b)
-            send(('proposalMessage',(b,last_tc, blockTree.high_commit_qc)), to= validators) # broadcast ProposalMsg<b,last_tc,Blcok-Tree.high_commit_qc>
+            send(('proposalMessage',(ProposalMsg(b,last_tc, blockTree.high_commit_qc))), to=validators) # broadcast ProposalMsg<b,last_tc,Blcok-Tree.high_commit_qc>
 
     def receive(msg=('localTimeout', m,), from_= p):                    # if M is a local timeout then
         output('in localTimeout receive ', m)
@@ -139,10 +141,9 @@ def main():
         pk = sk.verify_key
         public_keys.append(pk)
         private_keys.append(sk)
-
+    output(validators)
     for i, v in enumerate(validators):
         setup({v}, (i, private_keys[i], public_keys, validators))
     
-    for v in validators:
-        start(v)
+    start(validators)
 

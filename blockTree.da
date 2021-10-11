@@ -45,19 +45,21 @@ class BlockTree():                                                              
         self.high_commit_qc = high_commit_qc                                            #   high_commit_qc; // highest QC that serves as a commit certificate
         self.author = author
 
-    def process_qc(qc):                                                                 #   Procedure process_qc(qc)
+    def process_qc(self, qc):                                                               #   Procedure process_qc(qc)
+        print(qc)
+        print("Process_qc called", qc)
         # if qc.ledger_commit_info.commit_state_id is not None:                           #       if qc.ledger_commit_info.commit_state_id ≠ ⊥ then
         #     Ledger.commit(qc.vote_info.parent_id)                                       #           Ledger.commit(qc.vote_info.parent_id)
         #     pending_block_tree.prune(qc.vote_info.parent_id)                            #           pending_block_tree.prune(qc.vote_info.parent_id) // parent id becomes the new root of pending
         #     high_commit_qc = max{qc, high_commit_qc}                                    #           high_commit_qc <- max_round{qc, high_commit_qc}
         # high_qc = max{qc, high_qc}                                                      #       high_qc <- max_round{qc, high_qc}
-        pass
+        
 
-    def execute_and_insert(b):                                                          #   Procedure execute_and_insert(b)
+    def execute_and_insert(self, b):                                                          #   Procedure execute_and_insert(b)
         Ledger.speculate(b.qc.block_id, b.id, b.payload)                                #       Ledger.speculate(b.qc.block_id, b.id, b.payload)
         pending_block_tree.add(b)                                                       #       pending_block_tree.add(b)
 
-    def process_vote(v):                                                                #   Function process_vote(v)
+    def process_vote(self, v):                                                                #   Function process_vote(v)
         process_qc(v.high_commit_qc)                                                    #       process_qc(v.high_commit_qc)
         vote_idx = hash(v.ledger_commit_info)                                           #       vote_idx <- hash(v.ledger_commit_info)
         pending_votes[vote_idx] = pending_votes[vote_idx] | v.signature                 #       pending_votes[vote_idx] <- pending_votes[vote_idx] ∪ v.signature

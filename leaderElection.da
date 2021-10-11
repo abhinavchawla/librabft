@@ -7,7 +7,7 @@ class LeaderElection():
         self.exclude_size = None                # exclude_size; // Between f and 2f, number of excluded authors of last committed blocks
         self.reputation_leaders = None          # reputation_leaders; // Map from round numbers to leaders elected due to the reputaton scheme
 
-    def elect_reputation_leader(qc):            # Function elect_reputation_leader(qc)
+    def elect_reputation_leader(self,qc):            # Function elect_reputation_leader(qc)
         active_validators = None                #   active_validators <- ∅ // validators that signed the last window_size committed blocks
         last_authors = None                     #   last_authors <- ∅ // ordered set of authors of last exclude_size committed blocks
         current_qc = qc                         #   current_qc <- qc
@@ -27,7 +27,7 @@ class LeaderElection():
         active_validators = active_validators.difference(last_authors)                  # active_validators <- active_validators \ last_authors // contains at least 1 validator
         return active_validators.pick_one(seed = qc.voteinfo.round)                     # return active_validators.pick_one(seed <- qc.voteinfo.round)                    
 
-    def update_leaders(qc):                                                             # Procedure update_leaders(qc)
+    def update_leaders(self,qc):                                                          # Procedure update_leaders(qc)
         extended_round = qc.vote_info.parent_round                                      #   extended_round <- qc.vote_info.parent_round
         qc_round = qc.vote_info.round                                                   #   qc_round <- qc.vote_info.round
         current_round = PaceMaker.current_round                                         #   current_round <- PaceMaker.current_round
