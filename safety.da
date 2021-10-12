@@ -3,6 +3,7 @@ from blockTree import VoteInfo
 from blockTree import VoteMsg
 from messages import *
 from verificationHelper import *
+import pickle
 
 class Safety():
     
@@ -69,7 +70,7 @@ class Safety():
             ledger_commit_info = LedgerCommitInfo(self.__commit_state_id_candidate(b.round, b.qc), hash(pickle.dumps(vote_info)))
             print('checkpoint 4 safety.make_vote ', ledger_commit_info)
             return VoteMsg(vote_info, ledger_commit_info, self.blockTree.high_commit_qc, b.author, \
-                sign(self.__private_key, ledger_commit_info))
+                sign(self.__private_key, ledger_commit_info).signature)
         return None
 
     def make_timeout(self, round, high_qc, last_tc, author):                              # Function make_timeout(round, high_qc, last_tc)

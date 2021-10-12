@@ -1,4 +1,5 @@
 import pickle
+import nacl.hash
 
 def sign(private_key, message):
         bytes = pickle.dumps(message)  # Convert any object to bytes
@@ -12,3 +13,9 @@ def verify(public_key, message):
         public_key.verify(message)
     except:
         print("Unable to verify signature")
+
+def hash(msg):
+    HASHER = nacl.hash.sha256
+    bytes = pickle.dumps(msg)  # Convert any object to bytes
+    digest = HASHER(bytes)
+    return digest
