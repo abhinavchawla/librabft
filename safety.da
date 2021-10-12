@@ -65,7 +65,7 @@ class Safety():
             vote_info = VoteInfo(b.id, b.round, b.qc.vote_info.id if b.qc is not None else None, qc_round, self.ledger.pending_state(b.id))
             # vote_info = VoteInfo(b.id, b.round, b.qc.vote_info.id, qc_round, self.ledger.pending_state(b.id))\
             #  if b.qc is not None else VoteInfo(b.id, b.round, None, qc_round, self.ledger.pending_state(b.id))
-            print('checkpoint 3 safety.make_vote ', vote_info)
+            print('checkpoint 3 safety.make_vote ', hash(pickle.dumps(vote_info)))
             ledger_commit_info = LedgerCommitInfo(self.__commit_state_id_candidate(b.round, b.qc), hash(pickle.dumps(vote_info)))
             print('checkpoint 4 safety.make_vote ', ledger_commit_info)
             return VoteMsg(vote_info, ledger_commit_info, self.blockTree.high_commit_qc, b.author, \

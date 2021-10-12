@@ -1,14 +1,37 @@
 class Pacemaker():
     ### check initialization
     def __init__(self):
+        ### check this
         self.current_round = 1
         self.last_round_tc = None
         self.pending_timeouts = None
     
     def advance_round_tc(self, tc):
-
         if tc == None or tc.round<self.current_round: # if tc = ⊥ ∨ tc.round < current round then
             return False                              # return false
         last_round_tc =tc                             # last round tc ← tc
                                                       # start timer(tc.round + 1)
         return true                                   # return true
+
+    def get_round_timer(self, r):
+        pass
+
+    def start_timer(self, new_round):
+        # stop_timer(current_round)
+        self.current_round = new_round
+        # start local timer for round current_round for duration get_round_timer(current_round)
+        pass
+
+    def local_timeout_round(self):
+        pass
+
+    def process_remote_timeout(self, tmo):
+        pass
+    
+    def advance_round_qc(self, qc):
+        if qc and qc.vote_info.round < self.current_round:
+            return false
+        last_round_tc = None
+        ### check here
+        self.start_timer(qc.vote_info.round+1 if qc else current_round+1)
+        return True

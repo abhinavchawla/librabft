@@ -50,14 +50,23 @@ class BlockTree():                                                              
         self.ledger = ledger
         self.private_key = private_key
 
+    def __max_round(self, qcA, qcB):
+        if not qcA:
+            return qcB
+        if not qcB:
+            return qcA
+        return qcA if qcA.vote_info.round > qcB.vote_info_round else qcB
+
     def process_qc(self, qc):                                                               #   Procedure process_qc(qc)
         print(qc)
-        print("Process_qc called", qc)
-        # if qc.ledger_commit_info.commit_state_id is not None:                           #       if qc.ledger_commit_info.commit_state_id ≠ ⊥ then
-        #     ledger.commit(qc.vote_info.parent_id)                                       #           Ledger.commit(qc.vote_info.parent_id)
-        #     pending_block_tree.prune(qc.vote_info.parent_id)                            #           pending_block_tree.prune(qc.vote_info.parent_id) // parent id becomes the new root of pending
-        #     high_commit_qc = max{qc, high_commit_qc}                                    #           high_commit_qc <- max_round{qc, high_commit_qc}
-        # high_qc = max{qc, high_qc}                                                      #       high_qc <- max_round{qc, high_qc}
+        print("checkpoint 1 BT.Process_qc ", qc)
+        if qc and qc.ledger_commit_info.commit_state_id is not None:                           #       if qc.ledger_commit_info.commit_state_id ≠ ⊥ then
+            ledger.commit(qc.vote_info.parent_id)                                       #           Ledger.commit(qc.vote_info.parent_id)
+            pending_block_tree.prune(qc.vote_info.parent_id)                            #           pending_block_tree.prune(qc.vote_info.parent_id) // parent id becomes the new root of pending
+            ### check this
+            self.high_commit_qc = self.__max_round(qc, self.high_commit_qc)                                    #           high_commit_qc <- max_round{qc, high_commit_qc}
+        self.high_qc = self.__max_round(qc, self.high_qc)                                                      #       high_qc <- max_round{qc, high_qc}
+        print("checkpoint 2 BT.Process_qc ", self.high_qc)
         
 
     def execute_and_insert(self, b):                                                          #   Procedure execute_and_insert(b)
@@ -98,4 +107,4 @@ class BlockTree():                                                              
             payload = txns,                                                             #           payload <- txns,
             qc = self.high_qc,                                                               #           qc <- high_qc,
             ### check here
-            id = hash(pickle.dumps((self.author, current_round, txns, None, None))))         #           id <- hash(author || round || payload || qc.vote_info.id || qc.signature)
+            id = hash(pickle.dumps((self.author, current_round, txns, self.high_qc.vote_info.id if self.high_qc else None, self.high_qc.signatures if self.high_qc else None))))         #           id <- hash(author || round || payload || qc.vote_info.id || qc.signature)
