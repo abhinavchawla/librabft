@@ -1,4 +1,7 @@
 #type: ignore
+import pickle
+from verificationHelper import *
+
 class VoteInfo():                                                                       # VoteInfo
     def __init__(self, id, round, parent_id, parent_round, exec_state_id):  
         self.id = id                                                                    #   id, round; // Id and round of block
@@ -22,12 +25,12 @@ class VoteMsg():                                                                
 
 # QC is VoteMsg with multiple signatures
 class QC():                                                                             # QC
-    def __init__(self, vote_info, ledger_commit_info, signaturesz):
+    def __init__(self, vote_info, ledger_commit_info, signatures, author, author_signature):
         self.vote_info = vote_info                                                      #   vote_info;
         self.ledger_commit_info = ledger_commit_info                                    #   ledger_commit_info;
         self.signatures = signatures                                                    #   signatures; // A quorum of signatures
-        self.author = u                                                                 #   author <- u; // The validator that produced the qc
-        self.author_signature = sign_u(signatures)                                      #   author_signature <- sign_u(signatures);
+        self.author = author                                                                 #   author <- u; // The validator that produced the qc
+        self.author_signature = author_signature                                      #   author_signature <- sign_u(signatures);
 
 class Block():                                                                          # Block
     def __init__(self, author, round, payload, qc, id):
@@ -38,13 +41,14 @@ class Block():                                                                  
         self.id = id                                                                    #   id; // A unique digest of author, round, payload, qc.vote_info.id and qc.signatures
 
 class BlockTree():                                                                     # Block-Tree()
-    def __init__(self, author, ledger):
+    def __init__(self, author, ledger, private_key):
         self.pending_block_tree = []                                                    #   pending_block_tree; // tree of blocks pending commitment
-        self.pending_votes = []                                              #   pending_votes; // collected votes per block indexed by their LedgerInfo hash
+        self.pending_votes = {}                                              #   pending_votes; // collected votes per block indexed by their LedgerInfo hash
         self.high_qc = None                                                          #   high_qc; // highest known QC
         self.high_commit_qc = None                                            #   high_commit_qc; // highest QC that serves as a commit certificate
         self.author = author
         self.ledger = ledger
+        self.private_key = private_key
 
     def process_qc(self, qc):                                                               #   Procedure process_qc(qc)
         print(qc)
@@ -66,14 +70,23 @@ class BlockTree():                                                              
         print('checkpoint 3 execute_and_insert pending_block_tree', self.pending_block_tree)
 
     def process_vote(self, v):                                                                #   Function process_vote(v)
-        process_qc(v.high_commit_qc)                                                    #       process_qc(v.high_commit_qc)
-        vote_idx = hash(v.ledger_commit_info)                                           #       vote_idx <- hash(v.ledger_commit_info)
-        pending_votes[vote_idx] = pending_votes[vote_idx] | v.signature                 #       pending_votes[vote_idx] <- pending_votes[vote_idx] ∪ v.signature
-        if len(pending_votes[vote_idx]) == 2*f+1:                                       #       if |pending_votes[vote_idx]| = 2f+1 then
+        print ('checkpoint 1 bt.process_vote ', pickle.dumps(v.ledger_commit_info))
+        self.process_qc(v.high_commit_qc)                                                    #       process_qc(v.high_commit_qc)
+        vote_idx = hash(pickle.dumps(v.ledger_commit_info))                                           #       vote_idx <- hash(v.ledger_commit_info)
+        print('checkpoint 2 bt.processVote, vote_idx', vote_idx)
+        if vote_idx not in self.pending_votes.keys():
+            self.pending_votes[vote_idx] = []
+        self.pending_votes[vote_idx].append(v.signature)                 #       pending_votes[vote_idx] <- pending_votes[vote_idx] ∪ v.signature
+        print('checkpoint 3 bt.processVote, vote_idx', len(self.pending_votes[vote_idx]))
+        ### substitute by f value
+        if len(self.pending_votes[vote_idx]) == 2*1+1:                                       #       if |pending_votes[vote_idx]| = 2f+1 then
+            print('checkpoint 4 bt.process_vote',v)
             qc = QC(                                                                    #           qc <- QC<
                     vote_info=v.vote_info,                                              #                   vote_info<-v.vote_info,
-                    state_id=v.state_id,                                                #                   state_id<-v.state_id,
-                    votes=pending_votes[vote_idx])                                      #                   votes<-pending_votes[vote_idx]>
+                    ledger_commit_info=v.ledger_commit_info,                                                #                   state_id<-v.state_id,
+                    author = v.sender,                    
+                    signatures=self.pending_votes[vote_idx],                                      #                   votes<-pending_votes[vote_idx]>
+                    author_signature=sign(self.private_key, self.pending_votes[vote_idx]))
             return qc                                                                   #           return qc
         return None                                                                     #       return ⊥
 
@@ -85,4 +98,4 @@ class BlockTree():                                                              
             payload = txns,                                                             #           payload <- txns,
             qc = self.high_qc,                                                               #           qc <- high_qc,
             ### check here
-            id = hash((self.author, current_round, txns, None, None)))         #           id <- hash(author || round || payload || qc.vote_info.id || qc.signature)
+            id = hash(pickle.dumps((self.author, current_round, txns, None, None))))         #           id <- hash(author || round || payload || qc.vote_info.id || qc.signature)

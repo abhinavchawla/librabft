@@ -5,7 +5,8 @@ class Ledger():
         pass
     
     def pending_state(self, block_id):                  #// find the pending state for the given block id or ⊥ if not present
-        pass
+        return None
+
     def commit(block_id):                               #// commit the pending prefix of the given block id and prune other branches
         pass
     def committed_block(block_id):                      #// returns a committed block given its id
