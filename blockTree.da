@@ -55,7 +55,7 @@ class BlockTree():                                                              
             return qcB
         if not qcB:
             return qcA
-        return qcA if qcA.vote_info.round > qcB.vote_info_round else qcB
+        return qcA if qcA.vote_info.round > qcB.vote_info.round else qcB
 
     def process_qc(self, qc):                                                               #   Procedure process_qc(qc)
         print(qc)
@@ -73,7 +73,7 @@ class BlockTree():                                                              
         print('checkpoint 1 execute_and_insert')
         if b and b.qc:
             print('checkpoint 4 execute_and_insert')
-            self.ledger.speculate(b.qc.block_id, b.id, b.payload)                                #       Ledger.speculate(b.qc.block_id, b.id, b.payload)
+            self.ledger.speculate(b.qc.vote_info.id, b.id, b.payload)                                #       Ledger.speculate(b.qc.block_id, b.id, b.payload)
         print('checkpoint 2 execute_and_insert')
         self.pending_block_tree.append(b)                                                       #       pending_block_tree.add(b)
         print('checkpoint 3 execute_and_insert pending_block_tree', self.pending_block_tree)
@@ -95,7 +95,7 @@ class BlockTree():                                                              
                     ledger_commit_info=v.ledger_commit_info,                                                #                   state_id<-v.state_id,
                     author = v.sender,                    
                     signatures=self.pending_votes[vote_idx],                                      #                   votes<-pending_votes[vote_idx]>
-                    author_signature=sign(self.private_key, self.pending_votes[vote_idx]))
+                    author_signature=sign(self.private_key, self.pending_votes[vote_idx]).signature)
             return qc                                                                   #           return qc
         return None                                                                     #       return ⊥
 

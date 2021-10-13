@@ -50,7 +50,7 @@ class Safety():
     def __commit_state_id_candidate(self, block_round, qc):                       # Function commit_state_id_candidate(block_round, qc)
         # // find the commiteed id in case a qc is formed in the vote round
         if qc and self.__consecutive(block_round, qc.vote_info.round):      #   if consecutive(block_round, qc.vote_info.round) then
-            return self.ledger.pending_state(qc.id)                         #       return Ledger.pending_state(qc.id)
+            return self.ledger.pending_state(qc.vote_info.id)                         #       return Ledger.pending_state(qc.id)
         else:                                                               #   else
             return None                                                     #       return ⊥
 
@@ -70,7 +70,7 @@ class Safety():
             ledger_commit_info = LedgerCommitInfo(self.__commit_state_id_candidate(b.round, b.qc), hash(pickle.dumps(vote_info)))
             print('checkpoint 4 safety.make_vote ', ledger_commit_info)
             return VoteMsg(vote_info, ledger_commit_info, self.blockTree.high_commit_qc, b.author, \
-                sign(self.__private_key, ledger_commit_info).signature)
+                sign(self.__private_key, ledger_commit_info))
         return None
 
     def make_timeout(self, round, high_qc, last_tc, author):                              # Function make_timeout(round, high_qc, last_tc)
