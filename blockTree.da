@@ -91,7 +91,7 @@ class BlockTree():                                                              
             self.pending_votes[vote_idx] = []
             self.signers[vote_idx] = []
         self.pending_votes[vote_idx].append(v.signature)                 #       pending_votes[vote_idx] <- pending_votes[vote_idx] ∪ v.signature
-        self.signers[vote_idx].append(v.author)
+        self.signers[vote_idx].append(v.sender)
         # print('checkpoint 3 bt.processVote, vote_idx', len(self.pending_votes[vote_idx]))
         ### substitute by f value
         if len(self.pending_votes[vote_idx]) == 2*1+1:                                       #       if |pending_votes[vote_idx]| = 2f+1 then

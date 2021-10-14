@@ -40,7 +40,7 @@ class Validator(process):
         self.ledger = Ledger("persistent_ledger_"+str(v_id)+".txt")
         self.pacemaker = Pacemaker()
         self.leaderElection = LeaderElection(validators, self.pacemaker, self.ledger)
-        self.blockTree = BlockTree(self, self.ledger, self.private_key)
+        self.blockTree = BlockTree(self, self.ledger, self.private_key, v_id)
         self.memPool = MemPool()        
         self.safety = Safety(private_key, public_keys_validators, 0, self.ledger, self.blockTree, v_id)
 

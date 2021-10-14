@@ -24,7 +24,7 @@ class LeaderElection():
             #current_block = self.ledger.committed_block(current_qc.vote_info.parent_id)      #   current_block <- Ledger.committed_block(current_qc.vote_info.parent_id)
             #block_author = current_block.author                                         #   block_author <- current_block.author
                                                                         #   if i < window_size then
-            active_validators = active_validators + current_qc.signatures  #       active_validators <- active_validators ∪ current_qc.signatures.signer()
+            active_validators = active_validators + current_qc.signers  #       active_validators <- active_validators ∪ current_qc.signatures.signer()
             print("active validators in loop: " + str(active_validators))
             print("touched 2")                                                                            #       // |current_qc.signatures.signer()| >= 2f+1
             #if len(last_authors) < self.exclude_size:                                        #   if |last_authors| < exclude_size then
@@ -43,7 +43,7 @@ class LeaderElection():
         current_round = self.paceMaker.current_round                                         #   current_round <- PaceMaker.current_round
         print("current round: " + str(current_round))
         if extended_round+1 == qc_round and qc_round+1 == current_round:                #   if extended_round + 1 = qc_round ^ qc_round + 1 = current_round then
-            reputation_leaders[current_round+1] = self.elect_reputation_leader(qc)           #       reputation_leaders[current_round + 1] <- elect_reputation_leader(qc)
+            self.reputation_leaders[current_round+1] = self.elect_reputation_leader(qc)           #       reputation_leaders[current_round + 1] <- elect_reputation_leader(qc)
             self.reputation_leaders[current_round+1] = self.elect_reputation_leader(qc)           #       reputation_leaders[current_round + 1] <- elect_reputation_leader(qc)
 
     ### uncomment
