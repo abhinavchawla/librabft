@@ -34,7 +34,7 @@ class LeaderElection():
         qc_round = qc.vote_info.round                                                   #   qc_round <- qc.vote_info.round
         current_round = self.paceMaker.current_round                                         #   current_round <- PaceMaker.current_round
         if extended_round+1 == qc_round and qc_round+1 == current_round:                #   if extended_round + 1 = qc_round ^ qc_round + 1 = current_round then
-            reputation_leaders[current_round+1] = elect_reputation_leader(qc)           #       reputation_leaders[current_round + 1] <- elect_reputation_leader(qc)
+            reputation_leaders[current_round+1] = self.elect_reputation_leader(qc)           #       reputation_leaders[current_round + 1] <- elect_reputation_leader(qc)
 
     ### uncomment
     def get_leader(self, round):                                                              # Function get_leader(round)

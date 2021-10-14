@@ -61,8 +61,8 @@ class BlockTree():                                                              
         print(qc)
         print("checkpoint 1 BT.Process_qc ", qc)
         if qc and qc.ledger_commit_info.commit_state_id is not None:                           #       if qc.ledger_commit_info.commit_state_id ≠ ⊥ then
-            ledger.commit(qc.vote_info.parent_id)                                       #           Ledger.commit(qc.vote_info.parent_id)
-            pending_block_tree.prune(qc.vote_info.parent_id)                            #           pending_block_tree.prune(qc.vote_info.parent_id) // parent id becomes the new root of pending
+            self.ledger.commit(qc.vote_info.parent_id)                                       #           Ledger.commit(qc.vote_info.parent_id)
+            # self.pending_block_tree.prune(qc.vote_info.parent_id)                            #           pending_block_tree.prune(qc.vote_info.parent_id) // parent id becomes the new root of pending
             ### check this
             self.high_commit_qc = self.__max_round(qc, self.high_commit_qc)                                    #           high_commit_qc <- max_round{qc, high_commit_qc}
         self.high_qc = self.__max_round(qc, self.high_qc)                                                      #       high_qc <- max_round{qc, high_qc}
@@ -71,31 +71,33 @@ class BlockTree():                                                              
 
     def execute_and_insert(self, b):                                                          #   Procedure execute_and_insert(b)
         print('checkpoint 1 execute_and_insert')
-        if b and b.qc:
-            print('checkpoint 4 execute_and_insert')
-            self.ledger.speculate(b.qc.vote_info.id, b.id, b.payload)                                #       Ledger.speculate(b.qc.block_id, b.id, b.payload)
-        print('checkpoint 2 execute_and_insert')
+        prev_block_id = None
+        if b.qc:
+            prev_block_id = b.qc.vote_info.id
+        self.ledger.speculate(prev_block_id, b.id, b.payload)                                #       Ledger.speculate(b.qc.block_id, b.id, b.payload)
+        print('checkpoint 2 execute_and_insert Speculate done')
         self.pending_block_tree.append(b)                                                       #       pending_block_tree.add(b)
         print('checkpoint 3 execute_and_insert pending_block_tree', self.pending_block_tree)
 
     def process_vote(self, v):                                                                #   Function process_vote(v)
-        print ('checkpoint 1 bt.process_vote ', pickle.dumps(v.ledger_commit_info))
+        # print ('checkpoint 1 bt.process_vote ', pickle.dumps(v.ledger_commit_info))
         self.process_qc(v.high_commit_qc)                                                    #       process_qc(v.high_commit_qc)
         vote_idx = hash(pickle.dumps(v.ledger_commit_info))                                           #       vote_idx <- hash(v.ledger_commit_info)
-        print('checkpoint 2 bt.processVote, vote_idx', vote_idx)
+        # print('checkpoint 2 bt.processVote, vote_idx', vote_idx)
         if vote_idx not in self.pending_votes.keys():
             self.pending_votes[vote_idx] = []
         self.pending_votes[vote_idx].append(v.signature)                 #       pending_votes[vote_idx] <- pending_votes[vote_idx] ∪ v.signature
-        print('checkpoint 3 bt.processVote, vote_idx', len(self.pending_votes[vote_idx]))
+        # print('checkpoint 3 bt.processVote, vote_idx', len(self.pending_votes[vote_idx]))
         ### substitute by f value
         if len(self.pending_votes[vote_idx]) == 2*1+1:                                       #       if |pending_votes[vote_idx]| = 2f+1 then
-            print('checkpoint 4 bt.process_vote',v)
+            # print('checkpoint 4 bt.process_vote',v)
             qc = QC(                                                                    #           qc <- QC<
                     vote_info=v.vote_info,                                              #                   vote_info<-v.vote_info,
                     ledger_commit_info=v.ledger_commit_info,                                                #                   state_id<-v.state_id,
                     author = v.sender,                    
                     signatures=self.pending_votes[vote_idx],                                      #                   votes<-pending_votes[vote_idx]>
                     author_signature=sign(self.private_key, self.pending_votes[vote_idx]).signature)
+            print("Process_vote completed by forming this QC", qc)
             return qc                                                                   #           return qc
         return None                                                                     #       return ⊥
 

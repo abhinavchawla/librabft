@@ -62,7 +62,7 @@ class Safety():
             self.__update_highest_qc_round(qc_round)                        #       update_highest_qc_round(qc_round) // Protect qc round
             self.__increase_highest_vote_round(b.round)                     #       increase_highest_vote_round(b.round) // Don't vote again in this (or lower round)
             # // VoteInfo carries the potential QC info with ids and rounds of the parent QC
-            print('checkpoint 2 safety.make_vote')
+            print('checkpoint 2 safety.make_vote', self.ledger.block_to_ledger_state_map)
             vote_info = VoteInfo(b.id, b.round, b.qc.vote_info.id if b.qc is not None else None, qc_round, self.ledger.pending_state(b.id))
             # vote_info = VoteInfo(b.id, b.round, b.qc.vote_info.id, qc_round, self.ledger.pending_state(b.id))\
             #  if b.qc is not None else VoteInfo(b.id, b.round, None, qc_round, self.ledger.pending_state(b.id))
