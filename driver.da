@@ -48,9 +48,11 @@ class Validator(process):
         output('Processing certificate qc ', qc)
         if qc:
             self.blockTree.process_qc(qc)                                        #   BlockTree.process_qc(qc)
-            # self.leaderElection.update_leaders(qc)                               #   LeaderElection.update_leaders(qc)
             ###check if correct
-            self.pacemaker.advance_round_qc(qc)                     #   Pacemaker.advance_round(qc.vote_info_round)
+            self.pacemaker.advance_round_qc(qc)  # Pacemaker.advance_round(qc.vote_info_round)
+            print("updating leader using qc here!!!!!!!!!!!!!!!!!!!!!!!!!")
+            self.leaderElection.update_leaders(qc)                               #   LeaderElection.update_leaders(qc)
+
 
     def process_proposal_msg(P, sender):                                        # Procedure process_proposal_msg(P)
         output('inside process_proposal_msg ', P)
@@ -59,6 +61,8 @@ class Validator(process):
         pacemaker.advance_round_tc(P.last_round_tc)                     #   Pacemaker.advance_round_tc(P.last_round_tc)
         current_round = pacemaker.current_round                                 #   round <- Pacemaker.current_round
         leader = leaderElection.get_leader(current_round)               #   leader = LeaderElection.get_leader(current_round)
+        print("leader is: " + str(leader))
+        print("*****************************************")
 
         if P.block.round != current_round or sender != leader or P.block.author != leader:                                #   if P.block.round ≠ round ∨ P.sender ≠ leader ∨ P.block.author ≠ leader then
             return                                                      #       return
@@ -69,7 +73,7 @@ class Validator(process):
         output('checkpoint 4 inside process_proposal_msg')
         if vote_msg is not None:                                        #   if vote_msg ≠ ⊥ then
             next_leader = leaderElection.get_leader(current_round+1)
-            output('checkpoint 5 inside process_proposal_msg ', next_leader)
+            output('checkpoint 5 inside process_proposal_msg ************************* ', next_leader)
             send(('voteMessage',(vote_msg)), to= next_leader)           #       send vote_msg to LeaderElection.get_leader(current_round+1)
 
     def process_timeout_msg(M):                                         # Procedure process_timeout_msg(M)
@@ -99,6 +103,13 @@ class Validator(process):
     def process_new_round_event(last_tc):                               # Procedure process_new_round_event(last_tc)
         output('inside process_new_round_event')
         current_round = pacemaker.current_round
+        print("current round in process new event:" + str(current_round))
+        print("**********!!!!!!!!!")
+        if current_round==3:
+            exit()
+        dummy=leaderElection.get_leader(current_round)
+        print("leader is: " + str(dummy))
+        print("*****************************************")
         if self == leaderElection.get_leader(current_round):  #   if u = LeaderElection.get_leader(pacemaker.current_round) then
                                                                         #   // Leader code: generate proposal
             b = blockTree.generate_block(memPool.get_transactions(), \
@@ -128,6 +139,9 @@ class Validator(process):
     def run():
         # signed = sign(lst)
         # verify(public_keys[id], signed)
+        dummy1 = leaderElection.get_leader(pacemaker.current_round)
+        print("leader is: " + str(dummy1))
+        print("*****************************************")
         if self == self.leaderElection.get_leader(pacemaker.current_round):
             process_new_round_event(None)
             await(pacemaker.current_round>4)
