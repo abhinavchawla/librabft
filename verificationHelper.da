@@ -5,14 +5,16 @@ def sign(private_key, message):
         bytes = pickle.dumps(message)  # Convert any object to bytes
         return private_key.sign(bytes)
 
-def valid_signatures(b, last_tc):
-    return True
 
-def verify(public_key, message):
+def verify(public_key, message, signature):
     try:
-        public_key.verify(message)
+        bytes = pickle.dumps(message)
+        public_key.verify(bytes, signature)
+        print("Verified Signature!")
+        return True
     except:
         print("Unable to verify signature")
+        return False
 
 def hash(msg):
     HASHER = nacl.hash.sha256

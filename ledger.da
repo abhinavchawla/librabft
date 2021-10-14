@@ -34,6 +34,7 @@ class Ledger():
         state = self.ledger_id_to_ledger_state_map[state_id]
         while state.is_committed == False:
             f.write(state.txns)
+            f.write("\n")
             state.is_committed = True
             state_id = state.prev_state_id
             if not state_id:

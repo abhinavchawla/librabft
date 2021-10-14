@@ -5,6 +5,8 @@ from messages import *
 from verificationHelper import *
 import pickle
 
+from verificationHelper import verify
+
 class Safety():
     
     def __init__(self, private_key, public_keys, highest_qc_round, ledger, blockTree, v_id):
@@ -58,7 +60,7 @@ class Safety():
     def make_vote(self, b, last_tc):                                        # Function make_vote(b, last_tc)
         # print('checkpoint 1 safety.make_vote')
         qc_round = b.qc.vote_info.round if b.qc is not None else 0          #   qc_round <- b.qc.vote_info.round
-        if valid_signatures(b, last_tc) and \
+        if self.valid_signatures(b, last_tc) and \
             self.__safe_to_vote(b.round, qc_round, last_tc):                #   if valid_signatures(b, last_tc) ∧ safe_to_vote(b.round, qc_round, last_tc)
             self.__update_highest_qc_round(qc_round)                        #       update_highest_qc_round(qc_round) // Protect qc round
             self.__increase_highest_vote_round(b.round)                     #       increase_highest_vote_round(b.round) // Don't vote again in this (or lower round)
@@ -70,7 +72,7 @@ class Safety():
             ledger_commit_info = LedgerCommitInfo(self.__commit_state_id_candidate(b.round, b.qc), hash(pickle.dumps(vote_info)))
             # print('checkpoint 4 safety.make_vote ', ledger_commit_info)
             return VoteMsg(vote_info, ledger_commit_info, self.blockTree.high_commit_qc, self.v_id, \
-                sign(self.__private_key, ledger_commit_info))
+                sign(self.__private_key, ledger_commit_info).signature)
         return None
 
     def make_timeout(self, round, high_qc, last_tc, author):                              # Function make_timeout(round, high_qc, last_tc)
@@ -81,3 +83,14 @@ class Safety():
             return TimeoutInfo(round, high_qc, author, \
                 sign(self.__private_key, (round, high_qc)))                 #       return TimeoutInfo(round, high_qc)
         return None
+    
+    def valid_signatures(self,b, last_tc):
+        author = b.author
+        qc = b.qc
+        if b.qc:
+            # self.__public_keys[author].verify( , qc)
+            for signer, signature in zip(qc.signers, qc.signatures):
+                print(signer, signature)
+                if not verify(self.__public_keys[signer],qc.ledger_commit_info, signature):
+                    return False
+        return True
