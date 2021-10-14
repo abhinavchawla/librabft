@@ -15,13 +15,11 @@ class Ledger():
 
 
     def speculate(self, prev_block_id, block_id, txns): #// apply txns speculatively
-        print("Reached Speculate Ledger")
         prev_state, prev_state_id = None, None
         if prev_block_id:
             prev_state = self.block_id_to_ledger_state_map[prev_block_id]
             prev_state_id = prev_state.state_id
         state_id = hash(pickle.dumps((prev_state,txns)))
-        print("Calculated state_id", state_id)
         state = Ledger_State(prev_state_id, txns, state_id)
         self.block_id_to_ledger_state_map[block_id] = state
         self.ledger_id_to_ledger_state_map[state_id] = state

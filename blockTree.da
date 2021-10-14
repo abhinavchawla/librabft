@@ -61,26 +61,25 @@ class BlockTree():                                                              
         return qcA if qcA.vote_info.round > qcB.vote_info.round else qcB
 
     def process_qc(self, qc):                                                               #   Procedure process_qc(qc)
-        print(qc)
-        print("checkpoint 1 BT.Process_qc ", qc)
+        # print("checkpoint 1 BT.Process_qc ", qc)
         if qc and qc.ledger_commit_info.commit_state_id is not None:                           #       if qc.ledger_commit_info.commit_state_id ≠ ⊥ then
             self.ledger.commit(qc.vote_info.parent_id)                                       #           Ledger.commit(qc.vote_info.parent_id)
             # self.pending_block_tree.prune(qc.vote_info.parent_id)                            #           pending_block_tree.prune(qc.vote_info.parent_id) // parent id becomes the new root of pending
             ### check this
             self.high_commit_qc = self.__max_round(qc, self.high_commit_qc)                                    #           high_commit_qc <- max_round{qc, high_commit_qc}
         self.high_qc = self.__max_round(qc, self.high_qc)                                                      #       high_qc <- max_round{qc, high_qc}
-        print("checkpoint 2 BT.Process_qc ", self.high_qc)
+        # print("checkpoint 2 BT.Process_qc ", self.high_qc)
         
 
     def execute_and_insert(self, b):                                                          #   Procedure execute_and_insert(b)
-        print('checkpoint 1 execute_and_insert')
+        # print('checkpoint 1 execute_and_insert')
         prev_block_id = None
         if b.qc:
             prev_block_id = b.qc.vote_info.id
         self.ledger.speculate(prev_block_id, b.id, b.payload)                                #       Ledger.speculate(b.qc.block_id, b.id, b.payload)
-        print('checkpoint 2 execute_and_insert Speculate done')
+        # print('checkpoint 2 execute_and_insert Speculate done')
         self.pending_block_tree.append(b)                                                       #       pending_block_tree.add(b)
-        print('checkpoint 3 execute_and_insert pending_block_tree', self.pending_block_tree)
+        # print('checkpoint 3 execute_and_insert pending_block_tree', self.pending_block_tree)
 
     def process_vote(self, v):                                                                #   Function process_vote(v)
         # print ('checkpoint 1 bt.process_vote ', pickle.dumps(v.ledger_commit_info))
@@ -92,7 +91,7 @@ class BlockTree():                                                              
             self.signers[vote_idx] = []
         self.pending_votes[vote_idx].append(v.signature)                 #       pending_votes[vote_idx] <- pending_votes[vote_idx] ∪ v.signature
         self.signers[vote_idx].append(v.sender)
-        # print('checkpoint 3 bt.processVote, vote_idx', len(self.pending_votes[vote_idx]))
+        # print('checkpoint 3 bt.processVote, vote_idx', (self.signers[vote_idx]))
         ### substitute by f value
         if len(self.pending_votes[vote_idx]) == 2*1+1:                                       #       if |pending_votes[vote_idx]| = 2f+1 then
             # print('checkpoint 4 bt.process_vote',v)
@@ -103,12 +102,12 @@ class BlockTree():                                                              
                     signers = self.signers[vote_idx],
                     signatures=self.pending_votes[vote_idx],                                      #                   votes<-pending_votes[vote_idx]>
                     author_signature=sign(self.private_key, self.pending_votes[vote_idx]).signature)
-            print("Process_vote completed by forming this QC", qc)
+            # print("Process_vote completed by forming this QC", qc)
             return qc                                                                   #           return qc
         return None                                                                     #       return ⊥
 
     def generate_block(self, txns, current_round):                                            #   Function generate_block(txns, current_round)
-        print('inside blockTree.generate_block')
+        # print('inside blockTree.generate_block')
         return Block(                                                                   #       return Block<
             author = self.author,                                                                 #           author <- u,
             round = current_round,                                                      #           round <- current_round,

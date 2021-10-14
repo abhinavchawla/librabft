@@ -45,35 +45,35 @@ class Validator(process):
         self.safety = Safety(private_key, public_keys_validators, 0, self.ledger, self.blockTree, v_id)
 
     def process_certificate_qc(qc):                                     # Procedure process_certificate_qc(qc) ### Check for qc being None
-        output('Processing certificate qc ', qc)
+        # output('Processing certificate qc ', qc)
         if qc:
             self.blockTree.process_qc(qc)                                        #   BlockTree.process_qc(qc)
             ###check if correct
             self.pacemaker.advance_round_qc(qc)  # Pacemaker.advance_round(qc.vote_info_round)
-            print("updating leader using qc here!!!!!!!!!!!!!!!!!!!!!!!!!")
+            # print("updating leader using qc here!!!!!!!!!!!!!!!!!!!!!!!!!")
             self.leaderElection.update_leaders(qc)                               #   LeaderElection.update_leaders(qc)
 
 
     def process_proposal_msg(P, sender):                                        # Procedure process_proposal_msg(P)
-        output('inside process_proposal_msg ', P)
+        # output('inside process_proposal_msg ', P)
         process_certificate_qc(P.block.qc)                              #   process_certificate_qc(P.block.qc)
         process_certificate_qc(P.high_commit_qc)                        #   process_certificate_qc(P.high_commit_qc)
         pacemaker.advance_round_tc(P.last_round_tc)                     #   Pacemaker.advance_round_tc(P.last_round_tc)
         current_round = pacemaker.current_round                                 #   round <- Pacemaker.current_round
         leader = leaderElection.get_leader(current_round)               #   leader = LeaderElection.get_leader(current_round)
-        print("leader is: " + str(leader))
-        print("*****************************************")
+        # print("leader is: " + str(leader))
+        # print("*****************************************")
 
         if P.block.round != current_round or sender != leader or P.block.author != leader:                                #   if P.block.round ≠ round ∨ P.sender ≠ leader ∨ P.block.author ≠ leader then
             return                                                      #       return
-        output('checkpoint 2 inside process_proposal_msg')
+        # output('checkpoint 2 inside process_proposal_msg')
         blockTree.execute_and_insert(P.block)                                 #   Block-Tree.execute_and_insert(P) // Adds a new speculative state to the Ledger
-        output('checkpoint 3 inside process_proposal_msg')
+        # output('checkpoint 3 inside process_proposal_msg')
         vote_msg = safety.make_vote(P.block, P.last_round_tc)           #   vote_msg <- Safety.make_vote(P.block, P.last_round_tc)
-        output('checkpoint 4 inside process_proposal_msg')
+        # output('checkpoint 4 inside process_proposal_msg')
         if vote_msg is not None:                                        #   if vote_msg ≠ ⊥ then
             next_leader = leaderElection.get_leader(current_round+1)
-            output('checkpoint 5 inside process_proposal_msg ************************* ', next_leader)
+            # output('checkpoint 5 inside process_proposal_msg ************************* ', vote_msg, next_leader)
             send(('voteMessage',(vote_msg)), to= next_leader)           #       send vote_msg to LeaderElection.get_leader(current_round+1)
 
     def process_timeout_msg(M):                                         # Procedure process_timeout_msg(M)
@@ -86,10 +86,10 @@ class Validator(process):
             process_new_round_event(tc)                                 #       process_new_round_event(tc)
 
     def process_vote_msg(M):                                            # Procedure process_vote_msg(M)
-        output('checkpoint 1 process_vote_msg ', pickle.dumps(M))
+        # output('checkpoint 1 process_vote_msg ', pickle.dumps(M))
         ### Is there a possibility of a race condition
         qc = blockTree.process_vote(M)                                  #   qc <- Block-Tree.process_vote(M)
-        output('checkpoint 2 process_vote_msg ', pickle.dumps(qc))
+        # output('checkpoint 2 process_vote_msg ', pickle.dumps(qc))
         if qc is not None:                                              #   if qc ≠ ⊥ then
             process_certificate_qc(qc)                                  #       process_certificate_qc(qc)
             process_new_round_event(None)                               #       process_new_round_event(⊥)
@@ -98,23 +98,17 @@ class Validator(process):
         output(signed_txn.message)
         verify(self.public_keys_clients[c_id], signed_txn)
         txn = pickle.loads(signed_txn.message)
-        output("Request Received from client", c_id,": ", v_id, txn)
+        # output("Request Received from client", c_id,": ", v_id, txn)
 
     def process_new_round_event(last_tc):                               # Procedure process_new_round_event(last_tc)
-        output('inside process_new_round_event')
+        # output('inside process_new_round_event')
         current_round = pacemaker.current_round
-        print("current round in process new event:" + str(current_round))
-        print("**********!!!!!!!!!")
-        if current_round==3:
-            exit()
         dummy=leaderElection.get_leader(current_round)
-        print("leader is: " + str(dummy))
-        print("*****************************************")
         if self == leaderElection.get_leader(current_round):  #   if u = LeaderElection.get_leader(pacemaker.current_round) then
                                                                         #   // Leader code: generate proposal
             b = blockTree.generate_block(memPool.get_transactions(), \
                 pacemaker.current_round)                                #       b <- Block-Tree.generate_block(MemPool.get_transactions(), Pacemaker.current_round)
-            output('message being sent ', pickle.dumps(ProposalMsg(b,last_tc, blockTree.high_commit_qc)))
+            # output('message being sent ', pickle.dumps(ProposalMsg(b,last_tc, blockTree.high_commit_qc)))
             send(('proposalMessage',(ProposalMsg(b,last_tc, blockTree.high_commit_qc))), to=validators) # broadcast ProposalMsg<b,last_tc,Blcok-Tree.high_commit_qc>
 
     def receive(msg=('localTimeout', m,), from_= p):                    # if M is a local timeout then
