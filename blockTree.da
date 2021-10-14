@@ -25,12 +25,13 @@ class VoteMsg():                                                                
 
 # QC is VoteMsg with multiple signatures
 class QC():                                                                             # QC
-    def __init__(self, vote_info, ledger_commit_info, signatures, author, author_signature):
+    def __init__(self, vote_info, ledger_commit_info, signatures, author, author_signature, signers):
         self.vote_info = vote_info                                                      #   vote_info;
         self.ledger_commit_info = ledger_commit_info                                    #   ledger_commit_info;
         self.signatures = signatures                                                    #   signatures; // A quorum of signatures
         self.author = author                                                                 #   author <- u; // The validator that produced the qc
         self.author_signature = author_signature                                      #   author_signature <- sign_u(signatures);
+        self.signers = signers
 
 class Block():                                                                          # Block
     def __init__(self, author, round, payload, qc, id):
@@ -41,7 +42,7 @@ class Block():                                                                  
         self.id = id                                                                    #   id; // A unique digest of author, round, payload, qc.vote_info.id and qc.signatures
 
 class BlockTree():                                                                     # Block-Tree()
-    def __init__(self, author, ledger, private_key):
+    def __init__(self, author, ledger, private_key, v_id):
         self.pending_block_tree = []                                                    #   pending_block_tree; // tree of blocks pending commitment
         self.pending_votes = {}                                              #   pending_votes; // collected votes per block indexed by their LedgerInfo hash
         self.high_qc = None                                                          #   high_qc; // highest known QC
@@ -49,6 +50,8 @@ class BlockTree():                                                              
         self.author = author
         self.ledger = ledger
         self.private_key = private_key
+        self.v_id = v_id
+        self.signers={}
 
     def __max_round(self, qcA, qcB):
         if not qcA:
@@ -86,7 +89,9 @@ class BlockTree():                                                              
         # print('checkpoint 2 bt.processVote, vote_idx', vote_idx)
         if vote_idx not in self.pending_votes.keys():
             self.pending_votes[vote_idx] = []
+            self.signers[vote_idx] = []
         self.pending_votes[vote_idx].append(v.signature)                 #       pending_votes[vote_idx] <- pending_votes[vote_idx] ∪ v.signature
+        self.signers[vote_idx].append(v.author)
         # print('checkpoint 3 bt.processVote, vote_idx', len(self.pending_votes[vote_idx]))
         ### substitute by f value
         if len(self.pending_votes[vote_idx]) == 2*1+1:                                       #       if |pending_votes[vote_idx]| = 2f+1 then
@@ -94,7 +99,8 @@ class BlockTree():                                                              
             qc = QC(                                                                    #           qc <- QC<
                     vote_info=v.vote_info,                                              #                   vote_info<-v.vote_info,
                     ledger_commit_info=v.ledger_commit_info,                                                #                   state_id<-v.state_id,
-                    author = v.sender,                    
+                    author = self.v_id,
+                    signers = self.signers[vote_idx],
                     signatures=self.pending_votes[vote_idx],                                      #                   votes<-pending_votes[vote_idx]>
                     author_signature=sign(self.private_key, self.pending_votes[vote_idx]).signature)
             print("Process_vote completed by forming this QC", qc)

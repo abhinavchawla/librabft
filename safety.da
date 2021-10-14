@@ -7,13 +7,14 @@ import pickle
 
 class Safety():
     
-    def __init__(self, private_key, public_keys, highest_qc_round, ledger, blockTree):
+    def __init__(self, private_key, public_keys, highest_qc_round, ledger, blockTree, v_id):
         self.__private_key = private_key                                    # private_key; // Own private key
         self.__public_keys = public_keys                                    # public_keys; // Public keys of all validators
         self.__highest_vote_round = 0                                       # highest_vote_round; // initially 0
         self.__highest_qc_round = highest_qc_round                          # highest_qc_round;
         self.ledger = ledger
         self.blockTree = blockTree
+        self.v_id = v_id
 
     def __increase_highest_vote_round(self, round):                               # Procedure increase_highest_vote_round(round)
         self.__highest_vote_round = max(round, self.__highest_vote_round)   #   highest_vote_round <- max{round, highest_vote_round}
@@ -69,7 +70,7 @@ class Safety():
             print('checkpoint 3 safety.make_vote ', hash(pickle.dumps(vote_info)))
             ledger_commit_info = LedgerCommitInfo(self.__commit_state_id_candidate(b.round, b.qc), hash(pickle.dumps(vote_info)))
             print('checkpoint 4 safety.make_vote ', ledger_commit_info)
-            return VoteMsg(vote_info, ledger_commit_info, self.blockTree.high_commit_qc, b.author, \
+            return VoteMsg(vote_info, ledger_commit_info, self.blockTree.high_commit_qc, self.v_id, \
                 sign(self.__private_key, ledger_commit_info))
         return None
 

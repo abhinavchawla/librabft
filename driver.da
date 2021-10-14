@@ -42,7 +42,7 @@ class Validator(process):
         self.leaderElection = LeaderElection(validators, self.pacemaker, self.ledger)
         self.blockTree = BlockTree(self, self.ledger, self.private_key)
         self.memPool = MemPool()        
-        self.safety = Safety(private_key, public_keys_validators, 0, self.ledger, self.blockTree)
+        self.safety = Safety(private_key, public_keys_validators, 0, self.ledger, self.blockTree, v_id)
 
     def process_certificate_qc(qc):                                     # Procedure process_certificate_qc(qc) ### Check for qc being None
         output('Processing certificate qc ', qc)

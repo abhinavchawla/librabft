@@ -8,7 +8,7 @@ class Ledger_State():
 
 class Ledger():
     def __init__(self, file_name) :
-        self.block_to_ledger_state_map = {}
+        self.block_id_to_ledger_state_map = {}
         self.ledger_id_to_ledger_state_map = {}
         self.file_name = file_name
         open(file_name, 'w').close()
@@ -18,21 +18,21 @@ class Ledger():
         print("Reached Speculate Ledger")
         prev_state, prev_state_id = None, None
         if prev_block_id:
-            prev_state = self.block_to_ledger_state_map[prev_block_id]
+            prev_state = self.block_id_to_ledger_state_map[prev_block_id]
             prev_state_id = prev_state.state_id
         state_id = hash(pickle.dumps((prev_state,txns)))
         print("Calculated state_id", state_id)
         state = Ledger_State(prev_state_id, txns, state_id)
-        self.block_to_ledger_state_map[block_id] = state
+        self.block_id_to_ledger_state_map[block_id] = state
         self.ledger_id_to_ledger_state_map[state_id] = state
-        return self.block_to_ledger_state_map[block_id]
+        return self.block_id_to_ledger_state_map[block_id]
     
     def pending_state(self, block_id):                  #// find the pending state for the given block id or ⊥ if not present
-        return self.block_to_ledger_state_map[block_id].state_id
+        return self.block_id_to_ledger_state_map[block_id].state_id
 
     def commit(self,block_id):                               #// commit the pending prefix of the given block id and prune other branches
         f = open(self.file_name, "a")
-        state_id = self.block_to_ledger_state_map[block_id].state_id
+        state_id = self.block_id_to_ledger_state_map[block_id].state_id
         state = self.ledger_id_to_ledger_state_map[state_id]
         while state.is_committed == False:
             f.write(state.txns)
@@ -45,4 +45,4 @@ class Ledger():
 
     def committed_block(self, block_id):                      #// returns a committed block given its id
         # TODO: Fix this, send a block instead
-        return self.block_to_ledger_state_map[block_id].state_id 
+        return self.block_id_to_ledger_state_map[block_id].state_id
