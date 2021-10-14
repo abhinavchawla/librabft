@@ -24,8 +24,8 @@ class Client(process):
 
     def run():
         letters = string.ascii_lowercase
-        for i in range(1):
-            request = sign(self.private_key, ''.join(random.choice(letters) for i in range(10)))
+        for i in range(5):
+            request = sign(self.private_key, str(self.c_id)+" "+str(i)+" "+''.join(random.choice(letters) for i in range(10)))
             send(('requestMessage',(request, self.c_id)), to= validators)           #       send vote_msg to LeaderElection.get_leader(current_round+1)
 
 class Validator(process):
@@ -69,6 +69,7 @@ class Validator(process):
         # output('checkpoint 2 inside process_proposal_msg')
         blockTree.execute_and_insert(P.block)                                 #   Block-Tree.execute_and_insert(P) // Adds a new speculative state to the Ledger
         # output('checkpoint 3 inside process_proposal_msg')
+        memPool.mark_transaction_pending(P.block.payload)
         vote_msg = safety.make_vote(P.block, P.last_round_tc)           #   vote_msg <- Safety.make_vote(P.block, P.last_round_tc)
         # output('checkpoint 4 inside process_proposal_msg')
         if vote_msg is not None:                                        #   if vote_msg ≠ ⊥ then
@@ -95,10 +96,10 @@ class Validator(process):
             process_new_round_event(None)                               #       process_new_round_event(⊥)
 
     def process_request_msg(signed_txn, c_id):
-        output(signed_txn.message)
-        verify(self.public_keys_clients[c_id], signed_txn)
+        self.public_keys_clients[c_id].verify(signed_txn.message, signed_txn.signature)
         txn = pickle.loads(signed_txn.message)
-        # output("Request Received from client", c_id,": ", v_id, txn)
+        self.memPool.add_transactions(txn)
+        output("Request Received from client", c_id,": ", v_id, txn)
 
     def process_new_round_event(last_tc):                               # Procedure process_new_round_event(last_tc)
         # output('inside process_new_round_event')
@@ -138,7 +139,7 @@ class Validator(process):
         print("*****************************************")
         if self == self.leaderElection.get_leader(pacemaker.current_round):
             process_new_round_event(None)
-            await(pacemaker.current_round>15)
+            await(pacemaker.current_round>20)
         else:
             await(False)
 
@@ -173,6 +174,6 @@ def main():
     for i, c in enumerate(clients):
         setup({c}, (i, private_keys_clients[i], public_keys_validators, validators))
 
-    # start(clients)
+    start(clients)
     start(validators)
 

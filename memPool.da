@@ -1,6 +1,15 @@
 class MemPool():
+    def __init__(self):
+        self.transactions={}
     ### reimplement
     def get_transactions(self):
-        print('inside mempool.get_transactions')
-        txns = 'sampleTxn'
-        return txns
+        for i in self.transactions:
+            if self.transactions[i] == "UNTOUCHED":
+                self.transactions[i] = "PENDING"
+                return i
+        return "EMPTY"
+    def mark_transaction_pending(self,txn):
+        self.transactions[txn] = "PENDING"
+
+    def add_transactions(self, txn):
+        self.transactions[txn] = "UNTOUCHED"
