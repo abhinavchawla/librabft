@@ -2,12 +2,12 @@ import math
 import random
 
 class LeaderElection():
-    def __init__(self, validators, paceMaker, ledger):
+    def __init__(self, validators, ledger):
         self.validators = validators            # validators; // The list of current validators
         self.window_size = 1                    # window_size; // A parameter for the leader reputation algorithm
         self.exclude_size = 2                # exclude_size; // Between f and 2f, number of excluded authors of last committed blocks
         self.reputation_leaders = [None]* 1000            # reputation_leaders; // Map from round numbers to leaders elected due to the reputaton scheme
-        self.paceMaker = paceMaker
+        #self.paceMaker = paceMaker
         self.ledger = ledger
 
     def elect_reputation_leader(self,qc):            # Function elect_reputation_leader(qc)
@@ -33,10 +33,11 @@ class LeaderElection():
         random.seed(qc.vote_info.round)
         return random.choice(active_validators)                     # return active_validators.pick_one(seed <- qc.voteinfo.round)
 
-    def update_leaders(self,qc):                                                          # Procedure update_leaders(qc)
+    def update_leaders(self,qc,current_round):                                                          # Procedure update_leaders(qc)
+        print('checkpoint 1 inside LE.update_leaders')
         extended_round = qc.vote_info.parent_round                                      #   extended_round <- qc.vote_info.parent_round
         qc_round = qc.vote_info.round                                                   #   qc_round <- qc.vote_info.round
-        current_round = self.paceMaker.current_round                                         #   current_round <- PaceMaker.current_round
+        #current_round = self.paceMaker.current_round                                         #   current_round <- PaceMaker.current_round
         print("Qc signers: ", qc.signers, extended_round, qc_round, current_round)
         if extended_round+1 == qc_round and qc_round+1 == current_round:                #   if extended_round + 1 = qc_round ^ qc_round + 1 = current_round then
             self.reputation_leaders[current_round+1] = self.elect_reputation_leader(qc)           #       reputation_leaders[current_round + 1] <- elect_reputation_leader(qc)
