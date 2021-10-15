@@ -10,11 +10,12 @@ class Ledger():
     def __init__(self, file_name) :
         self.block_id_to_ledger_state_map = {}
         self.ledger_id_to_ledger_state_map = {}
+        self.block_id_to_block_map = {}
         self.file_name = file_name
         open(file_name, 'w').close()
 
 
-    def speculate(self, prev_block_id, block_id, txns): #// apply txns speculatively
+    def speculate(self, prev_block_id, block_id, txns, block): #// apply txns speculatively
         prev_state, prev_state_id = None, None
         if prev_block_id:
             prev_state = self.block_id_to_ledger_state_map[prev_block_id]
@@ -23,6 +24,7 @@ class Ledger():
         state = Ledger_State(prev_state_id, txns, state_id)
         self.block_id_to_ledger_state_map[block_id] = state
         self.ledger_id_to_ledger_state_map[state_id] = state
+        self.block_id_to_block_map[block_id] = block
         return self.block_id_to_ledger_state_map[block_id]
     
     def pending_state(self, block_id):                  #// find the pending state for the given block id or ⊥ if not present
@@ -44,4 +46,7 @@ class Ledger():
 
     def committed_block(self, block_id):                      #// returns a committed block given its id
         # TODO: Fix this, send a block instead
-        return self.block_id_to_ledger_state_map[block_id].state_id
+        if block_id:
+            return self.block_id_to_block_map[block_id]
+        else:
+            return None

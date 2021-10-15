@@ -76,7 +76,7 @@ class BlockTree():                                                              
         prev_block_id = None
         if b.qc:
             prev_block_id = b.qc.vote_info.id
-        self.ledger.speculate(prev_block_id, b.id, b.payload)                                #       Ledger.speculate(b.qc.block_id, b.id, b.payload)
+        self.ledger.speculate(prev_block_id, b.id, b.payload, b)                                #       Ledger.speculate(b.qc.block_id, b.id, b.payload)
         # print('checkpoint 2 execute_and_insert Speculate done')
         self.pending_block_tree.append(b)                                                       #       pending_block_tree.add(b)
         # print('checkpoint 3 execute_and_insert pending_block_tree', self.pending_block_tree)
