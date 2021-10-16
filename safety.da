@@ -43,8 +43,9 @@ class Safety():
 
     def __safe_to_timeout(self, round, qc_round, tc):                             # Function safe_to_timeout(round, qc_round, tc)
         if qc_round < self.__highest_qc_round or \
-            max(self.__highest_vote_round-1, qc_round):                     #   if qc_round < highest_qc_round ∨ max{highest_vote_round-1, qc_round}
+            round<=max(self.__highest_vote_round-1, qc_round):                     #   if qc_round < highest_qc_round ∨ max{highest_vote_round-1, qc_round}
         # // respect highest_qc_round and don't timeout in a past round
+            print("OOPS",qc_round, self.__highest_qc_round)
             return False                                                    #       return false
         # // qc or tc must allow entering the round to timeout
         return self.__consecutive(round, qc_round) or \
@@ -60,7 +61,7 @@ class Safety():
     def make_vote(self, b, last_tc):                                        # Function make_vote(b, last_tc)
         # print('checkpoint 1 safety.make_vote')
         qc_round = b.qc.vote_info.round if b.qc is not None else 0          #   qc_round <- b.qc.vote_info.round
-        if self.valid_signatures(b, last_tc) and \
+        if self.valid_signatures(b.qc, last_tc) and \
             self.__safe_to_vote(b.round, qc_round, last_tc):                #   if valid_signatures(b, last_tc) ∧ safe_to_vote(b.round, qc_round, last_tc)
             self.__update_highest_qc_round(qc_round)                        #       update_highest_qc_round(qc_round) // Protect qc round
             self.__increase_highest_vote_round(b.round)                     #       increase_highest_vote_round(b.round) // Don't vote again in this (or lower round)
@@ -77,20 +78,17 @@ class Safety():
 
     def make_timeout(self, round, high_qc, last_tc, author):                              # Function make_timeout(round, high_qc, last_tc)
         qc_round = high_qc.vote_info.round                                  #   qc_round <- high_qc.vote_info.round
-        if valid_signatures(high_qc, last_tc) and \
+        if self.valid_signatures(high_qc, last_tc) and \
             self.__safe_to_timeout(round, qc_round, last_tc):               #   if valid_signatures(high_qc, last_tc) ∧ safe_to_timeout(round, qc_round, last_tc) then
             self.__increase_highest_vote_round(round)                       #       increase_highest_vote_round(round) // Stop voting for round
             return TimeoutInfo(round, high_qc, author, \
                 sign(self.__private_key, (round, high_qc)))                 #       return TimeoutInfo(round, high_qc)
         return None
     
-    def valid_signatures(self,b, last_tc):
-        author = b.author
-        qc = b.qc
-        if b.qc:
+    def valid_signatures(self, qc, last_tc):
+        if qc:
             # self.__public_keys[author].verify( , qc)
             for signer, signature in zip(qc.signers, qc.signatures):
-                print(signer, signature)
                 if not verify(self.__public_keys[signer],qc.ledger_commit_info, signature):
                     return False
         return True

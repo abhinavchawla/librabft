@@ -1,3 +1,4 @@
+#type:ignore
 import sys
 from memPool import MemPool
 from nacl.signing import SigningKey
@@ -11,6 +12,7 @@ from verificationHelper import *
 import string
 import random
 import pickle
+import time
 
 import string
 import random
@@ -27,7 +29,7 @@ class Client(process):
 
     def run():
         letters = string.ascii_lowercase
-        for i in range(5):
+        for i in range(10):
             request = sign(self.private_key, str(self.c_id)+" "+str(i)+" "+''.join(random.choice(letters) for i in range(10)))
             send(('requestMessage',(request, self.c_id)), to= validators)           #       send vote_msg to LeaderElection.get_leader(current_round+1)
 
@@ -52,14 +54,14 @@ class Validator(process):
     ### Pacemaker code
         self.pacemaker_current_round = 1
         self.pacemaker_last_round_tc = None
-        self.pacemaker_pending_timeouts = None
-        self.pacemaker_local_timer = 1000
+        self.pacemaker_pending_timeouts = {}
+        self.pacemaker_local_timer = 2
 
     ## Control variables
         self.done = False
 
     def pacemaker_stop_timer(current_round):
-        self.pacemaker_local_timer = 1000
+        self.pacemaker_local_timer = 2
 
     def pacemaker_get_round_timer(r):
         delta = 1 ### Change
@@ -75,7 +77,7 @@ class Validator(process):
     def pacemaker_local_timeout_round():
         # save_consensus_state()        # save_consensus_state() 
         timeout_info = self.safety.make_timeout(self.pacemaker_current_round, 
-                                                self.blockTree.high_qc, self.pacemaker_last_round_tc)
+                                                self.blockTree.high_qc, self.pacemaker_last_round_tc, self.v_id)
         # broadCast TimeoutMsg
         send(('timeoutMessage',(TimeoutMsg(timeout_info,pacemaker_last_round_tc, blockTree.high_commit_qc))), to=validators)
         
@@ -84,13 +86,15 @@ class Validator(process):
         tmo_info = tmo.tmo_info
         if tmo_info.round < self.pacemaker_current_round:
             return None
-        if tmo_info.sender not in self.pacemaker_pending_timeouts[tmo_info.round].senders:
+        if tmo_info.round not in self.pacemaker_pending_timeouts:
+            self.pacemaker_pending_timeouts[tmo_info.round]=[]
+        if tmo_info.sender not in self.pacemaker_pending_timeouts[tmo_info.round]:
             ### check
-            self.pacemaker_pending_timeouts[tmo_info.round] = self.pacemaker_pending_timeouts[tmo_info.round] | tmo_info
-        if self.pacemaker_pending_timeouts[tmo_info.round].senders == self.f+1:
+            self.pacemaker_pending_timeouts[tmo_info.round].append(tmo_info)
+        if len(self.pacemaker_pending_timeouts[tmo_info.round])==self.f+1:
             pacemaker_stop_timer(self.pacemaker_current_round)
             self.pacemaker_local_timeout_round()  ### wth is bracha timeout
-        if self.pacemaker_pending_timeouts[tmo_info.round].senders == 2*self.f+1:
+        if len(self.pacemaker_pending_timeouts[tmo_info.round]) == 2*self.f+1:
             return TC(round = tmo_info.round,
                     tmo_high_qc_rounds = [t.high_qc.round for t in self.pacemaker_pending_timeouts[tmo_info.round]],
                     tmo_signatures = [t.signature for t in self.pacemaker_pending_timeouts[tmo_info.round]]) ## an array/set of rounds?
@@ -149,7 +153,10 @@ class Validator(process):
         process_certificate_qc(M.tmo_info.high_qc)                      #   process_certificate_qc(M.tmo_info.high_qc)
         process_certificate_qc(M.high_commit_qc)                        #   process_certificate_qc(M.high_commit_qc)
         pacemaker_advance_round_tc(M.last_round_tc)                     #   Pacemaker.advance_round_tc(M.last_round_tc)
+        output("PACEMAKER: ")
         tc = pacemaker_process_remote_timeout(M)                        #   tc <- Pacemaker.process_remote_timeout(M)
+        output("TC: ", tc)
+
         if tc is not None:                                              #   if tc ≠ ⊥ then
             pacemaker_advance_round(tc)                                 #       Pacemaker.advance_round(tc)
             process_new_round_event(tc)                                 #       process_new_round_event(tc)
@@ -160,6 +167,8 @@ class Validator(process):
         qc = blockTree.process_vote(M)                                  #   qc <- Block-Tree.process_vote(M)
         # output('checkpoint 2 process_vote_msg ', pickle.dumps(qc))
         if qc is not None:                                              #   if qc ≠ ⊥ then
+            if pacemaker_current_round==4:
+                time.sleep(25)
             process_certificate_qc(qc)                                  #       process_certificate_qc(qc)
             process_new_round_event(None)                               #       process_new_round_event(⊥)
 
@@ -206,12 +215,13 @@ class Validator(process):
         print("leader is: " + str(dummy1))
         print("*****************************************")
         process_new_round_event(None)
-        while not done:
+        while not pacemaker_current_round>45:
             if await(some(received(('proposalMessage', m,), from_= p), has= m.block.round >= pacemaker_current_round)):
-                output('received some proposalMessage')
+                # output('received some proposalMessage')
                 reset(received)
 
             elif timeout(pacemaker_local_timer):
+                output('received some Timeout')
                 pacemaker_local_timeout_round()
 
             elif done:
@@ -228,7 +238,7 @@ class Validator(process):
 
 def main():
     nvalidators = int(sys.argv[1]) if len(sys.argv) > 1 else 4
-    nclients = int(sys.argv[2]) if len(sys.argv) > 2 else 3
+    nclients = int(sys.argv[2]) if len(sys.argv) > 2 else 5
     maxtimeout = int(sys.argv[4]) if len(sys.argv) > 3 else 3000
 
     clients = new(Client, num=nclients)
@@ -244,7 +254,7 @@ def main():
     print(private_keys_validators)
     public_keys_clients=[]
     private_keys_clients=[]
-    for _ in range(nvalidators):
+    for _ in range(nclients):
         sk = SigningKey.generate()
         pk = sk.verify_key
         public_keys_clients.append(pk)

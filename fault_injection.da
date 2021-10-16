@@ -1,0 +1,40 @@
+class Replica(process):
+    def setup():
+        self.current_round = 1
+        self.last_vote_round = 0
+        self.rcvd = False
+        
+    # fault injection uses setattr to change the replica's state.
+    def setattr(attr,val):
+        # we can't implement setattr using reflection, because the distalgo compiler
+        # needs to transform the assignment statements.
+        # if the updated attribute is in another class (e.g., Pacemaker), modify the
+        # assignment statement accordingly.
+        if attr == 'current_round': current_round = val
+        elif attr == 'last_vote_round': last_vote_round = val
+        else: output('error: Replica.setattr: unsupported attribute')
+
+    def receive(msg=('vote',)):
+        output('Replica.rcv(vote)')
+        rcvd = True
+        
+    def run():
+        send(('vote',),to=self)
+        # without the following await, the process exits before it receives the message.
+        await(rcvd)
+        output('current_round=',current_round)
+
+# Replica with Fault Injection
+class ReplicaFI(process, Replica):
+    # override send method
+    def send(m,to):
+        super().send(m,to)     # do original send
+        # imagine that attr and val were obtained from a misbehavior spec.
+        attr='current_round'
+        val=3
+        setattr(attr,val)
+
+def main():
+    replica = new(ReplicaFI)
+    setup(replica,())
+    start(replica)
