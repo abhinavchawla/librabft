@@ -207,8 +207,9 @@ class Validator(process):
         print("*****************************************")
         process_new_round_event(None)
         while not done:
-            if await(some(received(('proposalMessage', m,), from_= p), has= m.block.round > pacemaker_current_round)):
+            if await(some(received(('proposalMessage', m,), from_= p), has= m.block.round >= pacemaker_current_round)):
                 output('received some proposalMessage')
+                reset(received)
 
             elif timeout(pacemaker_local_timer):
                 pacemaker_local_timeout_round()
