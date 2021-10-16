@@ -7,7 +7,7 @@ class LeaderElection():
         self.validators = validators            # validators; // The list of current validators
         self.window_size = 1                    # window_size; // A parameter for the leader reputation algorithm
         self.exclude_size = 2                # exclude_size; // Between f and 2f, number of excluded authors of last committed blocks
-        self.reputation_leaders = [None]* 1000            # reputation_leaders; // Map from round numbers to leaders elected due to the reputaton scheme
+        self.reputation_leaders = {}          # reputation_leaders; // Map from round numbers to leaders elected due to the reputaton scheme
         #self.paceMaker = paceMaker
 
         self.ledger = ledger
@@ -57,8 +57,9 @@ class LeaderElection():
     ### uncomment
     def get_leader(self, round):                                                               # Function get_leader(round)
         print("Trying to get leader!!!!!!!!!!!!")
-        print("round: ",round)
+        print("round: ",round, self.reputation_leaders.keys())
         if round in self.reputation_leaders.keys():                                     #   if <round,leader> ∈ reputation_leaders then
             print("Reputation leaders ",self.reputation_leaders)
             return list(self.validators)[self.reputation_leaders[round]]                                                        #       return leader // Reputation-based leader
+        print("Election falling back to round robin")
         return list(self.validators)[math.floor(round/2) % len(self.validators)]                                       #return list(self.validators)[0]
