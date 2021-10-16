@@ -16,6 +16,7 @@ class Ledger():
 
 
     def speculate(self, prev_block_id, block_id, txns, block): #// apply txns speculatively
+        print("inside speculate: ", block_id)
         prev_state, prev_state_id = None, None
         if prev_block_id:
             prev_state = self.block_id_to_ledger_state_map[prev_block_id]

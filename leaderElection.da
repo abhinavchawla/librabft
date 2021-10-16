@@ -1,5 +1,6 @@
 import math
 import random
+import pdb
 
 class LeaderElection():
     def __init__(self, validators, ledger):
@@ -8,7 +9,9 @@ class LeaderElection():
         self.exclude_size = 2                # exclude_size; // Between f and 2f, number of excluded authors of last committed blocks
         self.reputation_leaders = [None]* 1000            # reputation_leaders; // Map from round numbers to leaders elected due to the reputaton scheme
         #self.paceMaker = paceMaker
+
         self.ledger = ledger
+
 
     def elect_reputation_leader(self,qc):            # Function elect_reputation_leader(qc)
         # print("starting election!!!!!")
@@ -19,17 +22,25 @@ class LeaderElection():
         for i in range (0, self.window_size):                                                # for i = 0; i < window_size ∨ |last_authors| < exclude_size; i <- i+1 do
             if len(last_authors) >= self.exclude_size:
                 break
-            #current_block = self.ledger.committed_block(current_qc.vote_info.parent_id)      #   current_block <- Ledger.committed_block(current_qc.vote_info.parent_id)
-            #block_author = current_block.author                                         #   block_author <- current_block.author
-                                                                        #   if i < window_size then
-            active_validators = active_validators + current_qc.signers  #       active_validators <- active_validators ∪ current_qc.signatures.signer()
-            # print("active validators in loop: " ,active_validators)
-            # print("touched 2")                                                                            #       // |current_qc.signatures.signer()| >= 2f+1
-            #if len(last_authors) < self.exclude_size:                                        #   if |last_authors| < exclude_size then
-            #    last_authors = last_authors | block_author                              #       last_authors <- last_authors ∪ {block_author}
-            #current_qc = current_block.qc                                               #   current_qc <- current_block.qc
-        active_validators = list(set(active_validators) - set(last_authors))                  # active_validators <- active_validators \ last_authors // contains at least 1 validator
-        print("active validators outside: " + str(active_validators))
+            #print("qc details: ")
+            #print(current_qc.vote_info)
+            current_block = self.ledger.committed_block(current_qc.vote_info.parent_id)      #   current_block <- Ledger.committed_block(current_qc.vote_info.parent_id)
+            #print("committed block: ",current_block)
+            if current_block!=None:
+                block_author = current_block.author                                         #   block_author <- current_block.author
+                if len(last_authors) <= self.exclude_size:  # if |last_authors| < exclude_size then
+                    last_authors = last_authors + [block_author]  # last_authors <- last_authors ∪ {block_author}
+            active_validators = active_validators + current_qc.signers  #       active_validators <- active_validators ∪ current_qc.signatures.signer()                                                                          #       // |current_qc.signatures.signer()| >= 2f+1
+            if current_block:
+                current_qc = current_block.qc                                               #   current_qc <- current_block.qc
+        # active_validators <- active_validators \ last_authors // contains at least 1 validator
+        process_id_to_active_validators={}
+        for idx in active_validators:
+            process_id_to_active_validators[list(self.validators)[idx]]=idx
+        for pid in last_authors:
+            if pid in process_id_to_active_validators.keys():
+                active_validators.remove(process_id_to_active_validators[pid])
+        #print("active validators outside: ",active_validators)
         random.seed(qc.vote_info.round)
         return random.choice(active_validators)                     # return active_validators.pick_one(seed <- qc.voteinfo.round)
 
@@ -40,12 +51,14 @@ class LeaderElection():
         #current_round = self.paceMaker.current_round                                         #   current_round <- PaceMaker.current_round
         # print("Qc signers: ", qc.signers, extended_round, qc_round, current_round)
         if extended_round+1 == qc_round and qc_round+1 == current_round:                #   if extended_round + 1 = qc_round ^ qc_round + 1 = current_round then
-            self.reputation_leaders[current_round+1] = self.elect_reputation_leader(qc)           #       reputation_leaders[current_round + 1] <- elect_reputation_leader(qc)
+            self.reputation_leaders[current_round+1]=self.elect_reputation_leader(qc)           #       reputation_leaders[current_round + 1] <- elect_reputation_leader(qc)
+            print(self.reputation_leaders)
 
     ### uncomment
     def get_leader(self, round):                                                               # Function get_leader(round)
-        # print("Trying to get leader!!!!!!!!!!!!")
-        # print(round)
-        # if self.reputation_leaders[round]!=None:                                     #   if <round,leader> ∈ reputation_leaders then
-        #     return list(self.validators)[self.reputation_leaders[round]]                                                        #       return leader // Reputation-based leader
-        return list(self.validators)[0]                                                #return list(self.validators)[0]
+        print("Trying to get leader!!!!!!!!!!!!")
+        print("round: ",round)
+        if round in self.reputation_leaders.keys():                                     #   if <round,leader> ∈ reputation_leaders then
+            print("Reputation leaders ",self.reputation_leaders)
+            return list(self.validators)[self.reputation_leaders[round]]                                                        #       return leader // Reputation-based leader
+        return list(self.validators)[math.floor(round/2) % len(self.validators)]                                       #return list(self.validators)[0]

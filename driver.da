@@ -86,7 +86,6 @@ class Validator(process):
         tmo_info = tmo.tmo_info
         if tmo_info.round < self.pacemaker_current_round:
             return None
-        all(flag == 0 for (_, _, flag) in items)
         if not any(tmo_info.round == t for t in self.pacemaker_pending_timeouts):
             self.pacemaker_pending_timeouts[tmo_info.round]=[]
         if not any(tmo_info.sender==t.sender  for t in self.pacemaker_pending_timeouts[tmo_info.round]:
@@ -118,24 +117,25 @@ class Validator(process):
 
     ### Validator code
     def process_certificate_qc(qc):                                     # Procedure process_certificate_qc(qc) ### Check for qc being None
-        # output('Processing certificate qc ', qc)
+        output('Processing certificate qc ', qc)
         if qc:
             self.blockTree.process_qc(qc)                                        #   BlockTree.process_qc(qc)
             ###check if correct
-            pacemaker_advance_round_qc(qc)  # Pacemaker.advance_round(qc.vote_info_round)
-            # print("updating leader using qc here!!!!!!!!!!!!!!!!!!!!!!!!!")
-            self.leaderElection.update_leaders(qc, pacemaker_current_round)                               #   LeaderElection.update_leaders(qc)
+
+            self.pacemaker.advance_round_qc(qc)  # Pacemaker.advance_round(qc.vote_info_round)
+            print("updating leader using qc here!!!!!!!!!!!!!!!!!!!!!!!!!")
+            self.leaderElection.update_leaders(qc)                               #   LeaderElection.update_leaders(qc)
 
 
     def process_proposal_msg(P, sender):                                        # Procedure process_proposal_msg(P)
-        # output('inside process_proposal_msg ', P)
+        output('inside process_proposal_msg ', P)
         process_certificate_qc(P.block.qc)                              #   process_certificate_qc(P.block.qc)
         process_certificate_qc(P.high_commit_qc)                        #   process_certificate_qc(P.high_commit_qc)
         pacemaker_advance_round_tc(P.last_round_tc)                     #   Pacemaker.advance_round_tc(P.last_round_tc)
         current_round = pacemaker_current_round                                 #   round <- Pacemaker.current_round
         leader = leaderElection.get_leader(current_round)               #   leader = LeaderElection.get_leader(current_round)
-        # print("leader is: " + str(leader))
-        # print("*****************************************")
+        print("leader is: " + str(leader))
+        print("*****************************************")
 
         if P.block.round != current_round or sender != leader or P.block.author != leader:                                #   if P.block.round ≠ round ∨ P.sender ≠ leader ∨ P.block.author ≠ leader then
             return                                                      #       return
@@ -146,7 +146,10 @@ class Validator(process):
         vote_msg = safety.make_vote(P.block, P.last_round_tc)           #   vote_msg <- Safety.make_vote(P.block, P.last_round_tc)
         # output('checkpoint 4 inside process_proposal_msg')
         if vote_msg is not None:                                        #   if vote_msg ≠ ⊥ then
+            print("validator querying for next leader: ",list(self.validators)[self.v_id])
             next_leader = leaderElection.get_leader(current_round+1)
+            print("next leader is : ",next_leader)
+            print("****************************************")
             # output('checkpoint 5 inside process_proposal_msg ************************* ', vote_msg, next_leader)
             send(('voteMessage',(vote_msg)), to= next_leader)           #       send vote_msg to LeaderElection.get_leader(current_round+1)
             
@@ -162,10 +165,10 @@ class Validator(process):
             process_new_round_event(tc)                                 #       process_new_round_event(tc)
 
     def process_vote_msg(M):                                            # Procedure process_vote_msg(M)
-        # output('checkpoint 1 process_vote_msg ', pickle.dumps(M))
+        output('checkpoint 1 process_vote_msg ', pickle.dumps(M))
         ### Is there a possibility of a race condition
         qc = blockTree.process_vote(M)                                  #   qc <- Block-Tree.process_vote(M)
-        # output('checkpoint 2 process_vote_msg ', pickle.dumps(qc))
+        output('checkpoint 2 process_vote_msg ', pickle.dumps(qc))
         if qc is not None:                                              #   if qc ≠ ⊥ then
             if pacemaker_current_round==4:
                 output()
@@ -180,10 +183,12 @@ class Validator(process):
         output("Request Received from client", c_id,": ", v_id, txn)
 
     def process_new_round_event(last_tc):                               # Procedure process_new_round_event(last_tc)
-        current_round = self.pacemaker_current_round
-        output('inside process_new_round_event', self, leaderElection.get_leader(current_round))
 
-        #dummy=leaderElection.get_leader(current_round)
+        # output('inside process_new_round_event')
+        current_round = pacemaker.current_round
+        dummy=leaderElection.get_leader(current_round)
+        print("leader is: " + str(dummy))
+        print("*****************************************")
         if self == leaderElection.get_leader(current_round):  #   if u = LeaderElection.get_leader(pacemaker.current_round) then
                                                                         #   // Leader code: generate proposal
             b = blockTree.generate_block(memPool.get_transactions(), \
