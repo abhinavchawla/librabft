@@ -86,17 +86,18 @@ class Validator(process):
         tmo_info = tmo.tmo_info
         if tmo_info.round < self.pacemaker_current_round:
             return None
-        if tmo_info.round not in self.pacemaker_pending_timeouts:
+        all(flag == 0 for (_, _, flag) in items)
+        if not any(tmo_info.round == t for t in self.pacemaker_pending_timeouts):
             self.pacemaker_pending_timeouts[tmo_info.round]=[]
-        if tmo_info.sender not in self.pacemaker_pending_timeouts[tmo_info.round]:
-            ### check
+        if not any(tmo_info.sender==t.sender  for t in self.pacemaker_pending_timeouts[tmo_info.round]:
             self.pacemaker_pending_timeouts[tmo_info.round].append(tmo_info)
         if len(self.pacemaker_pending_timeouts[tmo_info.round])==self.f+1:
             pacemaker_stop_timer(self.pacemaker_current_round)
             self.pacemaker_local_timeout_round()  ### wth is bracha timeout
         if len(self.pacemaker_pending_timeouts[tmo_info.round]) == 2*self.f+1:
+            output("REACHED HERE",)
             return TC(round = tmo_info.round,
-                    tmo_high_qc_rounds = [t.high_qc.round for t in self.pacemaker_pending_timeouts[tmo_info.round]],
+                    tmo_high_qc_rounds = [t.high_qc.vote_info.round for t in self.pacemaker_pending_timeouts[tmo_info.round]],
                     tmo_signatures = [t.signature for t in self.pacemaker_pending_timeouts[tmo_info.round]]) ## an array/set of rounds?
         return None
     
@@ -113,7 +114,7 @@ class Validator(process):
             return False                              # return false
         pacemaker_last_round_tc = tc                             # last round tc ← tc
         pacemaker_start_timer(tc.round+1)                       # start timer(tc.round + 1)
-        return true                                   # return true
+        return True                                   # return true
 
     ### Validator code
     def process_certificate_qc(qc):                                     # Procedure process_certificate_qc(qc) ### Check for qc being None
@@ -153,12 +154,11 @@ class Validator(process):
         process_certificate_qc(M.tmo_info.high_qc)                      #   process_certificate_qc(M.tmo_info.high_qc)
         process_certificate_qc(M.high_commit_qc)                        #   process_certificate_qc(M.high_commit_qc)
         pacemaker_advance_round_tc(M.last_round_tc)                     #   Pacemaker.advance_round_tc(M.last_round_tc)
-        output("PACEMAKER: ")
         tc = pacemaker_process_remote_timeout(M)                        #   tc <- Pacemaker.process_remote_timeout(M)
-        output("TC: ", tc)
 
         if tc is not None:                                              #   if tc ≠ ⊥ then
-            pacemaker_advance_round(tc)                                 #       Pacemaker.advance_round(tc)
+            output(tc)
+            pacemaker_advance_round_tc(tc)                              #       Pacemaker.advance_round(tc)
             process_new_round_event(tc)                                 #       process_new_round_event(tc)
 
     def process_vote_msg(M):                                            # Procedure process_vote_msg(M)
@@ -168,6 +168,7 @@ class Validator(process):
         # output('checkpoint 2 process_vote_msg ', pickle.dumps(qc))
         if qc is not None:                                              #   if qc ≠ ⊥ then
             if pacemaker_current_round==4:
+                output()
                 time.sleep(25)
             process_certificate_qc(qc)                                  #       process_certificate_qc(qc)
             process_new_round_event(None)                               #       process_new_round_event(⊥)
@@ -179,14 +180,16 @@ class Validator(process):
         output("Request Received from client", c_id,": ", v_id, txn)
 
     def process_new_round_event(last_tc):                               # Procedure process_new_round_event(last_tc)
-        output('inside process_new_round_event')
         current_round = self.pacemaker_current_round
+        output('inside process_new_round_event', self, leaderElection.get_leader(current_round))
+
         #dummy=leaderElection.get_leader(current_round)
         if self == leaderElection.get_leader(current_round):  #   if u = LeaderElection.get_leader(pacemaker.current_round) then
                                                                         #   // Leader code: generate proposal
             b = blockTree.generate_block(memPool.get_transactions(), \
                 pacemaker_current_round)                                #       b <- Block-Tree.generate_block(MemPool.get_transactions(), Pacemaker.current_round)
             # output('message being sent ', pickle.dumps(ProposalMsg(b,last_tc, blockTree.high_commit_qc)))
+            output("yay proposal", pickle.dumps(ProposalMsg(b,last_tc, blockTree.high_commit_qc)))
             send(('proposalMessage',(ProposalMsg(b,last_tc, blockTree.high_commit_qc))), to=validators) # broadcast ProposalMsg<b,last_tc,Blcok-Tree.high_commit_qc>
 
     def receive(msg=('localTimeout', m,), from_= p):                    # if M is a local timeout then
