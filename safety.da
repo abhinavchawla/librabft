@@ -18,6 +18,12 @@ class Safety():
         self.blockTree = blockTree
         self.v_id = v_id
 
+    def get_highest_vote_round(self):
+        return self.__highest_vote_round
+
+    def get_highest_qc_round(self):
+        return self.__highest_qc_round
+
     def __increase_highest_vote_round(self, round):                               # Procedure increase_highest_vote_round(round)
         self.__highest_vote_round = max(round, self.__highest_vote_round)   #   highest_vote_round <- max{round, highest_vote_round}
 

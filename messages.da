@@ -30,3 +30,40 @@ class ProposalMsg(Message):				                                    # ProposalMsg
 class RequestMsg(Message):				                                    # ProposalMsg 
     def __init__(self, txn):
         self.transaction = txn 			                            #   signature <- sign_u(block.id)
+
+class RecoveryMsg(Message):
+    def __init__(self, safetyState, blockTreeState, ledgerState, pacemakerState, leaderElectionState):
+        self.safetyState = safetyState
+        self.blockTreeState = blockTreeState
+        self.ledgerState = ledgerState
+        self.pacemakerState =  pacemakerState
+        self.leaderElectionState = leaderElectionState
+
+class SafetyState():
+    def __init__(self, highest_qc_round, highest_vote_round):
+        self.highest_qc_round = highest_qc_round
+        self.highest_vote_round = highest_vote_round
+
+class BlockTreeState():
+    def __init__(self, pending_block_tree, pending_votes, high_qc, high_commit_qc, signers):
+        self.pending_block_tree = pending_block_tree
+        self.pending_votes = pending_votes
+        self.high_qc = high_qc
+        self.high_commit_qc = high_commit_qc
+        self.signers = signers
+
+class LedgerState():
+    def __init__(self, block_id_to_ledger_state_map, ledger_id_to_ledger_state_map, block_id_to_block_map):
+        self.block_id_to_ledger_state_map = block_id_to_ledger_state_map
+        self.ledger_id_to_ledger_state_map = ledger_id_to_ledger_state_map
+        self.block_id_to_block_map = block_id_to_block_map
+
+class PacemakerState():
+    def __init__(self, pacemaker_current_round, pacemaker_last_round_tc, pacemaker_pending_timeouts):
+        self.pacemaker_current_round = pacemaker_current_round
+        self.pacemaker_last_round_tc = pacemaker_last_round_tc
+        self.pacemaker_pending_timeouts = pacemaker_pending_timeouts
+
+class LeaderElectionState():
+    def __init__(self, reputation_leaders) -> None:
+        self.reputation_leaders = reputation_leaders
