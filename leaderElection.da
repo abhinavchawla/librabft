@@ -64,5 +64,5 @@ class LeaderElection():
             #print("Reputation leaders",self.reputation_leaders)
             return list(self.validators)[self.reputation_leaders[round]]                                #       return leader // Reputation-based leader
         #print("Election falling back to round robin in",round,": ", math.floor(round/2) % len(self.validators))
-        output("Falling back to round-robin mechanism to pick leader",level=50)
+        #output("Falling back to round-robin mechanism to pick leader",level=50)
         return list(self.validators)[math.floor(round/2) % len(self.validators)]                        #return list(self.validators)[0]
