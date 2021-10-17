@@ -41,7 +41,7 @@ class LeaderElection():
             if pid in process_id_to_active_validators.keys():
                 active_validators.remove(process_id_to_active_validators[pid])
         #print("active validators outside: ",active_validators)
-        output("seed for picking next leader randomly from active validators list: ",qc.vote_info.round,level=50)
+        #output("seed for picking next leader randomly from active validators list: ",qc.vote_info.round,level=50)
         random.seed(qc.vote_info.round)
         return random.choice(active_validators)                                                         # return active_validators.pick_one(seed <- qc.voteinfo.round)
 
@@ -52,9 +52,9 @@ class LeaderElection():
         #current_round = self.paceMaker.current_round                                                   #   current_round <- PaceMaker.current_round
         # print("Qc signers: ", qc.signers, extended_round, qc_round, current_round)
         if extended_round+1 == qc_round and qc_round+1 == current_round:                                #   if extended_round + 1 = qc_round ^ qc_round + 1 = current_round then
-            output("Electing leader for",current_round+1,"based on qc received",level=50)
+            #output("Electing leader for",current_round+1,"based on qc received",level=50)
             self.reputation_leaders[current_round+1]=self.elect_reputation_leader(qc)                   #       reputation_leaders[current_round + 1] <- elect_reputation_leader(qc)
-            output("reputation_leaders: ",self.reputation_leaders,level=50)
+            #output("reputation_leaders: ",self.reputation_leaders,level=50)
 
     ### uncomment
     def get_leader(self, round):                                                                        # Function get_leader(round)
