@@ -13,13 +13,13 @@ class LeaderElection():
         self.ledger = ledger
 
 
-    def elect_reputation_leader(self,qc):            # Function elect_reputation_leader(qc)
+    def elect_reputation_leader(self,qc):                                                   # Function elect_reputation_leader(qc)
         # print("starting election!!!!!")
-        active_validators = []                       #   active_validators <- ∅ // validators that signed the last window_size committed blocks
-        last_authors = []                            #   last_authors <- ∅ // ordered set of authors of last exclude_size committed blocks
-        current_qc = qc                              #   current_qc <- qc
+        active_validators = []                                                              #   active_validators <- ∅ // validators that signed the last window_size committed blocks
+        last_authors = []                                                                   #   last_authors <- ∅ // ordered set of authors of last exclude_size committed blocks
+        current_qc = qc                                                                     #   current_qc <- qc
 
-        for i in range (0, self.window_size):        # for i = 0; i < window_size ∨ |last_authors| < exclude_size; i <- i+1 do
+        for i in range (0, self.window_size):                                               # for i = 0; i < window_size ∨ |last_authors| < exclude_size; i <- i+1 do
             if len(last_authors) >= self.exclude_size:
                 break
             #print("qc details: ")
@@ -43,7 +43,7 @@ class LeaderElection():
         #print("active validators outside: ",active_validators)
         #output("seed for picking next leader randomly from active validators list: ",qc.vote_info.round,level=50)
         random.seed(qc.vote_info.round)
-        return random.choice(active_validators)                                                         # return active_validators.pick_one(seed <- qc.voteinfo.round)
+        return random.choice(active_validators)                                                 # return active_validators.pick_one(seed <- qc.voteinfo.round)
 
     def update_leaders(self,qc,current_round):                                                          # Procedure update_leaders(qc)
         # print('checkpoint 1 inside LE.update_leaders')

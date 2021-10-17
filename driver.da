@@ -216,45 +216,30 @@ class Validator(process):
             #output('====================== checkpoint 5 inside process_proposal_msg ====================== ', current_round, next_leader)
             output("Sending vote message: ",vote_msg, " sender: ",self.v_id," receiver: ",next_leader,level=50)
             send(('voteMessage',(vote_msg)), to= next_leader)
-            
-    #process_timeout_msg
-    # Procedure process_timeout_msg(M)
-    # process_certificate_qc(M.tmo_info.high_qc)
-    # process_certificate_qc(M.high_commit_qc)
-    # Pacemaker.advance_round_tc(M.last_round_tc)
-    # tc <- Pacemaker.process_remote_timeout(M)
-    # if tc ≠ ⊥ then
-    # Pacemaker.advance_round(tc)
-    # process_new_round_event(tc)
-    def process_timeout_msg(M):
+
+    def process_timeout_msg(M):                                                     # Procedure process_timeout_msg(M)
         # output('*********** checkpoint 1 process_timeout_msg ***********', pacemaker_current_round,  M.tmo_info.high_qc.vote_info.round, M.high_commit_qc.vote_info.round, M.last_round_tc)
-        process_certificate_qc(M.tmo_info.high_qc)
-        process_certificate_qc(M.high_commit_qc)
-        pacemaker_advance_round_tc(M.last_round_tc)
-        tc = pacemaker_process_remote_timeout(M)
+        process_certificate_qc(M.tmo_info.high_qc)                                  # process_certificate_qc(M.tmo_info.high_qc)
+        process_certificate_qc(M.high_commit_qc)                                    # process_certificate_qc(M.high_commit_qc)
+        pacemaker_advance_round_tc(M.last_round_tc)                                 # Pacemaker.advance_round_tc(M.last_round_tc)
+        tc = pacemaker_process_remote_timeout(M)                                    # tc <- Pacemaker.process_remote_timeout(M)
         #output('timeout certificate created is ', tc)
-        if tc is not None:
+        if tc is not None:                                                          # if tc ≠ ⊥ then
             #output('timeout certificate successfully created')
             #output('timeout certificate created is ', pickle.dumps(tc))
-            pacemaker_advance_round_tc(tc)  #  current_round = 3
+            pacemaker_advance_round_tc(tc)  #  current_round = 3                    # Pacemaker.advance_round(tc)
             # time.sleep(3)
-            process_new_round_event(tc)
+            process_new_round_event(tc)                                             # process_new_round_event(tc)
 
-    #process_vote_msg
-    # Procedure process_vote_msg(M)
-    # qc <- Block-Tree.process_vote(M)
-    # if qc ≠ ⊥ then
-    # process_certificate_qc(qc)
-    # process_new_round_event(⊥)
-    def process_vote_msg(M):
+    def process_vote_msg(M):                                                        # Procedure process_vote_msg(M)
         # output('checkpoint 1 process_vote_msg ', pickle.dumps(M))
         ### Is there a possibility of a race condition
-        qc = blockTree.process_vote(M)
+        qc = blockTree.process_vote(M)                                               # qc <- Block-Tree.process_vote(M)
         # output('checkpoint 2 process_vote_msg ', pickle.dumps(qc))
-        if qc is not None:
+        if qc is not None:                                                           # if qc ≠ ⊥ then
             output("Quorum formed. QC: ", qc, "leader: ",self,level=50)
-            process_certificate_qc(qc)
-            process_new_round_event(None)
+            process_certificate_qc(qc)                                               # process_certificate_qc(qc)
+            process_new_round_event(None)                                            # process_new_round_event(⊥)
 
     def process_request_msg(signed_txn, c_id):
         self.public_keys_clients[c_id].verify(signed_txn.message, signed_txn.signature)
@@ -267,27 +252,21 @@ class Validator(process):
             self.done = True
             output("ALL CLIENTS ARE DONE")
 
-    #process_new_round_event
-    # Procedure process_new_round_event(last_tc)
-    # if u = LeaderElection.get_leader(pacemaker.current_round) then
-    # Leader code: generate proposal
-    # b <- Block-Tree.generate_block(MemPool.get_transactions(), Pacemaker.current_round)
-    # broadcast ProposalMsg<b,last_tc,Blcok-Tree.high_commit_qc>
-    def process_new_round_event(last_tc):                               # Procedure process_new_round_event(last_tc)
+    def process_new_round_event(last_tc):                                                                               # Procedure process_new_round_event(last_tc)
         current_round = self.pacemaker_current_round # round = 3
         #output('inside process_new_round_event', current_round, self, leaderElection.get_leader(current_round))
         
         #dummy=leaderElection.get_leader(current_round)
-        if self == leaderElection.get_leader(current_round):
-            b = blockTree.generate_block(memPool.get_transactions(), \
-                pacemaker_current_round)
+        if self == leaderElection.get_leader(current_round):                                                            # if u = LeaderElection.get_leader(pacemaker.current_round) then
+                                                                                                                        # Leader code: generate proposal
+            b = blockTree.generate_block(memPool.get_transactions(),pacemaker_current_round)                                                 # b <- Block-Tree.generate_block(MemPool.get_transactions(), Pacemaker.current_round)
             # if pacemaker_current_round==4:
             #     output('leader going to sleep for 25secs')
             #     time.sleep(6)
             # output('message being sent ', pickle.dumps(ProposalMsg(b,last_tc, blockTree.high_commit_qc)))
             #output("yay proposal")
             output("sending proposal message: ", b, " last timeout certificate: ",last_tc , " high commit qc: ", blockTree.high_commit_qc , " sender: ",self.v_id, " receiver: ",self.validators, level=50)
-            send(('proposalMessage',(ProposalMsg(b,last_tc, blockTree.high_commit_qc))), to=validators)
+            send(('proposalMessage',(ProposalMsg(b,last_tc, blockTree.high_commit_qc))), to=validators)                 # broadcast ProposalMsg<b,last_tc,Blcok-Tree.high_commit_qc>
 
     # if M is a local timeout then
     # Pacemaker.local_timeout_round() ### will have to pass validators while creating pacemaker object
