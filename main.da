@@ -1,0 +1,54 @@
+import driver
+from nacl.signing import SigningKey
+
+class RunDriver(process):
+    def setup(config, test_case_id):
+        self.nvalidators = config['nvalidators']
+        self.nclients = config['nclients']
+        self.nfaultyvalidators = config['nfaultyvalidators']
+        self.maxtimeout = config['maxtimeout']
+        self.clienttimeout = config['clienttimeout']
+        self.test_case_id = test_case_id
+
+    
+    def run():
+        nvalidators = self.nvalidators
+        nclients = self.nclients
+        maxtimeout = self.maxtimeout
+
+        clients = new(driver.Client, num=nclients)
+        validators = new(driver.Validator, num=nvalidators)
+        public_keys_validators=[]
+        private_keys_validators=[]
+        for _ in range(nvalidators):
+            sk = SigningKey.generate()
+            pk = sk.verify_key
+            public_keys_validators.append(pk)
+            private_keys_validators.append(sk)
+        #print(public_keys_validators)
+        #print(private_keys_validators)
+        public_keys_clients=[]
+        private_keys_clients=[]
+        for _ in range(nclients):
+            sk = SigningKey.generate()
+            pk = sk.verify_key
+            public_keys_clients.append(pk)
+            private_keys_clients.append(sk)
+        #output(validators)
+        for i, v in enumerate(validators):
+            setup({v}, (i, private_keys_validators[i], public_keys_validators, public_keys_clients, validators, clients, test_case_id))
+        for i, c in enumerate(clients):
+            setup({c}, (i, private_keys_clients[i], public_keys_validators, validators))
+
+        start(clients)
+        start(validators)
+
+def main():
+    configs = [{'nvalidators':7, 'nclients':2, 'maxtimeout':4, 'nfaultyvalidators':2,'clienttimeout':2}, \
+        {'nvalidators': 5, 'nclients':3, 'maxtimeout':4, 'nfaultyvalidators':1, 'clienttimeout': 5}]
+    test_case = 1
+    for config in configs:
+        p = new(RunDriver)
+        setup(p,(config,test_case))
+        start(p)
+        test_case+=1

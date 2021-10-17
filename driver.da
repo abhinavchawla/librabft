@@ -48,7 +48,7 @@ class Client(process):
         output("Received commitMessage", m, " sender:",p , " receiver: ",self.c_id)
 
 class Validator(process):
-    def setup(v_id, private_key, public_keys_validators, public_keys_clients, validators:set, clients):
+    def setup(v_id, private_key, public_keys_validators, public_keys_clients, validators:set, clients, test_case_id):
         self.v_id = v_id
         self.validators = validators
         self.private_key = private_key
@@ -59,7 +59,7 @@ class Validator(process):
 
         self.n = len(validators)
         self.f = (n-1)/3
-        self.ledger = Ledger("persistent_ledger_"+str(v_id)+".txt")
+        self.ledger = Ledger("Test_"+str(test_case_id)+"_persistent_ledger_"+str(v_id)+".txt")
         #self.pacemaker = Pacemaker()
         self.leaderElection = LeaderElection(validators, self.ledger)
         self.blockTree = BlockTree(self, self.ledger, self.private_key, v_id)
