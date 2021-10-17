@@ -29,4 +29,4 @@ class ProposalMsg(Message):				                                    # ProposalMsg
 
 class RequestMsg(Message):				                                    # ProposalMsg 
     def __init__(self, txn):
-        self.transaction = txn 			                            #   signature <- sign_u(block.id)
+        self.transaction = txn 			                                    #   signature <- sign_u(block.id)

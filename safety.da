@@ -19,52 +19,52 @@ class Safety():
         self.v_id = v_id
 
     def __increase_highest_vote_round(self, round):                               # Procedure increase_highest_vote_round(round)
-        self.__highest_vote_round = max(round, self.__highest_vote_round)   #   highest_vote_round <- max{round, highest_vote_round}
+        self.__highest_vote_round = max(round, self.__highest_vote_round)         #   highest_vote_round <- max{round, highest_vote_round}
 
     def __update_highest_qc_round(self, qc_round):                                # Procedure update_highest_qc_round(qc_round)
-        self.__highest_qc_round = max(qc_round, self.__highest_qc_round)    #   highest_qc_round <- max{qc_round, highest_qc_round}
+        self.__highest_qc_round = max(qc_round, self.__highest_qc_round)          #   highest_qc_round <- max{qc_round, highest_qc_round}
 
     def __consecutive(self, block_round, round):                                  # Function consecutive(block_round, round)
-        return round+1 == block_round                                       #   return round+1 == block_round
+        return round+1 == block_round                                             #   return round+1 == block_round
 
     def __safe_to_extend(self, block_round, qc_round, tc):                        # Function safe_to_extend(block_round, qc_round, tc)
         return self.__consecutive(block_round, tc.round) and \
-                qc_round >= max(tc.tmo_high_qc_rounds)                       #   return consecutive(block_round, tc.round) ∧ qc_round >= max{tc.tmo_high_qc_round}
+                qc_round >= max(tc.tmo_high_qc_rounds)                            #   return consecutive(block_round, tc.round) ∧ qc_round >= max{tc.tmo_high_qc_round}
 
     def __safe_to_vote(self, block_round, qc_round, tc):                          # Function safe_to_vote(block_round, qc_round, tc)
-        print ('block_round, qc_round are ', block_round, qc_round)
-        if block_round <= max(self.__highest_vote_round, qc_round):         #   if block_round <= max{highest_vote_round, qc_round}
+        #print ('block_round, qc_round are ', block_round, qc_round)
+        if block_round <= max(self.__highest_vote_round, qc_round):               #   if block_round <= max{highest_vote_round, qc_round}
         # // 1. must vote in monotonically increasing rounds
         # // 2. must extend a smaller round
-            return False                                                    #       return false
+            return False                                                          #       return false
         # // Extending qc from previous round or safe to extend due to tc
         return self.__consecutive(block_round, qc_round) or \
-                self.__safe_to_extend(block_round, qc_round, tc)            #   return consecutive(block_round, qc_round) ∨ safe_to_extend(block_round, qc_round, tc)
+                self.__safe_to_extend(block_round, qc_round, tc)                  #   return consecutive(block_round, qc_round) ∨ safe_to_extend(block_round, qc_round, tc)
 
     def __safe_to_timeout(self, round, qc_round, tc):                             # Function safe_to_timeout(round, qc_round, tc)
         if qc_round < self.__highest_qc_round or \
-            round<=max(self.__highest_vote_round-1, qc_round):                     #   if qc_round < highest_qc_round ∨ max{highest_vote_round-1, qc_round}
+            round<=max(self.__highest_vote_round-1, qc_round):                    #   if qc_round < highest_qc_round ∨ max{highest_vote_round-1, qc_round}
         # // respect highest_qc_round and don't timeout in a past round
-            print("OOPS",qc_round, self.__highest_qc_round)
-            return False                                                    #       return false
+            #print("OOPS",qc_round, self.__highest_qc_round)
+            return False                                                          #       return false
         # // qc or tc must allow entering the round to timeout
         return self.__consecutive(round, qc_round) or \
-                self.__consecutive(round, tc.round)                         #   return consecutive(round, qc_round) ∨ consecutive(round, tc.round)
+                self.__consecutive(round, tc.round)                               #   return consecutive(round, qc_round) ∨ consecutive(round, tc.round)
 
     def __commit_state_id_candidate(self, block_round, qc):                       # Function commit_state_id_candidate(block_round, qc)
         # // find the commiteed id in case a qc is formed in the vote round
-        if qc and self.__consecutive(block_round, qc.vote_info.round):      #   if consecutive(block_round, qc.vote_info.round) then
-            return self.ledger.pending_state(qc.vote_info.id)                         #       return Ledger.pending_state(qc.id)
-        else:                                                               #   else
-            return None                                                     #       return ⊥
+        if qc and self.__consecutive(block_round, qc.vote_info.round):            #   if consecutive(block_round, qc.vote_info.round) then
+            return self.ledger.pending_state(qc.vote_info.id)                     #       return Ledger.pending_state(qc.id)
+        else:                                                                     #   else
+            return None                                                           #       return ⊥
 
-    def make_vote(self, b, last_tc):                                        # Function make_vote(b, last_tc)
+    def make_vote(self, b, last_tc):                                              # Function make_vote(b, last_tc)
         # print('checkpoint 1 safety.make_vote')
-        qc_round = b.qc.vote_info.round if b.qc is not None else 0          #   qc_round <- b.qc.vote_info.round
+        qc_round = b.qc.vote_info.round if b.qc is not None else 0                #   qc_round <- b.qc.vote_info.round
         if self.valid_signatures(b.qc, last_tc) and \
-            self.__safe_to_vote(b.round, qc_round, last_tc):                #   if valid_signatures(b, last_tc) ∧ safe_to_vote(b.round, qc_round, last_tc)
-            self.__update_highest_qc_round(qc_round)                        #       update_highest_qc_round(qc_round) // Protect qc round
-            self.__increase_highest_vote_round(b.round)                     #       increase_highest_vote_round(b.round) // Don't vote again in this (or lower round)
+            self.__safe_to_vote(b.round, qc_round, last_tc):                      #   if valid_signatures(b, last_tc) ∧ safe_to_vote(b.round, qc_round, last_tc)
+            self.__update_highest_qc_round(qc_round)                              #       update_highest_qc_round(qc_round) // Protect qc round
+            self.__increase_highest_vote_round(b.round)                           #       increase_highest_vote_round(b.round) // Don't vote again in this (or lower round)
             # // VoteInfo carries the potential QC info with ids and rounds of the parent QC
             vote_info = VoteInfo(b.id, b.round, b.qc.vote_info.id if b.qc is not None else None, qc_round, self.ledger.pending_state(b.id))
             # vote_info = VoteInfo(b.id, b.round, b.qc.vote_info.id, qc_round, self.ledger.pending_state(b.id))\
@@ -76,13 +76,13 @@ class Safety():
                 sign(self.__private_key, ledger_commit_info).signature)
         return None
 
-    def make_timeout(self, round, high_qc, last_tc, author):                              # Function make_timeout(round, high_qc, last_tc)
+    def make_timeout(self, round, high_qc, last_tc, author):                # Function make_timeout(round, high_qc, last_tc)
         qc_round = high_qc.vote_info.round                                  #   qc_round <- high_qc.vote_info.round
         if self.valid_signatures(high_qc, last_tc) and \
             self.__safe_to_timeout(round, qc_round, last_tc):               #   if valid_signatures(high_qc, last_tc) ∧ safe_to_timeout(round, qc_round, last_tc) then
             self.__increase_highest_vote_round(round)                       #       increase_highest_vote_round(round) // Stop voting for round
             return TimeoutInfo(round, high_qc, author, \
-                sign(self.__private_key, (round, high_qc)).signature)                 #       return TimeoutInfo(round, high_qc)
+                sign(self.__private_key, (round, high_qc)).signature)       #       return TimeoutInfo(round, high_qc)
         return None
     
     def valid_signatures(self, qc, last_tc):
