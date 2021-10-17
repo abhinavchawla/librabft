@@ -88,7 +88,7 @@ class BlockTree():                                                              
             prev_block_id = b.qc.vote_info.id
         self.ledger.speculate(prev_block_id, b.id, b.payload, b)
         # print('checkpoint 2 execute_and_insert Speculate done')
-        output("adding to pending block tree: ",b,level=50)
+        #output("adding to pending block tree: ",b,level=50)
         self.pending_block_tree.append(b)
         # print('checkpoint 3 execute_and_insert pending_block_tree', self.pending_block_tree)
 

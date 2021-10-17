@@ -17,7 +17,7 @@ class Ledger():
 
 
     def speculate(self, prev_block_id, block_id, txns, block): #// apply txns speculatively
-        output("inside speculate: ", block_id,level=50)
+        #output("inside speculate: ", block_id,level=50)
         prev_state, prev_state_id = None, None
         if prev_block_id:
             prev_state = self.block_id_to_ledger_state_map[prev_block_id]
@@ -33,7 +33,7 @@ class Ledger():
         return self.block_id_to_ledger_state_map[block_id].state_id
 
     def commit(self,block_id):                               #// commit the pending prefix of the given block id and prune other branches
-        output("committing block: ",block_id,level=50)
+        #output("committing block: ",block_id,level=50)
         f = open(self.file_name, "a")
         state_id = self.block_id_to_ledger_state_map[block_id].state_id
         state = self.ledger_id_to_ledger_state_map[state_id]
