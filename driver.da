@@ -43,7 +43,7 @@ class Client(process):
                 continue
 
     def receive(msg=('commitMessage', m), from_= p):
-        output("Received commitMessage", m, " sender:",p , " receiver: ",self)
+        output("Received commitMessage", m, " sender:",p , " receiver: ",self.c_id)
 
 class Validator(process):
     def setup(v_id, private_key, public_keys_validators, public_keys_clients, validators:set, clients):
@@ -154,7 +154,8 @@ class Validator(process):
                 continue
             lst = t.split(' ')
             client = list(clients)[int(lst[0])]
-            output("WHERE IS THE COMMIT MESSAGE", lst)
+            #output("WHERE IS THE COMMIT MESSAGE", lst)
+            output("commit message being sent: ", int(lst[1]), " sender: ",self.v_id, " receiver: ",client,level=50)
             send(('commitMessage', int(lst[1])), to= client)           #       send vote_msg to LeaderElection.get_leader(current_round+1)
 
     ### Validator code
@@ -170,7 +171,7 @@ class Validator(process):
             ###check if correct
             self.inform_clients()
             pacemaker_advance_round_qc(qc)  # Pacemaker.advance_round(qc.vote_info_round)
-            output("updating leader using qc here!!!!!!!!!!!!!!!!!!!!!!!!!")
+            #output("updating leader using qc here!!!!!!!!!!!!!!!!!!!!!!!!!")
             self.leaderElection.update_leaders(qc, pacemaker_current_round)                               #   LeaderElection.update_leaders(qc)
 
 
@@ -212,7 +213,7 @@ class Validator(process):
             # print("validator querying for next leader: ",list(self.validators)[self.v_id])
             next_leader = leaderElection.get_leader(current_round+1)
             #output('====================== checkpoint 5 inside process_proposal_msg ====================== ', current_round, next_leader)
-            output("Sending vote message: ",vote_msg, " sender: ",self," receiver: ",next_leader,level=50)
+            output("Sending vote message: ",vote_msg, " sender: ",self.v_id," receiver: ",next_leader,level=50)
             send(('voteMessage',(vote_msg)), to= next_leader)
             
     #process_timeout_msg
@@ -279,34 +280,34 @@ class Validator(process):
             #     time.sleep(6)
             # output('message being sent ', pickle.dumps(ProposalMsg(b,last_tc, blockTree.high_commit_qc)))
             #output("yay proposal")
-            output("sending proposal message: ", b, " last timeout certificate: ",last_tc , " high commit qc: ", blockTree.high_commit_qc , " sender: ",self, " receiver: ",self.validators, level=50)
+            output("sending proposal message: ", b, " last timeout certificate: ",last_tc , " high commit qc: ", blockTree.high_commit_qc , " sender: ",self.v_id, " receiver: ",self.validators, level=50)
             send(('proposalMessage',(ProposalMsg(b,last_tc, blockTree.high_commit_qc))), to=validators)
 
     # if M is a local timeout then
     # Pacemaker.local_timeout_round() ### will have to pass validators while creating pacemaker object
     def receive(msg=('localTimeout', m,), from_= p):
-        output('localTimeout message received: ', m ," sender: ",p," receiver: ",self,level=50)
+        output('localTimeout message received: ', m ," sender: ",p," receiver: ",self.v_id,level=50)
         pacemaker_local_timeout_round()
 
     # if M is a proposal message then
     #   process_proposal_msg(M)
     def receive(msg=('proposalMessage', m,), from_= p):
-        output('proposal message received: ', m, " sender: ",p," receiver: ",self, level=50)
+        output('proposal message received: ', m, " sender: ",p," receiver: ",self.v_id, level=50)
         process_proposal_msg(m, p)
 
     # if M is a vote message then
     # process_vote_msg(M)
     def receive(msg=('voteMessage', m,), from_= p):
-        output('vote Message received: ', m," sender: ",p, " receiver: ",self,level=50)
+        output('vote Message received: ', m," sender: ",p, " receiver: ",self.v_id,level=50)
         process_vote_msg(m)
     # if M is a timeout message then
     #   process_timeout_message(M)
     def receive(msg=('timeoutMessage', m,), from_= p):
-        output('timeout Message received: ', m, " sender: ",p," receiver: ",self,level=50)
+        output('timeout Message received: ', m, " sender: ",p," receiver: ",self.v_id,level=50)
         process_timeout_msg(m)
     
     def receive(msg=('requestMessage', m), from_= p):
-        output("request message received: ",m, " sender: ",m[1], " receiver: ",self,level=50)
+        output("request message received: ",m, " sender: ",m[1], " receiver: ",self.v_id,level=50)
         process_request_msg(m[0], m[1])
 
     def run():

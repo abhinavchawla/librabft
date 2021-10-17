@@ -59,6 +59,6 @@ class Ledger():
     
     def get_recent_committed(self):
         ret = self.recent_committed.copy()
-        print("RET", ret)
+        #print("RET", ret)
         self.recent_committed.clear()
         return ret
