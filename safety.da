@@ -29,7 +29,7 @@ class Safety():
 
     def __safe_to_extend(self, block_round, qc_round, tc):                        # Function safe_to_extend(block_round, qc_round, tc)
         return self.__consecutive(block_round, tc.round) and \
-                qc_round >= max(tc.tmo_high_qc_round)                       #   return consecutive(block_round, tc.round) ∧ qc_round >= max{tc.tmo_high_qc_round}
+                qc_round >= max(tc.tmo_high_qc_rounds)                       #   return consecutive(block_round, tc.round) ∧ qc_round >= max{tc.tmo_high_qc_round}
 
     def __safe_to_vote(self, block_round, qc_round, tc):                          # Function safe_to_vote(block_round, qc_round, tc)
         print ('block_round, qc_round are ', block_round, qc_round)

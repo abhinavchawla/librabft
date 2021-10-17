@@ -35,7 +35,9 @@ class Ledger():
         f = open(self.file_name, "a")
         state_id = self.block_id_to_ledger_state_map[block_id].state_id
         state = self.ledger_id_to_ledger_state_map[state_id]
+        i = 1
         while state.is_committed == False:
+            print(i,"th-",state.txns)
             f.write(state.txns)
             f.write("\n")
             state.is_committed = True
@@ -43,6 +45,7 @@ class Ledger():
             if not state_id:
                 break 
             state = self.ledger_id_to_ledger_state_map[state_id]
+            i+=1
         f.close()
 
     def committed_block(self, block_id):                      #// returns a committed block given its id
