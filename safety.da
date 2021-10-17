@@ -91,4 +91,5 @@ class Safety():
             for signer, signature in zip(qc.signers, qc.signatures):
                 if not verify(self.__public_keys[signer],qc.ledger_commit_info, signature):
                     return False
+            return verify(self.__public_keys[qc.author],qc.signatures, qc.author_signature)
         return True
