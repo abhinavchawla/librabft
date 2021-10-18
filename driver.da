@@ -222,7 +222,7 @@ class Validator(process):
         if qc is not None:                                                           # if qc ≠ ⊥ then
             output("Quorum formed. QC: ", qc, "leader: ",self,level=50)
             process_certificate_qc(qc)                                               # process_certificate_qc(qc)
-            if pacemaker_current_round==4:
+            # if pacemaker_current_round==4:
                 # output('leader going to sleep for 10secs')
                 # # exit()
                 # time.sleep(10)
