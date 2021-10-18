@@ -81,6 +81,7 @@ class Validator(process):
 
     ## Control variables
         self.done = False
+        self.round_done = False
 
     ## Recovery variables
         self.nonce = 1
@@ -94,6 +95,7 @@ class Validator(process):
         return 4 * delta
 
     def pacemaker_start_timer(new_round):
+        round_done = True
         self.pacemaker_stop_timer(pacemaker_current_round)
         self.pacemaker_current_round = new_round
         # start local timer for round current_round for duration get_round_timer(current_round)
@@ -223,12 +225,12 @@ class Validator(process):
             output("Quorum formed. QC: ", qc, "leader: ",self,level=50)
             process_certificate_qc(qc)                                               # process_certificate_qc(qc)
             # if pacemaker_current_round==4:
-                # output('leader going to sleep for 10secs')
-                # # exit()
-                # time.sleep(10)
-                # self.status = "crashed"
-                # output('$$$$$$$$$$$$$$$$ Slept leader up again $$$$$$$$$$$$$$$$$$$')
-                # self.status = "awake"
+            #     output('leader going to sleep for 10secs')
+            #     exit()
+            #     time.sleep(10)
+            #     self.status = "crashed"
+            #     output('$$$$$$$$$$$$$$$$ Slept leader up again $$$$$$$$$$$$$$$$$$$')
+            #     self.status = "awake"
             process_new_round_event(None)                                            # process_new_round_event(⊥)
 
     def process_request_msg(signed_txn, c_id):
@@ -320,22 +322,16 @@ class Validator(process):
             self.nonce = self.nonce + 1
 
     def run():
-        # signed = sign(lst)
-        # verify(public_keys[id], signed)
-        #dummy1 = leaderElection.get_leader(pacemaker_current_round)
-        #print("leader is: " + str(dummy1))
-        #print("*****************************************")
         process_new_round_event(None)
-        while not self.done:
-            # if await(some(received(('proposalMessage', m,), from_= p), has= m.block.round >= pacemaker_current_round)):
-            #     output('received some proposalMessage')
-            #     reset(received)
-            output("IS IT DONE: ", self.done)
-            if await (self.done):
-                output('nothing printed')
-            elif timeout(pacemaker_local_timer):
-                #output('received some Timeout')
-                pacemaker_local_timeout_round()
+        while not self.done:            
+            round_done = False
+            timer_duration = pacemaker_get_round_timer(pacemaker_current_round)
+            if await round_done:
+                output('round done')
+                pass
+            elif timeout(timer_duration):
+                output('timeout called')
+                pacemaker_local_timeout_round()              
         exit()
 
 
