@@ -352,7 +352,7 @@ def main():
         private_keys_clients.append(sk)
     #output(validators)
     for i, v in enumerate(validators):
-        setup({v}, (i, private_keys_validators[i], public_keys_validators, public_keys_clients, validators, clients))
+        setup({v}, (i, private_keys_validators[i], public_keys_validators, public_keys_clients, validators, clients, 100))
     for i, c in enumerate(clients):
         setup({c}, (i, private_keys_clients[i], public_keys_validators, validators))
 
