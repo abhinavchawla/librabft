@@ -26,21 +26,25 @@ class Client(process):
         self.public_keys = public_keys
         self.validators =validators
         self.f = 1
+        self.xtimer = 10
 
-    #       send vote_msg to LeaderElection.get_leader(current_round+1)
+    # send vote_msg to LeaderElection.get_leader(current_round+1)
     def run():
         letters = string.ascii_lowercase
         i = 0
+        
         while i<10:
-            request = sign(self.private_key, str(self.c_id)+" "+str(i)+" "+''.join(random.choice(letters) for i in range(10)))
-            output("sending request message: " , request , " sender: ",self.c_id, " receiver: ",self.validators , level=50)
+            request = sign(self.private_key, str(self.c_id)+" "+str(i))
+            #output("sending request message: " , request , " sender: ",self.c_id, " receiver: ",self.validators , level=50)
+            output('sending request message ', i, self.xtimer)
             send(('requestMessage',(request, self.c_id)), to= validators)           #       send vote_msg to LeaderElection.get_leader(current_round+1)
             if await(some(received(('commitMessage', x1, _i)), has=len(setof(p, received(('commitMessage', _x1, _i), from_=p))) >= self.f+1)):
                 output("Commit received from f+1", x1)
-                reset(received)
+                #reset(received)
                 i+=1
-            elif timeout(2):
-                continue
+            elif timeout(self.xtimer):
+                #timer = 15
+                output("no commit received for ", i, self.xtimer)
         output('CLIENT IS DONE')
         send(('clientDoneMessage',(request, self.c_id)), to= validators)
 
@@ -78,6 +82,10 @@ class Validator(process):
     ## Control variables
         self.done = False
 
+    ## Recovery variables
+        self.nonce = 1
+        self.status = "Normal"
+
     def pacemaker_stop_timer(current_round):
         self.pacemaker_local_timer = 4000
 
@@ -101,7 +109,7 @@ class Validator(process):
         #     return
         # self.pacemaker_timeoutinfo_set.add(timeout_info)
         # broadCast TimeoutMsg
-        #output('##################broadcasting timeout message#######################', TimeoutMsg(timeout_info,pacemaker_last_round_tc, blockTree.high_commit_qc))
+        output('##################broadcasting timeout message#######################', timeout_info, timeout_info.high_qc)
         output("sending timeout message: ",timeout_info," pacemaker last round tc: ",pacemaker_last_round_tc, " high commit qc: ",blockTree.high_commit_qc,level=50)
         send(('timeoutMessage',(TimeoutMsg(timeout_info,pacemaker_last_round_tc, blockTree.high_commit_qc))), to=validators)
         
@@ -135,18 +143,12 @@ class Validator(process):
         pacemaker_start_timer(qc.vote_info.round+1 if qc else current_round+1)
         return True
 
-    #pacemaker_advance_round pseudocode
-    # if tc = ⊥ ∨ tc.round < current round then
-    # return false
-    # last round tc ← tc
-    # start timer(tc.round + 1)
-    # return true
-    def pacemaker_advance_round_tc(tc):
-        if tc == None or tc.round < self.pacemaker_current_round:
-            return False
-        pacemaker_last_round_tc = tc
-        pacemaker_start_timer(tc.round+1)
-        return True
+    def pacemaker_advance_round_tc(tc):                                 # Function pacemaker_advance_round
+        if tc == None or tc.round < self.pacemaker_current_round:       #   if tc = ⊥ ∨ tc.round < current round then
+            return False                                                #       return false
+        pacemaker_last_round_tc = tc                                    #   last round tc ← tc
+        pacemaker_start_timer(tc.round+1)                               #   start timer(tc.round + 1)
+        return True                                                     #   return true
 
     def inform_clients():
         txns = self.ledger.get_recent_committed()
@@ -161,61 +163,42 @@ class Validator(process):
             output("commit message being sent: ", int(lst[1]), " sender: ",self.v_id, " receiver: ",client,level=50)
             send(('commitMessage', t[1], int(lst[1])), to=client)           #       send vote_msg to LeaderElection.get_leader(current_round+1)
 
-    ### Validator code
-    #process_certificate_qc pseudocode
-    # Procedure process_certificate_qc(qc) ### Check for qc being None
-    # BlockTree.process_qc(qc)
-    # Pacemaker.advance_round(qc.vote_info_round)
-    # LeaderElection.update_leaders(qc)
-    def process_certificate_qc(qc):
+    def process_certificate_qc(qc):                                         # Procedure process_certificate_qc(qc) ### Check for qc being None
         #output('Processing certificate qc ', qc)
-        if qc:
-            self.blockTree.process_qc(qc)
+        if qc:                                                              ## if qc not None // Handling genesis code
+            self.blockTree.process_qc(qc)                                   #   BlockTree.process_qc(qc)
             ###check if correct
             self.inform_clients()
-            pacemaker_advance_round_qc(qc)  # Pacemaker.advance_round(qc.vote_info_round)
+            pacemaker_advance_round_qc(qc)                                  #   Pacemaker.advance_round(qc.vote_info_round)
             #output("updating leader using qc here!!!!!!!!!!!!!!!!!!!!!!!!!")
-            self.leaderElection.update_leaders(qc, pacemaker_current_round)                               #   LeaderElection.update_leaders(qc)
+            self.leaderElection.update_leaders(qc, pacemaker_current_round) #   LeaderElection.update_leaders(qc)
 
-
-    #process_proposal_msg
-    # Procedure process_proposal_msg(P)
-    # process_certificate_qc(P.block.qc)
-    # process_certificate_qc(P.high_commit_qc)
-    # Pacemaker.advance_round_tc(P.last_round_tc)
-    # round <- Pacemaker.current_round
-    # leader = LeaderElection.get_leader(current_round)
-    # if P.block.round ≠ round ∨ P.sender ≠ leader ∨ P.block.author ≠ leader then
-    #       return
-    # Block-Tree.execute_and_insert(P) // Adds a new speculative state to the Ledger
-    # vote_msg <- Safety.make_vote(P.block, P.last_round_tc)
-    # if vote_msg ≠ ⊥ then
-    # send vote_msg to LeaderElection.get_leader(current_round+1)
-
-    def process_proposal_msg(P, sender):                                        # Procedure process_proposal_msg(P)
+    def process_proposal_msg(P, sender):                                                    # Procedure process_proposal_msg(P)
         # output('inside process_proposal_msg ', P)
-        process_certificate_qc(P.block.qc)
-        process_certificate_qc(P.high_commit_qc)
-        pacemaker_advance_round_tc(P.last_round_tc)
-        current_round = pacemaker_current_round
-        leader = leaderElection.get_leader(current_round)
-        # print("leader is: " + str(leader))
-        # print("*****************************************")
-
-        if P.block.round != current_round or sender != leader or P.block.author != leader:
+        if self.status == "crashed":
             return
+        if self.status == "awake" and P.block.round > pacemaker_current_round:
+            output('seems like the replica is lagging, lets do recovery')
+            intiateRecoveryProcess()
+        process_certificate_qc(P.block.qc)                                                  #   process_certificate_qc(P.block.qc)
+        process_certificate_qc(P.high_commit_qc)                                            #   process_certificate_qc(P.high_commit_qc)
+        pacemaker_advance_round_tc(P.last_round_tc)                                         #   Pacemaker.advance_round_tc(P.last_round_tc)
+        current_round = pacemaker_current_round                                             #   round <- Pacemaker.current_round
+        leader = leaderElection.get_leader(current_round)                                   #   leader = LeaderElection.get_leader(current_round)
+        if P.block.round != current_round or sender != leader or P.block.author != leader:  #   if P.block.round ≠ round ∨ P.sender ≠ leader ∨ P.block.author ≠ leader then
+            return                                                                          #       return
         # output('checkpoint 2 inside process_proposal_msg')
-        blockTree.execute_and_insert(P.block)
+        blockTree.execute_and_insert(P.block)                                               #   Block-Tree.execute_and_insert(P) // Adds a new speculative state to the Ledger
         # output('checkpoint 3 inside process_proposal_msg')
         memPool.mark_transaction_pending(P.block.payload)
-        vote_msg = safety.make_vote(P.block, P.last_round_tc)
+        vote_msg = safety.make_vote(P.block, P.last_round_tc)                               #   vote_msg <- Safety.make_vote(P.block, P.last_round_tc)
         # output('checkpoint 4 inside process_proposal_msg')
-        if vote_msg is not None:
+        if vote_msg is not None:                                                            #   if vote_msg ≠ ⊥ then
             # print("validator querying for next leader: ",list(self.validators)[self.v_id])
             next_leader = leaderElection.get_leader(current_round+1)
-            #output('====================== checkpoint 5 inside process_proposal_msg ====================== ', current_round, next_leader)
+            output('====================== checkpoint 5 inside process_proposal_msg ====================== ', current_round, next_leader)
             output("Sending vote message: ",vote_msg, " sender: ",self.v_id," receiver: ",next_leader,level=50)
-            send(('voteMessage',(vote_msg)), to= next_leader)
+            send(('voteMessage',(vote_msg)), to= next_leader)                               # send vote_msg to LeaderElection.get_leader(current_round+1)
 
     def process_timeout_msg(M):                                                     # Procedure process_timeout_msg(M)
         # output('*********** checkpoint 1 process_timeout_msg ***********', pacemaker_current_round,  M.tmo_info.high_qc.vote_info.round, M.high_commit_qc.vote_info.round, M.last_round_tc)
@@ -225,8 +208,8 @@ class Validator(process):
         tc = pacemaker_process_remote_timeout(M)                                    # tc <- Pacemaker.process_remote_timeout(M)
         #output('timeout certificate created is ', tc)
         if tc is not None:                                                          # if tc ≠ ⊥ then
-            #output('timeout certificate successfully created')
-            #output('timeout certificate created is ', pickle.dumps(tc))
+            output('timeout certificate successfully created')
+            output('timeout certificate created is ', pickle.dumps(tc))
             pacemaker_advance_round_tc(tc)  #  current_round = 3                    # Pacemaker.advance_round(tc)
             # time.sleep(3)
             process_new_round_event(tc)                                             # process_new_round_event(tc)
@@ -239,6 +222,13 @@ class Validator(process):
         if qc is not None:                                                           # if qc ≠ ⊥ then
             output("Quorum formed. QC: ", qc, "leader: ",self,level=50)
             process_certificate_qc(qc)                                               # process_certificate_qc(qc)
+            # if pacemaker_current_round==4:
+            #     output('leader going to sleep for 10secs')
+            #     exit()
+            #     time.sleep(10)
+            #     self.status = "crashed"
+            #     output('$$$$$$$$$$$$$$$$ Slept leader up again $$$$$$$$$$$$$$$$$$$')
+            #     self.status = "awake"
             process_new_round_event(None)                                            # process_new_round_event(⊥)
 
     def process_request_msg(signed_txn, c_id):
@@ -264,9 +254,24 @@ class Validator(process):
             #     output('leader going to sleep for 25secs')
             #     time.sleep(6)
             # output('message being sent ', pickle.dumps(ProposalMsg(b,last_tc, blockTree.high_commit_qc)))
-            #output("yay proposal")
+            output("yay proposal")
             output("sending proposal message: ", b, " last timeout certificate: ",last_tc , " high commit qc: ", blockTree.high_commit_qc , " sender: ",self.v_id, " receiver: ",self.validators, level=50)
             send(('proposalMessage',(ProposalMsg(b,last_tc, blockTree.high_commit_qc))), to=validators)                 # broadcast ProposalMsg<b,last_tc,Blcok-Tree.high_commit_qc>
+
+
+    def intiateRecoveryProcess():                                           # Procedure initiateRecoveryProcess:
+        output('checkpoint 1 intiateRecoveryProcess called')
+        send(('initiateRecovery', self.nonce), to=validators-{self})        #   send initiateRecovery with a nonce id to all other validators
+
+    def process_recovery_msg(n, sender):
+        output('checkpoint 1 process_recovery_msg called')
+        # safetyState = SafetyState(self.safety.get_highest_vote_round(), self.safety.get_highest_qc_round())
+        # blockTreeState = BlockTreeState(self.blockTree.pending_block_tree, self.blockTree.pending_votes, self.blockTree.high_qc, self.blockTree.high_commit_qc, self.blockTree.signers)
+        ledgerState = LedgerState(self.ledger.block_id_to_ledger_state_map, self.ledger.ledger_id_to_ledger_state_map, self.ledger.block_id_to_block_map)
+        # pacemakerState = PacemakerState(pacemaker_current_round, pacemaker_last_round_tc, pacemaker_pending_timeouts)
+        # leaderElectionState = LeaderElectionState(self.leaderElection.reputation_leaders)
+        recMsg = RecoveryMsg(ledgerState)
+        send(('recoveryMsg', recMsg, hash(pickle.dumps(rec)), n), to= sender)
 
     # if M is a local timeout then
     # Pacemaker.local_timeout_round() ### will have to pass validators while creating pacemaker object
@@ -285,6 +290,7 @@ class Validator(process):
     def receive(msg=('voteMessage', m,), from_= p):
         output('vote Message received: ', m," sender: ",p, " receiver: ",self.v_id,level=50)
         process_vote_msg(m)
+
     # if M is a timeout message then
     #   process_timeout_message(M)
     def receive(msg=('timeoutMessage', m,), from_= p):
@@ -296,8 +302,19 @@ class Validator(process):
         process_request_msg(m[0], m[1])
     
     def receive(msg=('clientDoneMessage', m), from_= p):
-        output(' in clientDoneMessage receive')
+        output('in clientDoneMessage receive')
         process_client_done_msg(p)
+
+    def receive(msg=('initiateRecovery', n), from_= p):                  
+        output('in initiateRecovery receive ', n)
+        process_recovery_msg(n, p)                                      
+
+    def receive(msg=('recoveryMsg', m, x, n), from_= p):
+        output('in recoveryMsg receive ', x)
+        if some(received(('recoveryMsg', _ , x1, _nonce)), has=
+            len(setof(p, received(('recoveryMsg', _, _x1, _nonce),from_=p))) >= self.f+1):
+            output('checkpoint 1 process_recovery_response_msg', m)
+            self.nonce = self.nonce + 1
 
     def run():
         # signed = sign(lst)
@@ -328,8 +345,8 @@ class Validator(process):
 
 
 def main():
-    nvalidators = int(sys.argv[1]) if len(sys.argv) > 1 else 4
-    nclients = int(sys.argv[2]) if len(sys.argv) > 2 else 5
+    nvalidators = int(sys.argv[1]) if len(sys.argv) > 1 else 7
+    nclients = int(sys.argv[2]) if len(sys.argv) > 2 else 10
     maxtimeout = int(sys.argv[4]) if len(sys.argv) > 3 else 3000
 
     clients = new(Client, num=nclients)
