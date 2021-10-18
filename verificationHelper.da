@@ -10,10 +10,8 @@ def verify(public_key, message, signature):
     try:
         bytes = pickle.dumps(message)
         public_key.verify(bytes, signature)
-        #print("Verified Signature!")
         return True
     except:
-        #print("Unable to verify signature")
         return False
 
 def hash(msg):
