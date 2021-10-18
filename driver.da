@@ -222,13 +222,13 @@ class Validator(process):
         if qc is not None:                                                           # if qc ≠ ⊥ then
             output("Quorum formed. QC: ", qc, "leader: ",self,level=50)
             process_certificate_qc(qc)                                               # process_certificate_qc(qc)
-            # if pacemaker_current_round==4:
-            #     output('leader going to sleep for 10secs')
-            #     exit()
-            #     time.sleep(10)
-            #     self.status = "crashed"
-            #     output('$$$$$$$$$$$$$$$$ Slept leader up again $$$$$$$$$$$$$$$$$$$')
-            #     self.status = "awake"
+            if pacemaker_current_round==4:
+                # output('leader going to sleep for 10secs')
+                # # exit()
+                # time.sleep(10)
+                # self.status = "crashed"
+                # output('$$$$$$$$$$$$$$$$ Slept leader up again $$$$$$$$$$$$$$$$$$$')
+                # self.status = "awake"
             process_new_round_event(None)                                            # process_new_round_event(⊥)
 
     def process_request_msg(signed_txn, c_id):
@@ -271,7 +271,7 @@ class Validator(process):
         # pacemakerState = PacemakerState(pacemaker_current_round, pacemaker_last_round_tc, pacemaker_pending_timeouts)
         # leaderElectionState = LeaderElectionState(self.leaderElection.reputation_leaders)
         recMsg = RecoveryMsg(ledgerState)
-        send(('recoveryMsg', recMsg, hash(pickle.dumps(rec)), n), to= sender)
+        send(('recoveryMsg', recMsg, hash(pickle.dumps(recMsg)), n), to= sender)
 
     # if M is a local timeout then
     # Pacemaker.local_timeout_round() ### will have to pass validators while creating pacemaker object
@@ -310,10 +310,13 @@ class Validator(process):
         process_recovery_msg(n, p)                                      
 
     def receive(msg=('recoveryMsg', m, x, n), from_= p):
+        f1 = self.f
         output('in recoveryMsg receive ', x)
         if some(received(('recoveryMsg', _ , x1, _nonce)), has=
-            len(setof(p, received(('recoveryMsg', _, _x1, _nonce),from_=p))) >= self.f+1):
-            output('checkpoint 1 process_recovery_response_msg', m)
+            len(setof(p, received(('recoveryMsg', _, _x1, _nonce),from_=p))) >= f1+1):
+            output('recoveryMsg Receive received recovery message from validators', pickle.dumps(m))
+            output('recoveryMsg Receive setting the system state based on recovery message')
+            self.ledger.set_Ledger_State(m)
             self.nonce = self.nonce + 1
 
     def run():

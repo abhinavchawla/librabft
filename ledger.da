@@ -61,3 +61,20 @@ class Ledger():
         ret = self.recent_committed.copy()
         self.recent_committed.clear()
         return ret
+
+    def set_Ledger_State(self, M):
+        self.block_id_to_ledger_state_map = M.ledgerState.block_id_to_ledger_state_map
+        self.ledger_id_to_ledger_state_map = M.ledgerState.ledger_id_to_ledger_state_map
+        self.block_id_to_block_map = M.ledgerState.block_id_to_block_map
+        print('ledger state being set explicity')
+        # f = open(self.file_name, "a")
+        # while state:
+        #     f.write(state.txns)
+        #     f.write("\n")
+        #     state.is_committed = True
+        #     self.recent_committed.append((state.txns,state.state_id))
+        #     state_id = state.prev_state_id
+        #     if not state_id:
+        #         break 
+        #     state = self.ledger_id_to_ledger_state_map[state_id]
+        #     i+=1
