@@ -1,0 +1,72 @@
+from collections import namedtuple
+FailureConfig = namedtuple('FailureConfig', ['failures', 'seed']) 
+Failure = namedtuple('Failure', ['src', 'dest', 'msg_type', 'round', 'prob', 'fail_type', 'val', 'attr'])
+
+from enum import Enum
+class MsgType(Enum):
+    Proposal = 1
+    QC = 2
+    TimeOut = 3
+    Vote = 4
+    Wildcard = 5
+class FailType(Enum):
+    MsgLoss = 1
+    Delay = 2
+    SetAttr = 3
+
+failure_config2 = FailureConfig(failures = [
+Failure(src='_',dest='leader',msg_type=MsgType.Vote,round=3,prob=1,fail_type=FailType.Delay, attr=None,val=0.1)],seed = 12345678)
+
+failure_config3 = FailureConfig(failures = [
+Failure(src='leader',dest='_',msg_type=MsgType.Proposal,round=3,prob=1,fail_type=FailType.MsgLoss, attr=None, val=None)],seed = 12345678)
+
+failure_config4 = FailureConfig(failures = [
+Failure(src='_',dest='leader',msg_type=MsgType.Proposal,round=3,prob=1,fail_type=FailType.MsgLoss, attr=None, val=None)],seed = 12345678)
+
+configs = [{
+    'nvalidators':4, 
+    'nclients':7, 
+    'maxtimeout':4, 
+    'nfaultyvalidators':1,
+    'clienttimeout':8,
+    'nclientops':3, 
+    'failures': []
+    },
+    {
+    'nvalidators': 4, 
+    'nclients':7, 
+    'maxtimeout':4, 
+    'nfaultyvalidators':1, 
+    'clienttimeout': 5,
+    'nclientops': 6 ,
+    'failures': failure_config2.failures
+    },
+    {
+    'nvalidators': 4, 
+    'nclients':7, 
+    'maxtimeout':4, 
+    'nfaultyvalidators':1, 
+    'clienttimeout': 5,
+    'nclientops': 6 ,
+    'failures': failure_config3.failures
+    },
+    {
+    'nvalidators': 7, 
+    'nclients':10, 
+    'maxtimeout':4, 
+    'nfaultyvalidators':1, 
+    'clienttimeout': 5,
+    'nclientops': 6 ,
+    'failures': []
+    },
+    {
+    'nvalidators': 4, 
+    'nclients':7, 
+    'maxtimeout':4, 
+    'nfaultyvalidators':1, 
+    'clienttimeout': 5,
+    'nclientops': 6 ,
+    'failures': failure_config4.failures
+    }
+
+]

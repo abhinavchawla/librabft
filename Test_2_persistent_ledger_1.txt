@@ -1,38 +1,186 @@
 EMPTY
-1 0 odpwfszryk
-0 0 rsbefjkuvu
-2 0 gbnapskvff
+0 0
+1 0
+6 0
+4 0
+3 0
+5 0
+0 1
+1 1
+6 1
+2 1
+3 1
+5 1
+0 2
+1 2
+6 2
+3 2
+5 2
+0 3
+1 3
+6 3
+3 3
+5 3
+0 4
+1 4
+6 4
+3 4
+5 4
+0 5
+1 5
+6 5
+3 5
+5 5
 EMPTY
-1 1 xcwuurbdpf
-0 1 bedaxytlds
-2 1 kplwesntdf
 EMPTY
-1 2 snbpoqmdxu
-0 2 nldlkvztua
-2 2 enjdblpqxv
 EMPTY
-1 3 duagqsnxxi
-0 3 wcpgwcdrdd
-2 3 huffdnuyex
 EMPTY
-1 4 kczyibmvoe
-0 4 ovfrkiwhtp
-2 4 ryreywronk
-1 5 lthqkpmtxx
 EMPTY
-0 5 qlikstqend
-2 5 xsfttqycpe
-1 6 vtjrxsezbi
 EMPTY
-0 6 rojkuvovvo
-2 6 uhwldlhtpz
-1 7 fkgqbzugul
 EMPTY
-0 7 lxehidpvcd
-2 7 dumouqzypc
-1 8 zontphxnvj
-0 8 ivofcygqan
-2 8 byaukpjshu
-1 9 xiodlrzugv
-0 9 jpzdlwhbpi
-2 9 rqfqancwkp
+EMPTY
+EMPTY
+EMPTY
+EMPTY
+EMPTY
+EMPTY
+EMPTY
+EMPTY
+EMPTY
+4 0
+EMPTY
+4 0
+EMPTY
+2 1
+EMPTY
+EMPTY
+EMPTY
+EMPTY
+EMPTY
+EMPTY
+EMPTY
+EMPTY
+4 0
+EMPTY
+2 1
+EMPTY
+EMPTY
+EMPTY
+4 0
+EMPTY
+2 1
+EMPTY
+EMPTY
+2 1
+EMPTY
+4 0
+EMPTY
+EMPTY
+EMPTY
+4 0
+EMPTY
+2 1
+4 0
+EMPTY
+2 1
+EMPTY
+4 0
+EMPTY
+2 1
+EMPTY
+EMPTY
+EMPTY
+EMPTY
+EMPTY
+EMPTY
+EMPTY
+EMPTY
+EMPTY
+EMPTY
+EMPTY
+2 1
+EMPTY
+4 0
+EMPTY
+EMPTY
+EMPTY
+4 0
+EMPTY
+2 1
+EMPTY
+4 0
+EMPTY
+2 1
+EMPTY
+EMPTY
+EMPTY
+EMPTY
+4 0
+EMPTY
+2 1
+EMPTY
+EMPTY
+EMPTY
+EMPTY
+EMPTY
+EMPTY
+EMPTY
+EMPTY
+2 1
+EMPTY
+EMPTY
+EMPTY
+4 0
+EMPTY
+4 0
+EMPTY
+2 1
+EMPTY
+EMPTY
+EMPTY
+4 0
+EMPTY
+2 1
+EMPTY
+4 0
+EMPTY
+2 1
+EMPTY
+EMPTY
+EMPTY
+2 1
+EMPTY
+4 0
+EMPTY
+EMPTY
+EMPTY
+EMPTY
+EMPTY
+EMPTY
+EMPTY
+EMPTY
+EMPTY
+EMPTY
+EMPTY
+EMPTY
+EMPTY
+EMPTY
+EMPTY
+4 0
+EMPTY
+2 1
+4 0
+EMPTY
+2 1
+EMPTY
+4 0
+EMPTY
+2 1
+EMPTY
+EMPTY
+2 1
+EMPTY
+EMPTY
+4 0
+EMPTY
+EMPTY

@@ -1,5 +1,6 @@
 #type:ignore
 import sys
+from configs import Failure
 from memPool import MemPool
 from nacl.signing import SigningKey
 from leaderElection import LeaderElection
@@ -11,21 +12,25 @@ from messages import *
 from verificationHelper import sign
 import string
 import pickle
+import threading
 
 import string
 import time
 import os
 import random
 
+from configs import FailType, MsgType
+
 #need to output intial configurations of the test at the start
 
 class Client(process):
-    def setup(c_id,private_key, public_keys, validators):
+    def setup(c_id,private_key, public_keys, validators, nclientops, f):
         self.c_id = c_id
         self.private_key = private_key
         self.public_keys = public_keys
         self.validators =validators
-        self.f = 1
+        self.f = f
+        self.nclientops = nclientops
         self.xtimer = 10
 
     # send vote_msg to LeaderElection.get_leader(current_round+1)
@@ -33,7 +38,7 @@ class Client(process):
         letters = string.ascii_lowercase
         i = 0
         
-        while i<10:
+        while i<nclientops:
             request = sign(self.private_key, str(self.c_id)+" "+str(i))
             #output("sending request message: " , request , " sender: ",self.c_id, " receiver: ",self.validators , level=50)
             output('sending request message ', i, self.xtimer)
@@ -49,10 +54,10 @@ class Client(process):
         send(('clientDoneMessage',(request, self.c_id)), to= validators)
 
     def receive(msg=('commitMessage', m), from_= p):
-        output("Received commitMessage", m, " sender:",p , " receiver: ",self.c_id)
+        output("Received commitMessage", m, " sender:", p , " receiver: ",self.c_id)
 
 class Validator(process):
-    def setup(v_id, private_key, public_keys_validators, public_keys_clients, validators:set, clients, test_case_id):
+    def setup(v_id, private_key, public_keys_validators, public_keys_clients, validators:set, clients, test_case_id, failures):
         self.v_id = v_id
         self.validators = validators
         self.private_key = private_key
@@ -71,6 +76,7 @@ class Validator(process):
         self.safety = Safety(private_key, public_keys_validators, 0, self.ledger, self.blockTree, v_id)
         self.done = False
         self.clients_done = set()
+        self.failures = failures
 
     ### Pacemaker code
         self.pacemaker_current_round = 1
@@ -252,9 +258,9 @@ class Validator(process):
         if self == leaderElection.get_leader(current_round):                                                            # if u = LeaderElection.get_leader(pacemaker.current_round) then
                                                                                                                         # Leader code: generate proposal
             b = blockTree.generate_block(memPool.get_transactions(),pacemaker_current_round)                                                 # b <- Block-Tree.generate_block(MemPool.get_transactions(), Pacemaker.current_round)
-            # if pacemaker_current_round==4:
+            # if pacemaker_current_round==9:
             #     output('leader going to sleep for 25secs')
-            #     time.sleep(6)
+            #     exit()
             # output('message being sent ', pickle.dumps(ProposalMsg(b,last_tc, blockTree.high_commit_qc)))
             output("yay proposal")
             output("sending proposal message: ", b, " last timeout certificate: ",last_tc , " high commit qc: ", blockTree.high_commit_qc , " sender: ",self.v_id, " receiver: ",self.validators, level=50)
@@ -326,7 +332,7 @@ class Validator(process):
         while not self.done:            
             round_done = False
             timer_duration = pacemaker_get_round_timer(pacemaker_current_round)
-            if await round_done:
+            if await(round_done):
                 output('round done')
                 pass
             elif timeout(timer_duration):
@@ -375,3 +381,71 @@ def main():
     start(clients)
     start(validators)
 
+
+# Replica with Fault Injection
+class ValidatorFI(process, Validator):
+    def get_failure_config(message, to):
+        output("CHECK HERE 1 - ",message, to)
+        if self.failures is None:
+            return None
+        for failure_config in self.failures:
+            # only allow SetAttr fail type to last nfaulty validators
+            if failure_config.fail_type == FailType.SetAttr and self.v_id >= len(self.validators) - self.f:
+                continue
+
+            if failure_config.round != self.pacemaker_current_round:
+                continue
+            
+            output("checkpoint 1 - ",failure_config, message,to)
+            if failure_config.src == "leader":
+                if self.leaderElection.get_leader(self.pacemaker_current_round) != list(self.validators)[self.v_id]:
+                    continue
+            elif failure_config.src != "_" and failure_config.src != self.v_id:
+                continue
+            
+            output("checkpoint 2 - ",failure_config, message, to)
+            if failure_config.dest == "leader":
+                if failure_config.msg_type == MsgType.Vote and self.leaderElection.get_leader(self.pacemaker_current_round + 1) != to:
+                    output("checkpoint 4 - ",failure_config, self.leaderElection.get_leader(self.pacemaker_current_round + 1), to)
+                    continue
+                if failure_config.msg_type != MsgType.Vote and self.leaderElection.get_leader(self.pacemaker_current_round) != to:
+                    continue
+            elif failure_config.dest != "_" and list(self.validators)[failure_config.dest] != to:
+                continue
+
+            # if random.random() < 1 - failure_config.prob:
+            #     continue
+            return failure_config
+        return None
+
+    def send_msg_delayed(message, to, val):
+        output("STARTED SLEEPING")
+        time.sleep(val*1000)
+        output("WOKE UP")
+        super().send(message, to)
+
+    def send(message, to):
+        failure_config = get_failure_config(message, to)
+        output('ValidatorFI.send', failure_config)
+        if failure_config is None:
+            output("REACHED FAILURE CONFIG CHECK IS NONE")
+            super().send(message, to)
+        else:
+            output('Sending potential faulty msg',
+                              failure_config.fail_type.name, message, to)
+            if failure_config.fail_type == FailType.MsgLoss:
+                    output('ValidatorFI.send', 'message dropped')
+            elif failure_config.fail_type == FailType.Delay:
+                output('ValidatorFI.send', 'message delayed')
+                thread = threading.Thread(target=send_msg_delayed, args=(
+                    message, to, failure_config.val))
+                thread.start()
+            elif failure_config.fail_type == FailType.SetAttr:
+                output('ValidatorFI.send', 'config changed')
+                setattr(failure_config.attr, failure_config.val)
+            else:
+                output('error: ValidatorFI.send: unsupported fail type',
+                       failure_config.fail_type)
+
+
+    

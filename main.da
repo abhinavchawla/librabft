@@ -1,5 +1,7 @@
 import driver
 from nacl.signing import SigningKey
+from configs import configs
+
 
 class RunDriver(process):
     def setup(config, test_case_id):
@@ -9,6 +11,8 @@ class RunDriver(process):
         self.maxtimeout = config['maxtimeout']
         self.clienttimeout = config['clienttimeout']
         self.test_case_id = test_case_id
+        self.failure_config = config['failures']
+        self.nclientops = config['nclientops']
 
     
     def run():
@@ -17,7 +21,7 @@ class RunDriver(process):
         maxtimeout = self.maxtimeout
 
         clients = new(driver.Client, num=nclients)
-        validators = new(driver.Validator, num=nvalidators)
+        validators = new(driver.ValidatorFI, num=nvalidators)
         public_keys_validators=[]
         private_keys_validators=[]
         for _ in range(nvalidators):
@@ -36,16 +40,13 @@ class RunDriver(process):
             private_keys_clients.append(sk)
         #output(validators)
         for i, v in enumerate(validators):
-            setup({v}, (i, private_keys_validators[i], public_keys_validators, public_keys_clients, validators, clients, test_case_id))
+            setup({v}, (i, private_keys_validators[i], public_keys_validators, public_keys_clients, validators, clients, test_case_id, failure_config))
         for i, c in enumerate(clients):
-            setup({c}, (i, private_keys_clients[i], public_keys_validators, validators))
-
+            setup({c}, (i, private_keys_clients[i], public_keys_validators, validators, nclientops, nfaultyvalidators))
         start(clients)
         start(validators)
 
 def main():
-    configs = [{'nvalidators':7, 'nclients':2, 'maxtimeout':4, 'nfaultyvalidators':2,'clienttimeout':2}, \
-        {'nvalidators': 5, 'nclients':3, 'maxtimeout':4, 'nfaultyvalidators':1, 'clienttimeout': 5}]
     test_case = 1
     for config in configs:
         p = new(RunDriver)

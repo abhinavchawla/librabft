@@ -42,7 +42,7 @@ class Block():                                                                  
 
 class BlockTree():                                                                     # Block-Tree()
     def __init__(self, author, ledger, private_key, v_id):
-        self.pending_block_tree = []                                                     #   pending_block_tree; // tree of blocks pending commitment
+        self.pending_block_tree = {}                                                     #   pending_block_tree; // tree of blocks pending commitment
         self.pending_votes = {}                                                          #   pending_votes; // collected votes per block indexed by their LedgerInfo hash
         self.high_qc = None                                                              #   high_qc; // highest known QC
         self.high_commit_qc = None                                                       #   high_commit_qc; // highest QC that serves as a commit certificate
@@ -59,13 +59,18 @@ class BlockTree():                                                              
             return qcA
         return qcA if qcA.vote_info.round > qcB.vote_info.round else qcB
 
+    def pending_block_tree_append(self, b_id,b):
+        self.pending_block_tree[b_id] = b
+    
+    def pending_block_tree_prune(self, b_id):
+        self.pending_block_tree.pop(b_id, None)
 
     def process_qc(self, qc):                                                                                           #Procedure process_qc(qc)
         # print("checkpoint 1 BT.Process_qc ", qc)
         if qc and qc.ledger_commit_info.commit_state_id is not None:                                                    #       if qc.ledger_commit_info.commit_state_id ≠ ⊥ then
             #print("^^^^^^^^^^^^QC.round while committing",qc.vote_info.round+1)
             self.ledger.commit(qc.vote_info.parent_id)                                                                  #        Ledger.commit(qc.vote_info.parent_id)
-            # self.pending_block_tree.prune(qc.vote_info.parent_id)                                                     #           pending_block_tree.prune(qc.vote_info.parent_id) // parent id becomes the new root of pending
+            self.pending_block_tree_prune(qc.vote_info.parent_id)                                                     #           pending_block_tree.prune(qc.vote_info.parent_id) // parent id becomes the new root of pending
             ### check this
             self.high_commit_qc = self.__max_round(qc, self.high_commit_qc)                                             #           high_commit_qc <- max_round{qc, high_commit_qc}
         self.high_qc = self.__max_round(qc, self.high_qc)                                                               #           high_qc <- max_round{qc, high_qc}
@@ -77,9 +82,9 @@ class BlockTree():                                                              
         if b.qc:
             prev_block_id = b.qc.vote_info.id
         self.ledger.speculate(prev_block_id, b.id, b.payload, b)                                                        #  Ledger.speculate(b.qc.block_id, b.id, b.payload)
+        self.pending_block_tree_append(b.id, b)
         # print('checkpoint 2 execute_and_insert Speculate done')
         #output("adding to pending block tree: ",b,level=50)
-        self.pending_block_tree.append(b)                                                                               #  pending_block_tree.add(b)
         # print('checkpoint 3 execute_and_insert pending_block_tree', self.pending_block_tree)
 
 
