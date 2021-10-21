@@ -36,7 +36,9 @@ class LeaderElection():
         return random.choice(active_validators)                                                 # return active_validators.pick_one(seed <- qc.voteinfo.round)
 
     def update_leaders(self,qc,current_round):                                                          # Procedure update_leaders(qc)
+        print("CHECKPOINT 1 - UPDATE LEADERS", qc)
         extended_round = qc.vote_info.parent_round                                                      #   extended_round <- qc.vote_info.parent_round
+        print("CHECKPOINT 2 - UPDATE LEADERS", self.reputation_leaders, current_round)
         qc_round = qc.vote_info.round                                                                   #   qc_round <- qc.vote_info.round
         if extended_round+1 == qc_round and qc_round+1 == current_round:                                #   if extended_round + 1 = qc_round ^ qc_round + 1 = current_round then
             self.reputation_leaders[current_round+1]=self.elect_reputation_leader(qc)                   #       reputation_leaders[current_round + 1] <- elect_reputation_leader(qc)

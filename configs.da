@@ -14,59 +14,16 @@ class FailType(Enum):
     Delay = 2
     SetAttr = 3
 
-failure_config2 = FailureConfig(failures = [
-Failure(src='_',dest='leader',msg_type=MsgType.Vote,round=3,prob=1,fail_type=FailType.Delay, attr=None,val=0.1)],seed = 12345678)
-
 failure_config3 = FailureConfig(failures = [
-Failure(src='leader',dest='_',msg_type=MsgType.Proposal,round=3,prob=1,fail_type=FailType.MsgLoss, attr=None, val=None)],seed = 12345678)
-
-failure_config4 = FailureConfig(failures = [
-Failure(src='_',dest='leader',msg_type=MsgType.Proposal,round=3,prob=1,fail_type=FailType.MsgLoss, attr=None, val=None)],seed = 12345678)
+Failure(src=1,dest='_',msg_type=MsgType.Vote,round=3,prob=1,fail_type=FailType.MsgLoss, attr=None, val=None),
+Failure(src=2,dest='_',msg_type=MsgType.Vote,round=3,prob=1,fail_type=FailType.MsgLoss, attr=None, val=None)],seed = 12345678)
 
 configs = [{
     'nvalidators':4, 
-    'nclients':7, 
+    'nclients':3, 
     'maxtimeout':4, 
     'nfaultyvalidators':1,
     'clienttimeout':8,
-    'nclientops':3, 
-    'failures': []
-    },
-    {
-    'nvalidators': 4, 
-    'nclients':7, 
-    'maxtimeout':4, 
-    'nfaultyvalidators':1, 
-    'clienttimeout': 5,
-    'nclientops': 6 ,
-    'failures': failure_config2.failures
-    },
-    {
-    'nvalidators': 4, 
-    'nclients':7, 
-    'maxtimeout':4, 
-    'nfaultyvalidators':1, 
-    'clienttimeout': 5,
-    'nclientops': 6 ,
+    'nclientops':4, 
     'failures': failure_config3.failures
-    },
-    {
-    'nvalidators': 7, 
-    'nclients':10, 
-    'maxtimeout':4, 
-    'nfaultyvalidators':1, 
-    'clienttimeout': 5,
-    'nclientops': 6 ,
-    'failures': []
-    },
-    {
-    'nvalidators': 4, 
-    'nclients':7, 
-    'maxtimeout':4, 
-    'nfaultyvalidators':1, 
-    'clienttimeout': 5,
-    'nclientops': 6 ,
-    'failures': failure_config4.failures
-    }
-
-]
+    }]

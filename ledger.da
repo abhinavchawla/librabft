@@ -32,6 +32,8 @@ class Ledger():
         return self.block_id_to_ledger_state_map[block_id].state_id
 
     def commit(self,block_id):                               #// commit the pending prefix of the given block id and prune other branches
+        if block_id not in self.block_id_to_ledger_state_map:
+            return
         f = open(self.file_name, "a")
         state_id = self.block_id_to_ledger_state_map[block_id].state_id
         state = self.ledger_id_to_ledger_state_map[state_id]
@@ -50,7 +52,7 @@ class Ledger():
 
     def committed_block(self, block_id):                      #// returns a committed block given its id
         # TODO: Fix this, send a block instead
-        if block_id:
+        if block_id in self.block_id_to_block_map:
             return self.block_id_to_block_map[block_id]
         else:
             return None

@@ -87,7 +87,7 @@ class BlockTree():                                                              
             self.signers[vote_idx] = []
         self.pending_votes[vote_idx].append(v.signature)                                                                #       pending_votes[vote_idx] <- pending_votes[vote_idx] ∪ v.signature
         self.signers[vote_idx].append(v.sender)
-        if len(self.pending_votes[vote_idx]) == 2*1+1:                                                                  #       if |pending_votes[vote_idx]| = 2f+1 then
+        if len(self.pending_votes[vote_idx]) == 2*1+1:     #change f for task 2                                                      #       if |pending_votes[vote_idx]| = 2f+1 then
             qc = QC(                                                                                                    #           qc <- QC<
                     vote_info=v.vote_info,                                                                              #                   vote_info<-v.vote_info,
                     ledger_commit_info=v.ledger_commit_info,
