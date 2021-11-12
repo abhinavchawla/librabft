@@ -4,6 +4,7 @@ class Network_Playground(process):
         self.speculative_round = 0                  # Current round of the system, based on message intercepted
         self.twin_config = None
         self.vote_count_config = None
+        self.gdcb_config = None
         self.done = False
 
     def run():
