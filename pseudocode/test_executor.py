@@ -30,10 +30,12 @@ class TestExecutor(Process):
         output('Safety check 3: ', check_safety_3(commit_config))
 
     # In ValidatorX, override the function Ledger.commit() to send a message
-    # <commitInfo, commit_id, sender> to the parent(executor) and call the 
+    # <commitInfo, commit_id, round, sender> to the parent(executor) and call the 
     # super.Ledger.commit()
     def receive(msg=('commitInfo', commit_id, sender), from_= p):
-        self.commit_config.find_or_create(sender).add_to_list(commit_id)
+        # add commit_id to a dictionary per sender, in-place as per round
+        # in-place add, because of asynchronous nature of message delivery
+        self.commit_config.find_or_create(sender).add_to_list_inplace(round, commit_id) 
 
     '''
     Safety Property 1. If a block is certified in a round, no other block can gather 
@@ -55,17 +57,13 @@ class TestExecutor(Process):
     '''
     def check_safety_1(vc_config):
         for r in vc_config:                         
-            certified_strong = False
-            certified_weak = False
+            certified = False
+            sort_according_to_len_of_votes(vc_config[r])
             for b in vc_config[r]:
-                if len(vc_config[r][b]) >= 2*f+1:
-                    if not certified_strong:
-                        certified_strong = True
-                    else:
-                        return False
-                elif len(vc_config[r][b]) >= f+1:
-                    certified_weak = True
-                if certified_strong and certified_weak:
+                if len(vc_config[r][b])>=2*f+1:
+                    if not certified:
+                        certified = True
+                if certified and len(vc_config[r][b])>=f+1:
                     return False
         return True
 
