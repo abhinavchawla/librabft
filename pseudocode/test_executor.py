@@ -13,8 +13,7 @@ class TestExecutor(Process):
             self.private_keys_validators.append(sk)
         self.setupValidators()
         start(validators)
-        start(playground)
-        
+        start(playground)        
                 
     def setupValidators(self):
         for i in range(self.num_nodes+num_target_nodes):
@@ -24,8 +23,9 @@ class TestExecutor(Process):
                 setup(self.validators[i], (public_keys_validators[i], private_keys_validators[i], public_keys_validators, self.round_leaders, playground))
             
     # Wait for done message from the network playground
-    def receive(msg=('done', vc_config,), from_= p):
+    def receive(msg=('done', vc_config, gdcb_config), from_= p):
         output('Safety check 1: ', check_safety_1(vc_config))
+        output('Safety check 2: ', check_safety_2(gdcb_config))
 
     '''
     Safety Property 1. If a block is certified in a round, no other block can gather 
@@ -57,5 +57,49 @@ class TestExecutor(Process):
                 if certified_strong and certified_weak:
                     return False
         return True
-        
 
+    '''
+    Property 2. For every two globally direct-committed blocks B, B0 , 
+    either B ←−∗ B0 or B0 ←−∗ B.
+
+    Definition 1 (Global direct-commit). We say that a block B is globally 
+    direct-committed if f + 1 nonByzantine validators each call 
+    Safety.make_vote on block B0 in round B.round + 1, such that B0 .QC 
+    certifies B (i.e., B0 .QC = QCB), setting Safety.highest qc round ← B.round. 
+    These calls return f + 1 matching votes (that could be used to form a 
+    QCB0 with f other matching votes).
+
+    The structure of the gdcb_config is for every round r, we collect votes
+        for each block-id in that round.
+        {
+            'r1':   {
+                        b_id1,b_id2,...
+                    },
+            ...
+        }
+    '''
+    def check_safety_2(gdcb_config):
+        gdc_blocks = []
+        for r in gdcb_config:
+            for b in gdcb_config[r]:
+                if b in gdc_blocks:     
+                    return False       # A block cannot be voted for in different rounds
+                else:
+                    gdc_blocks.add[b]
+
+        # Check for every pair of blocks, one is the parent of other
+        for i in enumerate(gdc_blocks):
+            for j in range(i+1, gdc_blocks.len()):
+                if not is_parent(gdc_blocks[i], gdc_blocks[j]) and not is_parent(gdc_blocks[j], gdc_blocks[i]): 
+                    return False                
+
+        return True
+    
+    # Check if b1 is parent of b2
+    def is_parent(b1, b2):
+        parent = b2.qc.vote_info.parent_id
+
+        while not is_genesis_block(parent):     # Check if given block is a genesis block
+            if parent == b1:
+                return True
+        return False
