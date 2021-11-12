@@ -1,30 +1,31 @@
 class Network_Playground(process):
-    def setup(num_nodes, num_target_nodes, round_partitions:dict, validators:set):
+    def setup(num_nodes, num_target_nodes, num_rounds, round_partitions:dict, validators:set):
         self.drop_config_round = None
-        self.speculative_round = 0
+        self.speculative_round = 0                  # Current round of the system, based on message intercepted
         self.twin_config = None
-        pass
+        self.vote_count_config = None
+        self.done = False
 
     def run():
         populate_twin_config()
         populate_drop_config_round()
 
-    ## Both the twins can be in the same partition
-    ## Messages between twins not possible
-    ## Twin' sender to be changed with twin sender
-    ## if a twin is leader, in a partition, send message to twin', Twin and Twin' are both leaders, and should know this, so that they can propose
-    ## if to=t, t has a twin existing, check if sender and t' are in same partition, send to t', if both t and t' in same partition, send to both
+        while not done:                             # Stopping condition
+            if speculative_round >= num_rounds+3:   # Over-guesstimating, when the round becomes num_rounds+3
+                done = True                         # stop processing
 
+        send (('done', vote_count_config), to=parent())                  # Send a message to parent, ie Executor to let it know of the processing stoppage
 
-
-    # A node checks the sender of a message based on the public key present in the message.
-    # When a node replies to a message, it sends a reply to the corresponding node of a public key.
-    # A node thus maintains a map of (publicKey, nodeId)
-    # The network playground would then check if the given node (identified by the nodeId), is present
-    # in the twin_config (ie, is a node with a twin). If the node has a twin, the message gets sent
-    # to the corresponding twin if the twin is present in the same partitions, or the node if it is present
-    # in the same partition as the sender, or to both the node and its twin, if all of the three are 
-    # present in the same partition.
+    '''
+    A node checks the sender of a message based on the public key present in the message.
+    When a node replies to a message, it sends a reply to the corresponding node of a public key.
+    A node thus maintains a map of (publicKey, nodeId)
+    The network playground would then check if the given node (identified by the nodeId), is present
+    in the twin_config (ie, is a node with a twin). If the node has a twin, the message gets sent
+    to the corresponding twin if the twin is present in the same partitions, or the node if it is present
+    in the same partition as the sender, or to both the node and its twin, if all of the three are 
+    present in the same partition.
+    '''
     def receive(msg=('proposalMessageSent', m, to), from_= p): # eg received(('proposalMessageSent', (proposalMessage, msg, sender), to), from_=vX)
         (tag, p_msg) = m
         (block, _, _) = p_msg
@@ -40,10 +41,18 @@ class Network_Playground(process):
         if msg_round > speculative_round:
             speculative_round = msg_round
 
+
+    '''
+    Safety Property 1. If a block is certified in a round, no other block can gather f + 1 non-Byzantine votes in the
+    same round. Hence, at most one block is certified in each round.
+    To check the above property, we keep a count of votes per block-id, per round. At the end this information, 
+    is passed on to the executor, which can then check the safety.
+    '''
     def receive(msg=('voteMessageSent', m,), from_= p):
         (tag, v_msg) = m
         (v_info, _, _, _, _) = v_msg
         msg_round = v_info.round
+        process_votes(v_info, sender)
         if to in twin_config:                               # Route message based on the twin_config
             twinId = twin_config[to]
             if not is_message_dropped(msg_round, p, to):
@@ -108,3 +117,18 @@ class Network_Playground(process):
     def populate_twin_config():
         for i in range (0, num_target_nodes):
             twin_config.add_or_update(validators[i], validators[num_nodes+i])
+
+    def process_votes(v_info, sender):
+        '''
+        The structure of the vote_count_config is for every round r, we collect votes
+        for each block-id in that round.
+        {
+            'r1':   {
+                        'b_id1': {x1, x2, ...},
+                        'b_id2': {y1, y2, ...},
+                        ...
+                    },
+            ...
+        }
+        '''
+        vote_count_config.find_or_create(v_info.round).find_or_create(v_info.id).add_to_set(sender)
