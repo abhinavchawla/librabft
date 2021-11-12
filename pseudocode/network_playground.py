@@ -31,6 +31,8 @@ class Network_Playground(process):
         (tag, p_msg) = m
         (block, _, _) = p_msg
         msg_round = block.round
+        if not check_failure_config(tag, p, to):            # Check if the message is dropped according to the failure config
+            return
         if to in twin_config:                               # Route message based on the twin_config
             twinId = twin_config[to]
             if not is_message_dropped(msg_round, p, to):
@@ -54,6 +56,8 @@ class Network_Playground(process):
         (v_info, _, _, _, _) = v_msg
         msg_round = v_info.round
         process_votes(v_info, sender)
+        if not check_failure_config(tag, p, to, round):     # Check if the message is dropped according to the failure config
+            return
         if to in twin_config:                               # Route message based on the twin_config
             twinId = twin_config[to]
             if not is_message_dropped(msg_round, p, to):
@@ -69,6 +73,8 @@ class Network_Playground(process):
         (tag, to_msg) = m
         (to_info, _, _, _, _) = to_msg
         msg_round = to_info.round
+        if not check_failure_config(tag, p, to, round):    # Check if the message is dropped according to the failure config
+            return
         if not is_message_dropped(msg_round, p, to):
             send((tag, m), to=to)
         if msg_round > speculative_round:

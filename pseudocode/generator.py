@@ -3,15 +3,16 @@ from itertools import permutations
 
 class scenario_generator():
 
-	def run(self,config,fileName=None):
+	def run(self, config, fileName=None):
 		if(fileName==None):
-			scenarios=get_partition_scenarios(config.get("nodes"),config.get("type"),config.get("val"))
-			scenario_leaders=get_scenario_leaders(config.get("nodes"),scenarios,config.get("type"),config.get("val"),
+			scenarios=get_partition_scenarios(config.get("nodes"),config.get("type-step-1"),config.get("val-step-1"))
+			scenario_leaders=get_scenario_leaders(config.get("nodes"),scenarios,config.get("type-step-2"),config.get("val-step-2"),
 				config.get("leader_type"),config.get("twins"))
-			leaders_per_round=leader_per_round_in_scenario(scenario_leaders,config.get("rounds"))
-			writeToFile("leader_config")
+			leaders_per_round=leader_per_round_in_scenario(scenario_leaders,config.get("rounds"),config.get("type-step-1"),config.get("val-step-1"))
+			writeToFile("leader_config", leaders_per_round, config.get("intraPartitionScenario"))
 		else:
-			readFromFile(fileName)
+			leaders_per_round = readFromFile(fileName)
+		return leaders_per_round
 
 	# STEP 1: In this function we are generating all possible partition scenarios
 	# we will use sterling's number of 2nd kind to get all possible partion scenarios
@@ -86,16 +87,12 @@ class scenario_generator():
 
 	# STEP 3: In this function we are generating all permutations of leaders according to the given rounds
 	# All possible permutations of leaders over given rounds, for each scenario is calculated and returned as a list
-	def leader_per_round_in_scenario(pruned_scenario_leaders,rounds):
-		map={}
-		leader_per_round=[]
-		for scenario_leader in pruned_scenario_leaders:
-			map[scenario_leader[1]].append(scenario_leader[0])
-		# Generating all leader permutations over given rounds
-		for key,val in map.items():
+	def leader_per_round_in_scenario(pruned_scenario_leaders,rounds, type, x, with_repetition=False):
+		if with_repetition:
 			perm=permutations(val,rounds)
-			leader_per_round.append(perm)
-		return leader_per_round
+		else:
+			perm = [p for p in itertools.product(x, repeat=rounds)]
+		return prune(perm, type, x)
 
 	# This function prunes a list based on the type argument
 	# type can be randomized or deterministic
