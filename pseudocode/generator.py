@@ -3,6 +3,16 @@ from itertools import permutations
 
 class scenario_generator():
 
+	def run(self,config,fileName=None):
+		if(fileName==None):
+			scenarios=get_partition_scenarios(config.get("nodes"),config.get("type"),config.get("val"))
+			scenario_leaders=get_scenario_leaders(config.get("nodes"),scenarios,config.get("type"),config.get("val"),
+				config.get("leader_type"),config.get("twins"))
+			leaders_per_round=leader_per_round_in_scenario(scenario_leaders,config.get("rounds"))
+			writeToFile("leader_config")
+		else:
+			readFromFile(fileName)
+
 	# STEP 1: In this function we are generating all possible partition scenarios
 	# we will use sterling's number of 2nd kind to get all possible partion scenarios
 	# the reference for getting the sterling set is given in the pseudocode
