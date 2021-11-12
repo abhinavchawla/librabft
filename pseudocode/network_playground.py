@@ -4,16 +4,22 @@ class Network_Playground(process):
         self.speculative_round = 0                  # Current round of the system, based on message intercepted
         self.twin_config = None
         self.vote_count_config = None
-        self.gdcb_config = None
         self.done = False
+        self.liveness_timeout = 4 * 10              # (4 * delta), configurable, hopes to receive a proposal or vote message
 
     def run():
         populate_twin_config()
         populate_drop_config_round()
 
         while not done:                             # Stopping condition
-            if speculative_round >= num_rounds+3:   # Over-guesstimating, when the round becomes num_rounds+3
+            round_done = False
+            if await speculative_round >= num_rounds+3:   # Over-guesstimating, when the round becomes num_rounds+3
                 done = True                         # stop processing
+            elif round_done:
+                print ('round done')
+            elif timeout(liveness_timeout):
+                print ('Liveness Violated')
+                done = True
 
         send (('done', vote_count_config), to=parent())                  # Send a message to parent, ie Executor to let it know of the processing stoppage
 
@@ -28,6 +34,7 @@ class Network_Playground(process):
     present in the same partition.
     '''
     def receive(msg=('proposalMessageSent', m, to), from_= p): # eg received(('proposalMessageSent', (proposalMessage, msg, sender), to), from_=vX)
+        round_done = True
         (tag, p_msg) = m
         (block, _, _) = p_msg
         msg_round = block.round
@@ -52,6 +59,7 @@ class Network_Playground(process):
     is passed on to the executor, which can then check the safety.
     '''
     def receive(msg=('voteMessageSent', m,), from_= p):
+        round_done = True
         (tag, v_msg) = m
         (v_info, _, _, _, _) = v_msg
         msg_round = v_info.round
