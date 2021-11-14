@@ -5,7 +5,7 @@ class Network_Playground(process):
         self.twin_config = None
         self.vote_count_config = None
         self.done = False
-        self.liveness_timeout = 4 * 10              # (4 * delta), configurable, hopes to receive a proposal or vote message
+        self.liveness_timeout = 7 * 10              # (7 * delta), configurable, hopes to receive a proposal or vote message
 
     def run():
         populate_twin_config()

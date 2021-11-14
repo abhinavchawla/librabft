@@ -1,0 +1,20 @@
+{
+    "nodes":4,
+    "twins":1,
+    "rounds":10,
+    "step-1":{
+        "prune": false
+    },
+    "step-2":{
+        "prune": true,
+        "leader_type": "all",
+        "type": "randomized",
+        "value": 10
+    },
+    "step-3":{
+        "prune": true,
+        "with-replacement": true,
+        "type": "randomized",
+        "value": 15
+    }
+}
