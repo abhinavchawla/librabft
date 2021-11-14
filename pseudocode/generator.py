@@ -7,19 +7,30 @@ class scenario_generator():
 
 	def __init__(self, fileName=None, config=None):
 		if(fileName==None):
+			self.nodes = config.get("nodes")
+			self.twins = config.get("twins")
+			self.rounds = config.get("rounds")
 			scenarios=self.get_partition_scenarios(config.get("nodes"),config.get("twins"),config.get("step-1"))
-			print(scenarios)
 			scenario_leaders=self.get_scenario_leaders(scenarios, config.get("nodes"),config.get("twins"),config.get("step-2"))
-			print(scenario_leaders)
 			leaders_per_round=self.leader_per_round_in_scenario(scenario_leaders, config.get("rounds"), config.get("step-3"))
-			print(leaders_per_round)
-			json_dict = self.create_json_dict(leaders_per_round, config.get("nodes"), config.get("twins"), config.get("rounds"))
+			self.json_dict = self.create_json_dict(leaders_per_round, config.get("nodes"), config.get("twins"), config.get("rounds"))
 			with open('data.json', 'w') as f:
-				json.dump(json_dict, f)
+				json.dump(self.json_dict, f, indent=4)
 		else:
-			leaders_per_round = readFromFile(fileName)
-		return leaders_per_round
-	
+			with open(fileName,'r') as f:
+				self.json_dict = json.load(f)
+		self.current_scenario_index = 0
+	def generate_scenario(self):
+		if self.current_scenario_index < len(self.json_dict['scenarios']):
+			scenario = self.json_dict['scenarios'][self.current_scenario_index]
+			self.current_scenario_index += 1
+			scenario['nodes'] = self.nodes
+			scenario['twins'] = self.twins
+			scenario['rounds'] = self.rounds
+			return scenario
+		else:
+			return None
+
 	def create_json_dict(self,leaders_per_round, nodes, twins, rounds):
 		json_dict={}
 		json_dict['nodes'] = nodes
@@ -37,15 +48,7 @@ class scenario_generator():
 			json_dict['scenarios'].append(tmp_mp)
 		return json_dict
 	def run(self, config, fileName=None):
-		if(fileName==None):
-			scenarios=get_partition_scenarios(config.get("nodes"),config.get("type-step-1"),config.get("val-step-1"))
-			scenario_leaders=get_scenario_leaders(config.get("nodes"),scenarios,config.get("type-step-2"),config.get("val-step-2"),
-				config.get("leader_type"),config.get("twins"))
-			leaders_per_round=leader_per_round_in_scenario(scenario_leaders,config.get("rounds"),config.get("type-step-1"),config.get("val-step-1"))
-			writeToFile("leader_config", leaders_per_round, config.get("intraPartitionScenario"))
-		else:
-			leaders_per_round = readFromFile(fileName)
-		return leaders_per_round
+		pass
 
 	# STEP 1: In this function we are generating all possible partition scenarios
 	# we will use sterling's number of 2nd kind to get all possible partion scenarios

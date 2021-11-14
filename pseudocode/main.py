@@ -6,4 +6,7 @@ if __name__=='__main__':
         data = json.load(read_file)
 
     scenario_generator = scenario_generator(config=data)
-    scenario_generator.run()
+    scenario = scenario_generator.generate_scenario()
+    while scenario:
+        print(scenario)
+        scenario = scenario_generator.generate_scenario()
