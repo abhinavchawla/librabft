@@ -12,4 +12,5 @@ class MemPool():
         self.transactions[txn] = "PENDING"
 
     def add_transactions(self, txn):
-        self.transactions[txn] = "UNTOUCHED"
+        if txn not in self.transactions:
+            self.transactions[txn] = "UNTOUCHED"
