@@ -19,6 +19,9 @@ class scenario_generator():
 		else:
 			with open(fileName,'r') as f:
 				self.json_dict = json.load(f)
+				self.nodes = self.json_dict['nodes']
+				self.twins = self.json_dict['twins']
+				self.rounds = self.json_dict['rounds']
 		self.current_scenario_index = 0
 	def generate_scenario(self):
 		if self.current_scenario_index < len(self.json_dict['scenarios']):
@@ -42,9 +45,9 @@ class scenario_generator():
 			tmp_mp['leaders'] = {}
 			tmp_mp['partitions'] = {}
 			for j in range(len(leaders_per_round[i])):
-				tmp_mp['leaders'][str(j)] = leaders_per_round[i][j][0]
+				tmp_mp['leaders'][str(j+1)] = leaders_per_round[i][j][0]
 			for j in range(len(leaders_per_round[i])):
-				tmp_mp['partitions'][str(j)] = leaders_per_round[i][j][1]
+				tmp_mp['partitions'][str(j+1)] = leaders_per_round[i][j][1]
 			json_dict['scenarios'].append(tmp_mp)
 		return json_dict
 	def run(self, config, fileName=None):
@@ -125,7 +128,6 @@ class scenario_generator():
 		else:
 			perm = [p for p in product(scenario_leaders, repeat=rounds)]
 		if config.get("prune") ==True:
-			print(len(perm_lst))
 			pruned_partition_scenarios=self.prune(perm_lst,config.get("type"),config.get("value"))
 			return pruned_partition_scenarios
 		return perm

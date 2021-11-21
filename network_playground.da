@@ -1,5 +1,5 @@
 class Network_Playground(process):
-    def setup(num_nodes, num_target_nodes, num_rounds, round_partitions:dict, validators:set):
+    def setup(num_nodes, num_target_nodes, num_rounds, round_partitions:dict, validators:list):
         self.drop_config_round = {}
         self.speculative_round = 0                  # Current round of the system, based on message intercepted
         self.twin_config = {}
@@ -10,8 +10,11 @@ class Network_Playground(process):
     def run():
         populate_twin_config()
         populate_drop_config_round()
+        print("Validators", validators)
         print("Twin Config", twin_config)
         print("Drop Config", drop_config_round)
+        for i, v in enumerate(validators):
+            print(f'{v}: {i}')
 
         while not done:                             # Stopping condition
             round_done = False
@@ -35,23 +38,27 @@ class Network_Playground(process):
     in the same partition as the sender, or to both the node and its twin, if all of the three are 
     present in the same partition.
     '''
-    def receive(msg=('proposalMessageSent', m, to), from_= p): # eg received(('proposalMessageSent', (proposalMessage, msg, sender), to), from_=vX)
+    def receive(msg=('proposalMessage', m, to), from_= p): # eg received(('proposalMessageSent', (proposalMessage, msg, sender), to), from_=vX)
         round_done = True
-        (tag, p_msg) = m
-        (block, _, _) = p_msg
-        msg_round = block.round
-        if not check_failure_config(tag, p, to):            # Check if the message is dropped according to the failure config
-            return
-        if to in twin_config:                               # Route message based on the twin_config
-            twinId = twin_config[to]
-            if not is_message_dropped(msg_round, p, to):
-                send((tag, m), to=to)
-            if not is_message_dropped(msg_round, p, twinId):
-                send((tag, m), to=twinId)
-        elif not is_message_dropped(msg_round, p, to):
-            send((tag, m), to=to)
-        if msg_round > speculative_round:
-            speculative_round = msg_round
+        p_msg = m
+        block = p_msg.block
+        msg_round = str(block.round)
+        # if not check_failure_config(tag, p, to):            # Check if the message is dropped according to the failure config
+        #     return
+        for validator in list(to):
+            if validator in twin_config:                               # Route message based on the twin_config
+                twinId = twin_config[validator]
+                if not is_message_dropped(msg_round, p, validator):
+                    output('Sending Proposal from playground 1', p, validator)
+                    send(('proposalMessage', m), to=validator)
+                if not is_message_dropped(msg_round, p, twinId):
+                    output('Sending Proposal from playground 2', p, twinId)
+                    send(('proposalMessage', m), to=twinId)
+            elif not is_message_dropped(msg_round, p, validator):
+                output('Sending Proposal from playground 3', p, validator)
+                send(('proposalMessage', m), to=validator)
+            if int(msg_round) > speculative_round:
+                speculative_round = int(msg_round)
 
 
     '''
@@ -105,7 +112,11 @@ class Network_Playground(process):
             speculative_round = msg_round
 
     def is_message_dropped(round, src, dst):
-        return dst in drop_config_round.find_or_return_false(round).find_or_return_false(src)
+        if round in drop_config_round:
+            if src in drop_config_round[round]:
+                if dst in drop_config_round[round][src]:
+                    return True
+        return False
 
     def populate_drop_config_round():
         for round_key in round_partitions:
@@ -114,8 +125,9 @@ class Network_Playground(process):
                 for src in partition:
                     for j in range(i+1, len(round_partitions[round_key])):
                         for dst in round_partitions[round_key][j]:
-                            split_network_round(list(validators)[src], list(validators)[src], round_key)
-                            split_network_round(list(validators)[dst], list(validators)[src], round_key)
+                            # print(f'round_key {round_key} src {src} dst {dst}')
+                            split_network_round(validators[src], validators[dst], round_key)
+                            split_network_round(validators[dst], validators[src], round_key)
 
     def split_network_round(src, dst, round):
         if round not in drop_config_round:

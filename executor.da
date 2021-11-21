@@ -1,5 +1,7 @@
 import driver
 from network_playground import Network_Playground
+from nacl.signing import SigningKey
+
 class TestExecutor(process):
     def setup(scenario, t):
         print("Scenario: ", scenario)
@@ -10,30 +12,30 @@ class TestExecutor(process):
         self.round_leaders = scenario['leaders']
         self.num_rounds = scenario['rounds']
         self.round_partitions = scenario['partitions']
-        self.validators = new(driver.Validator, num=num_nodes+num_target_nodes)
+        self.true_validators = new(driver.ValidatorX, num=num_nodes)
+        self.twin_validators = new(driver.ValidatorX, num=num_target_nodes)
+        self.validators_lst = list(self.true_validators) + list(self.twin_validators)
         self.playground = new(Network_Playground)
-        setup(self.playground, (num_nodes, num_target_nodes, num_rounds, round_partitions, validators))
-        start(self.playground)
+        setup(self.playground, (num_nodes, num_target_nodes, num_rounds, round_partitions, validators_lst))
         self.commit_config = None
 
     def run():        
+        self.setupValidators()
+        start(playground)
+        start(validators_lst)
+                
+    def setupValidators():
         for _ in range(self.num_nodes):
             sk = SigningKey.generate()
             pk = sk.verify_key
             self.public_keys_validators.append(pk)
             self.private_keys_validators.append(sk)
-        self.setupValidators()
-        start(validators)
-        start(playground)        
-                
-    def setupValidators():
-        for i in range(self.num_nodes+num_target_nodes):
-            if i >= num_nodes and i < num_nodes+num_target_nodes:               # Configure twins
-                setup(self.validators[num_nodes+i], (public_keys_validators[i], private_keys_validators[i], public_keys_validators, self.round_leaders, playground))
-            else:                                                               # Configure non-twins
-                setup(self.validators[i], (public_keys_validators[i], private_keys_validators[i], public_keys_validators, self.round_leaders, playground))
-            
-    # Wait for done message from the network playground
+        for i, v in enumerate(true_validators):
+            setup({v}, (i, private_keys_validators[i], public_keys_validators, None, true_validators, None, 0, None, self.playground, self.round_leaders))
+        for i, v in enumerate(twin_validators):
+            setup({v}, (i, private_keys_validators[i], public_keys_validators, None, true_validators, None, 0, None, self.playground, self.round_leaders))
+
+       # Wait for done message from the network playground
     def receive(msg=('done', vc_config, gdcb_config), from_= _):
         output('Safety check 1: ', check_safety_1(vc_config))
         output('Safety check 2: ', check_safety_2(gdcb_config))

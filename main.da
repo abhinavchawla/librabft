@@ -66,5 +66,6 @@ def main():
     while scenario:
         executor = new(TestExecutor)
         setup(executor, (scenario,5))
+        start(executor)
         scenario = None
         
