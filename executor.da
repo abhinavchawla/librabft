@@ -31,9 +31,9 @@ class TestExecutor(process):
             self.public_keys_validators.append(pk)
             self.private_keys_validators.append(sk)
         for i, v in enumerate(true_validators):
-            setup({v}, (i, private_keys_validators[i], public_keys_validators, None, true_validators, None, 0, None, self.playground, self.round_leaders))
+            setup({v}, (i, private_keys_validators[i], public_keys_validators, None, list(true_validators), None, 0, None, self.playground, self.round_leaders))
         for i, v in enumerate(twin_validators):
-            setup({v}, (i, private_keys_validators[i], public_keys_validators, None, true_validators, None, 0, None, self.playground, self.round_leaders))
+            setup({v}, (i, private_keys_validators[i], public_keys_validators, None, list(true_validators), None, 0, None, self.playground, self.round_leaders))
 
        # Wait for done message from the network playground
     def receive(msg=('done', vc_config, gdcb_config), from_= _):

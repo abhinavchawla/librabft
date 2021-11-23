@@ -60,12 +60,12 @@ class Validator(process):
         self.public_keys_validators = public_keys_validators
         self.public_keys_clients = public_keys_clients
         self.clients = clients
-
+        self.public_key = public_keys_validators[v_id]
         self.n = len(validators)
         self.f = (n-1)/3
         self.ledger = Ledger("Test_"+str(test_case_id)+"_persistent_ledger_"+str(v_id)+".txt")
         self.leaderElection = LeaderElection(validators, self.ledger)
-        self.blockTree = BlockTree(self, self.ledger, self.private_key, v_id)
+        self.blockTree = BlockTree(self.public_key, self.ledger, self.private_key, v_id)
         self.memPool = MemPool()        
         self.safety = Safety(private_key, public_keys_validators, 0, self.ledger, self.blockTree, v_id)
         self.done = False
@@ -156,6 +156,11 @@ class Validator(process):
             pacemaker_advance_round_qc(qc)                                  #   Pacemaker.advance_round(qc.vote_info_round)
             self.leaderElection.update_leaders(qc, pacemaker_current_round) #   LeaderElection.update_leaders(qc)
 
+    def get_leader(round):
+        return leaderElection.get_leader(current_round)
+    def get_public_key(pid):
+        index = validators.index(pid)
+        return public_keys_validators[index]
     def process_proposal_msg(P, sender):                                                    # Procedure process_proposal_msg(P)
         # output('inside process_proposal_msg ', P)
         if self.status == "crashed":
@@ -167,15 +172,18 @@ class Validator(process):
         process_certificate_qc(P.high_commit_qc)                                            #   process_certificate_qc(P.high_commit_qc)
         pacemaker_advance_round_tc(P.last_round_tc)                                         #   Pacemaker.advance_round_tc(P.last_round_tc)
         current_round = pacemaker_current_round                                             #   round <- Pacemaker.current_round
-        leader = leaderElection.get_leader(current_round)                                   #   leader = LeaderElection.get_leader(current_round)
-        if P.block.round != current_round or sender != leader or P.block.author != leader:  #   if P.block.round ≠ round ∨ P.sender ≠ leader ∨ P.block.author ≠ leader then
+        leader = get_leader(current_round)  
+        # output('leader: ', leader, sender, P.block.author, get_public_key(leader))
+                                 #   leader = LeaderElection.get_leader(current_round)
+        if P.block.round != current_round or sender != leader or P.block.author != get_public_key(leader):  #   if P.block.round ≠ round ∨ P.sender ≠ leader ∨ P.block.author ≠ leader then
             return                                                                          #       return
         blockTree.execute_and_insert(P.block)                                               #   Block-Tree.execute_and_insert(P) // Adds a new speculative state to the Ledger
         memPool.mark_transaction_pending(P.block.payload)
         vote_msg = safety.make_vote(P.block, P.last_round_tc)                               #   vote_msg <- Safety.make_vote(P.block, P.last_round_tc)
+        output('vote_msg: ', vote_msg)
         if vote_msg is not None:                                                            #   if vote_msg ≠ ⊥ then
-            next_leader = leaderElection.get_leader(current_round+1)
-            output("Sending vote message: ",vote_msg, " sender: ",self.v_id," receiver: ",next_leader,level=20)
+            next_leader = get_leader(current_round+1)
+            # output("Sending vote message: ",vote_msg, " sender: ",self.v_id," receiver: ",next_leader,level=20)
             send(('voteMessage',(vote_msg)), to= next_leader)                               # send vote_msg to LeaderElection.get_leader(current_round+1)
 
     def process_timeout_msg(M):                                                     # Procedure process_timeout_msg(M)
@@ -350,7 +358,14 @@ class ValidatorX( process, Validator):
             output("yay proposal")
             output("sending proposal message: ", b, " last timeout certificate: ",last_tc , " high commit qc: ", blockTree.high_commit_qc , " sender: ",self.v_id, " receiver: ",self.validators, level=20)
             send(('proposalMessage',(ProposalMsg(b,last_tc, blockTree.high_commit_qc))), to=validators)                 # broadcast ProposalMsg<b,last_tc,Blcok-Tree.high_commit_qc>
-
+    def receive(msg=('proposalMessagePlay', m,sender), from_= p):
+        output('proposal message received here: ', m, " sender: ",sender," receiver: ",self.v_id, level=20)
+        process_proposal_msg(m, sender)
+    
+    def get_leader(round):
+        print(validators)
+        return list(validators)[self.leaders[str(round)]]
+    
 # Replica with Fault Injection
 class ValidatorFI(process, Validator):
     def get_failure_config(message, to):
