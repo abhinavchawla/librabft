@@ -297,6 +297,9 @@ class Validator(process):
                 output('timeout called')
                 pacemaker_local_timeout_round()              
         exit()
+    
+    def inform_clients():
+        pass
 
 def main():
     nvalidators = int(sys.argv[1]) if len(sys.argv) > 1 else 7
@@ -361,6 +364,10 @@ class ValidatorX( process, Validator):
     def receive(msg=('proposalMessagePlay', m,sender), from_= p):
         output('proposal message received here: ', m, " sender: ",sender," receiver: ",self.v_id, level=20)
         process_proposal_msg(m, sender)
+    
+    def receive(msg=('voteMessagePlay', m,sender), from_= p):
+        output('Vote message received here: ', m, " sender: ",sender," receiver: ",self.v_id, level=20)
+        process_vote_msg(m)
     
     def get_leader(round):
         print(validators)
