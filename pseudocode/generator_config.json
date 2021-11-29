@@ -2,6 +2,11 @@
     "nodes":4,
     "twins":1,
     "rounds":10,
+    "intra-partition-config":{
+        "message-drops": ["vote","proposals", "timeout"],
+        "max-message-drops": 2,
+        "only-first-message-drop":true
+    },
     "step-1":{
         "prune": false
     },

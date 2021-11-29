@@ -1,5 +1,5 @@
 import random
-from itertools import permutations, product
+from itertools import permutations, product, chain, combinations
 import copy
 import json
 
@@ -10,9 +10,10 @@ class scenario_generator():
 			self.nodes = config.get("nodes")
 			self.twins = config.get("twins")
 			self.rounds = config.get("rounds")
-			scenarios=self.get_partition_scenarios(config.get("nodes"),config.get("twins"),config.get("step-1"))
+			scenarios=self.get_partition_scenarios(config.get("nodes"),config.get("twins"),config.get("step-1"), config.get("intra-partition-config"))
 			scenario_leaders=self.get_scenario_leaders(scenarios, config.get("nodes"),config.get("twins"),config.get("step-2"))
 			leaders_per_round=self.leader_per_round_in_scenario(scenario_leaders, config.get("rounds"), config.get("step-3"))
+			print(leaders_per_round)
 			self.json_dict = self.create_json_dict(leaders_per_round, config.get("nodes"), config.get("twins"), config.get("rounds"))
 			with open('data.json', 'w') as f:
 				json.dump(self.json_dict, f, indent=4)
@@ -44,10 +45,13 @@ class scenario_generator():
 			tmp_mp = {}
 			tmp_mp['leaders'] = {}
 			tmp_mp['partitions'] = {}
+			tmp_mp['message-drops'] = {}
 			for j in range(len(leaders_per_round[i])):
 				tmp_mp['leaders'][str(j+1)] = leaders_per_round[i][j][0]
 			for j in range(len(leaders_per_round[i])):
-				tmp_mp['partitions'][str(j+1)] = leaders_per_round[i][j][1]
+				tmp_mp['partitions'][str(j+1)] = leaders_per_round[i][j][1][0]
+			for j in range(len(leaders_per_round[i])):
+				tmp_mp['message-drops'][str(j+1)] = leaders_per_round[i][j][1][1]
 			json_dict['scenarios'].append(tmp_mp)
 		return json_dict
 	def run(self, config, fileName=None):
@@ -57,7 +61,7 @@ class scenario_generator():
 	# we will use sterling's number of 2nd kind to get all possible partion scenarios
 	# the reference for getting the sterling set is given in the pseudocode
 	# we then use the prune function to remove unwanted partition scenarios
-	def get_partition_scenarios(self,n,twins,config):
+	def get_partition_scenarios(self,n,twins,config, intra_partition_config):
 		# generating all possible non-empty partitions ranging from 1 to n
 		partition_scenario_list=[]
 		for i in range(1,n+twins+1):
@@ -65,12 +69,33 @@ class scenario_generator():
 			for i in tmp_lst:
 				if self.isValid(i,twins,n):
 					partition_scenario_list.append(i)
-		
+		intra_partition_scenario_list = []
+		for scenario in partition_scenario_list:
+			intra_partition_scenario_list+=self.create_intra_partition_scenarios(scenario, intra_partition_config)
+		print(len(intra_partition_scenario_list))
 		# sending partition scenarios for pruning
 		if config.get("prune") ==True:
 			pruned_partition_scenarios=self.prune(partition_scenario_list,config.get("type"),config.get("value"))
 			return pruned_partition_scenarios
-		return partition_scenario_list
+		return intra_partition_scenario_list
+	
+	def create_intra_partition_scenarios(self, scenario, config):
+		res = []
+		dropped_messages = config.get("message-drops")		
+		message_drops_combinations = list(chain.from_iterable(combinations(dropped_messages,r) for r in range(len(dropped_messages)+1)))
+		max_message_drops = config.get("max-message-drops")
+		
+		for comb in message_drops_combinations:
+			if len(comb) > max_message_drops:
+				message_drops_combinations.remove(comb)
+		tmp = [message_drops_combinations]*len(scenario)
+		cart_product = list(product(*tmp))
+		for i in range(len(cart_product)):
+			res.append((scenario,cart_product[i]))
+		return res
+
+		# print(message_drops_combinations)
+			
 	# STEP 2: In this function we'll get all possible leaders for a partition scenario
 	# In this function we are getting the pruned list of partition scenarios
 	# The leader_type parameter tells whether the leaders should be twins or original nodes

@@ -157,7 +157,7 @@ class Validator(process):
             self.leaderElection.update_leaders(qc, pacemaker_current_round) #   LeaderElection.update_leaders(qc)
 
     def get_leader(round):
-        return leaderElection.get_leader(current_round)
+        return leaderElection.get_leader(round)
     def get_public_key(pid):
         index = validators.index(pid)
         return public_keys_validators[index]
@@ -302,8 +302,8 @@ class Validator(process):
         pass
 
 def main():
-    nvalidators = int(sys.argv[1]) if len(sys.argv) > 1 else 7
-    nclients = int(sys.argv[2]) if len(sys.argv) > 2 else 10
+    nvalidators = int(sys.argv[1]) if len(sys.argv) > 1 else 4
+    nclients = int(sys.argv[2]) if len(sys.argv) > 2 else 1
     maxtimeout = int(sys.argv[4]) if len(sys.argv) > 3 else 3000
 
     clients = new(Client, num=nclients)
@@ -326,7 +326,7 @@ def main():
         private_keys_clients.append(sk)
     #output(validators)
     for i, v in enumerate(validators):
-        setup({v}, (i, private_keys_validators[i], public_keys_validators, public_keys_clients, validators, clients, 100))
+        setup({v}, (i, private_keys_validators[i], public_keys_validators, public_keys_clients, list(validators), clients, 10))
     for i, c in enumerate(clients):
         setup({c}, (i, private_keys_clients[i], public_keys_validators, validators))
 
@@ -352,6 +352,7 @@ class ValidatorX( process, Validator):
 
     def process_new_round_event(last_tc):
         current_round = self.pacemaker_current_round # round = 3
+        output("current_round: ", current_round)
         if self.v_id == self.leaders[str(current_round)]:                                                            # if u = LeaderElection.get_leader(pacemaker.current_round) then                                                                                                            # Leader code: generate proposal
             b = blockTree.generate_block(generate_random_transaction(),pacemaker_current_round)                                                 # b <- Block-Tree.generate_block(MemPool.get_transactions(), Pacemaker.current_round)
             # if pacemaker_current_round==9:
@@ -370,7 +371,6 @@ class ValidatorX( process, Validator):
         process_vote_msg(m)
     
     def get_leader(round):
-        print(validators)
         return list(validators)[self.leaders[str(round)]]
     
 # Replica with Fault Injection
