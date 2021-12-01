@@ -12,7 +12,7 @@
 #         self.clienttimeout = config['clienttimeout']
 #         self.test_case_id = test_case_id
 #         self.failure_config = config['failures']
-#         self.nclientops = config['nclientops']
+#         self.n_client_ops = config['n_client_ops']
 
     
 #     def run():
@@ -42,7 +42,7 @@
 #         for i, v in enumerate(validators):
 #             setup({v}, (i, private_keys_validators[i], public_keys_validators, public_keys_clients, validators, clients, test_case_id, failure_config))
 #         for i, c in enumerate(clients):
-#             setup({c}, (i, private_keys_clients[i], public_keys_validators, validators, nclientops, nfaultyvalidators))
+#             setup({c}, (i, private_keys_clients[i], public_keys_validators, validators, n_client_ops, nfaultyvalidators))
 #         start(clients)
 #         start(validators)
 

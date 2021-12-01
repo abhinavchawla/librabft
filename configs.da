@@ -29,7 +29,7 @@ configs = [{
     'maxtimeout':4, 
     'nfaultyvalidators':1,
     'clienttimeout':8,
-    'nclientops':3, 
+    'n_client_ops':3, 
     'failures': []
     },
     {
@@ -38,7 +38,7 @@ configs = [{
     'maxtimeout':4, 
     'nfaultyvalidators':1, 
     'clienttimeout': 5,
-    'nclientops': 6 ,
+    'n_client_ops': 6 ,
     'failures': failure_config2.failures
     },
     {
@@ -47,7 +47,7 @@ configs = [{
     'maxtimeout':4, 
     'nfaultyvalidators':1, 
     'clienttimeout': 5,
-    'nclientops': 6 ,
+    'n_client_ops': 6 ,
     'failures': failure_config3.failures
     },
     {
@@ -56,7 +56,7 @@ configs = [{
     'maxtimeout':4, 
     'nfaultyvalidators':1, 
     'clienttimeout': 5,
-    'nclientops': 6 ,
+    'n_client_ops': 6 ,
     'failures': []
     },
     {
@@ -65,7 +65,7 @@ configs = [{
     'maxtimeout':4, 
     'nfaultyvalidators':1, 
     'clienttimeout': 5,
-    'nclientops': 6 ,
+    'n_client_ops': 6 ,
     'failures': failure_config4.failures
     }
 
