@@ -127,20 +127,23 @@ class scenario_generator():
 		offset=n-twins
 		# getting the partition with the largest length
 		for partition in scenario:
-			max_count=max(max_count,len(partition))
 			if(max_count<len(partition)):
 				max_count=len(partition)
-				max_partition=partition
+				max_partition = partition
 		# checking the size of largest partition against 2f+1
+		cnt=0
 		if(max_count>=(2*twins)+1):
 			# checking if the partition contains both the original node and its twin
 			for node in max_partition:
-				index=n.index(node)
-				if(index<offset and index+offset<len(n) and n[index+offset] in partition):
-					return False
-				elif(index>offset and index-offset>=0 and n[index-offset] in partition):
-					return False
-			return True
+				if node >= n:
+					if node-n not in max_partition:
+						cnt+=1
+				else:
+					cnt+=1
+			if cnt>=(2*twins)+1:
+				return True
+			else:
+				return False
 		else:
 			return False
 
