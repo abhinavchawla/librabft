@@ -61,7 +61,7 @@ def main():
     with open("pseudocode/generator_config.json", "r") as read_file:
         data = json.load(read_file)
 
-    generator = scenario_generator(config=data)
+    generator = scenario_generator(fileName="data_syncup.json")
     scenario = generator.generate_scenario()
     while scenario:
         executor = new(TestExecutor)

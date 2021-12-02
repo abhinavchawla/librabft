@@ -1,5 +1,5 @@
 class Network_Playground(process):
-    def setup(num_nodes, num_target_nodes, num_rounds, round_partitions:dict, validators:list):
+    def setup(num_nodes, num_target_nodes, num_rounds, round_partitions:dict, validators:list, message_drops):
         self.drop_config_round = {}
         self.speculative_round = 0                  # Current round of the system, based on message intercepted
         self.twin_config = {}
@@ -7,10 +7,13 @@ class Network_Playground(process):
         self.vote_count_config = None
         self.done = False
         self.liveness_timeout = 7 * 10              # (7 * delta), configurable, hopes to receive a proposal or vote message
+        self.validators_mp = {}
 
     def run():
         populate_twin_config()
         populate_drop_config_round()
+        print(self.validators_mp, message_drops)
+        # print(is_intra_partition_msg_drop('3', validators[0], 'proposals'))
         print("Validators", validators)
         print("Twin Config", twin_config)
         print("Drop Config", drop_config_round)
@@ -73,6 +76,8 @@ class Network_Playground(process):
     is passed on to the executor, which can then check the safety.
     '''
     def receive(msg=('voteMessage', m, to), from_= p):
+        output("checkpoint 1 in votemessageplayground")
+        output("RECEIVED VOTE MESSAGE AT PLAYGROUND",m,to,p)
         round_done = True
         v_msg = m
         v_info= v_msg.vote_info
@@ -85,7 +90,7 @@ class Network_Playground(process):
         else:
             true_node = p
         if to in twin_config:                               # Route message based on the twin_config
-            twinId = twin_config[validator]
+            twinId = twin_config[to]
             if not is_message_dropped(msg_round, p, to):
                 output('Sending Votes from playground 1', p, to)
                 send(('voteMessagePlay', m,true_node), to=to)
@@ -98,21 +103,38 @@ class Network_Playground(process):
         if int(msg_round) > speculative_round:
             speculative_round = int(msg_round)
 
-    def receive(msg=('timeoutMessageSent', m,), from_= p):
-        (tag, to_msg) = m
-        (to_info, _, _, _, _) = to_msg
-        msg_round = to_info.round
-        if not check_failure_config(tag, p, to, round):    # Check if the message is dropped according to the failure config
-            return
-        if not is_message_dropped(msg_round, p, to):
-            send((tag, m), to=to)
-        if msg_round > speculative_round:
-            speculative_round = msg_round
+    def receive(msg=('timeoutMessage', m, to), from_= p):
+        msg_round = str(m.tmo_info.round)
 
-    def receive(msg=('initiateRecoverySent', m,), from_= p):
-        (tag, n) = m
-        if not is_message_dropped(speculative_round, p, to):
-            send((tag, m), to=to)
+        # if not check_failure_config(tag, p, to):            # Check if the message is dropped according to the failure config
+        #     return
+        if p in reverse_twin_config:
+            true_node = reverse_twin_config[p]
+        else:
+            true_node = p
+        for validator in list(to):
+            if validator in twin_config:  # Route message based on the twin_config
+                twinId = twin_config[validator]
+                if not is_message_dropped(msg_round, p, validator):
+                    output('Sending Timeout from playground 1', p, validator)
+                    send(('timeoutMessagePlay', m, true_node), to=validator)
+                if not is_message_dropped(msg_round, p, twinId):
+                    output('Sending Timeout from playground 2', p, twinId)
+                    send(('timeoutMessagePlay', m, true_node), to=twinId)
+            elif not is_message_dropped(msg_round, p, validator):
+                output('Sending Timeout from playground 3', p, validator)
+                send(('timeoutMessagePlay', m, true_node), to=validator)
+            if int(msg_round) > speculative_round:
+                speculative_round = int(msg_round)
+
+    def receive(msg=('initiateRecovery', nonce, r1,r2, to), from_= p):
+        output("initiateRecovery message received at playground from ",p, " to ", to, " message m ", nonce, r1,r2)
+
+        send(("initiateRecoveryPlay",nonce,r1,r2,p), to=to)
+
+    def receive(msg=('recoveryMsg', m, x, n, to), from_= p):
+        output("recoveryMsg message received at playground from ",p, " to ", to, " message m ", m,x,n)
+        send(("recoveryMsgPlay",m,x,n,p), to=to)
 
     def receive(msg=('recoveryMsgSent', m), from_= p):
         (tag, r_msg, _, _) = m
@@ -140,6 +162,22 @@ class Network_Playground(process):
                             split_network_round(validators[src], validators[dst], round_key)
                             split_network_round(validators[dst], validators[src], round_key)
 
+    def is_intra_partition_msg_drop(rnd, src, message):
+        src = self.validators_mp[src]
+        partition_scenario_current = round_partitions[rnd]
+        partition = -1
+        for i, partition in enumerate(partition_scenario_current):
+            if src in partition:
+                partition = i
+                break
+        if partition == -1:
+            return True
+        if message in message_drops[rnd][partition]:
+            return True
+        else:
+            return False
+
+
     def split_network_round(src, dst, round):
         if round not in drop_config_round:
             drop_config_round[round] = {}
@@ -162,6 +200,9 @@ class Network_Playground(process):
         for i in range (0, num_target_nodes):
             twin_config[validators[i]]= validators[num_nodes+i]
             reverse_twin_config[validators[num_nodes+i]]= validators[i]
+        for i in range(len(validators)):
+            validators_mp[validators[i]] = i
+
 
     def process_votes(v_info, sender):
         '''
