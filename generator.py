@@ -127,23 +127,20 @@ class scenario_generator():
 		offset=n-twins
 		# getting the partition with the largest length
 		for partition in scenario:
+			max_count=max(max_count,len(partition))
 			if(max_count<len(partition)):
 				max_count=len(partition)
-				max_partition = partition
+				max_partition=partition
 		# checking the size of largest partition against 2f+1
-		cnt=0
 		if(max_count>=(2*twins)+1):
 			# checking if the partition contains both the original node and its twin
 			for node in max_partition:
-				if node >= n:
-					if node-n not in max_partition:
-						cnt+=1
-				else:
-					cnt+=1
-			if cnt>=(2*twins)+1:
-				return True
-			else:
-				return False
+				index=n.index(node)
+				if(index<offset and index+offset<len(n) and n[index+offset] in partition):
+					return False
+				elif(index>offset and index-offset>=0 and n[index-offset] in partition):
+					return False
+			return True
 		else:
 			return False
 
@@ -157,6 +154,26 @@ class scenario_generator():
 			perm = [p for p in product(scenario_leaders, repeat=rounds)]
 		if config.get("prune") ==True:
 			pruned_partition_scenarios=self.prune(perm_lst,config.get("type"),config.get("value"))
+
+			for j in range(len(pruned_partition_scenarios)):
+				print(j)
+				round_lst=copy.deepcopy(list(pruned_partition_scenarios[j]))
+
+				for i in range(7,10):
+					round=copy.deepcopy(list(round_lst[i]))
+					round_details=copy.deepcopy(list(round[1]))
+					drop_list=copy.deepcopy(list(round_details[1]))
+					drop_list.clear()
+					drop_list=tuple(drop_list)
+					drop_list+=()
+					round_details[0].clear()
+					round_details[0].append([0,1,2,3,4])
+					round_details[1]=drop_list
+					round[1]=tuple(round_details)
+					round_lst[i]=tuple(round)
+				pruned_partition_scenarios[j]=tuple(round_lst)
+				#print(pruned_partition_scenarios[j])
+
 			return pruned_partition_scenarios
 		return perm
 
