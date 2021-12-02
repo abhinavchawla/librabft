@@ -124,23 +124,24 @@ class scenario_generator():
 	def isValid(self,scenario,twins,n):
 		max_count=0
 		max_partition=[]
-		offset=n-twins
 		# getting the partition with the largest length
 		for partition in scenario:
-			max_count=max(max_count,len(partition))
 			if(max_count<len(partition)):
 				max_count=len(partition)
 				max_partition=partition
 		# checking the size of largest partition against 2f+1
 		if(max_count>=(2*twins)+1):
 			# checking if the partition contains both the original node and its twin
-			for node in max_partition:
-				index=n.index(node)
-				if(index<offset and index+offset<len(n) and n[index+offset] in partition):
-					return False
-				elif(index>offset and index-offset>=0 and n[index-offset] in partition):
-					return False
-			return True
+			cnt = 0
+			for i in range(len(max_partition)):
+				if max_partition[i] < n:
+					cnt+=1
+				elif max_partition[i] - n not in max_partition:
+					cnt+=1
+			if cnt>=(2*twins)+1:
+				return True
+			else:
+				return False
 		else:
 			return False
 
