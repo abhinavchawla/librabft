@@ -73,7 +73,10 @@ class Safety():
         return None
 
     def make_timeout(self, round, high_qc, last_tc, author):                # Function make_timeout(round, high_qc, last_tc)
-        qc_round = high_qc.vote_info.round                                  #   qc_round <- high_qc.vote_info.round
+        if high_qc:
+            qc_round = high_qc.vote_info.round                                  #   qc_round <- high_qc.vote_info.round
+        else:
+            qc_round = 0                                                        #   qc_round <- 0
         if self.valid_signatures(high_qc, last_tc) and \
             self.__safe_to_timeout(round, qc_round, last_tc):               #   if valid_signatures(high_qc, last_tc) ∧ safe_to_timeout(round, qc_round, last_tc) then
             self.__increase_highest_vote_round(round)                       #       increase_highest_vote_round(round) // Stop voting for round
@@ -83,11 +86,11 @@ class Safety():
         return None
     
     def valid_signatures(self, qc, last_tc):
-        if qc:
-            # self.__public_keys[author].verify( , qc)
-            for signer, signature in zip(qc.signers, qc.signatures):
-                if not verify(self.__public_keys[signer],qc.ledger_commit_info, signature):
-                    print('unable to verify signature')
-                    return False
-            #return verify(self.__public_keys[qc.author],qc.signatures, qc.author_signature)
+        # if qc:
+        #     # self.__public_keys[author].verify( , qc)
+        #     for signer, signature in zip(qc.signers, qc.signatures):
+        #         if not verify(self.__public_keys[signer],qc.ledger_commit_info, signature):
+        #             print('unable to verify signature')
+        #             return False
+        #     #return verify(self.__public_keys[qc.author],qc.signatures, qc.author_signature)
         return True

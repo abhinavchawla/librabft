@@ -55,19 +55,32 @@
 #         test_case+=1
 
 import json
+import time
+
 from generator import scenario_generator
 from executor import TestExecutor
 def main():
     with open("pseudocode/generator_config.json", "r") as read_file:
         data = json.load(read_file)
 
+    # generator = scenario_generator(fileName="data_syncup.json")
     generator = scenario_generator(fileName="data_syncup.json")
     scenario = generator.generate_scenario()
+
     i = 0
     while scenario:
+        output('**********************************************************')
+        output("new scenario started")
+        output('**********************************************************')
         executor = new(TestExecutor)
         setup(executor, (scenario,i))
         start(executor)
+        await(received('done', from_=executor))
+        end(executor)
+        output('received done from executor')
+        time.sleep(2)
+
         scenario = None
+        # scenario = generator.generate_scenario()
         i+=1
         

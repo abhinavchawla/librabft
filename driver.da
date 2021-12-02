@@ -115,7 +115,7 @@ class Validator(process):
         
 
     def pacemaker_process_remote_timeout(tmo):
-        output('processing remote timeout message sender: ', tmo.tmo_info.sender, ' for round: ', tmo.tmo_info.round)
+        output('processing remote timeout message sender: ', tmo.tmo_info.sender, ' for round: ', tmo.tmo_info.round, ' with self.f: ', self.f)
         tmo_info = tmo.tmo_info
         if tmo_info.round < self.pacemaker_current_round:
             return None
@@ -124,12 +124,19 @@ class Validator(process):
         if not any(tmo_info.sender==t.sender  for t in self.pacemaker_pending_timeouts[tmo_info.round]):
             self.pacemaker_pending_timeouts[tmo_info.round].append(tmo_info) # ppt[2] = [B.ti, C.ti]
         if len(self.pacemaker_pending_timeouts[tmo_info.round])==self.f+1:
+            output('received f+1 timeouts for round: ', tmo_info.round, pacemaker_current_round)
             pacemaker_stop_timer(self.pacemaker_current_round)
             self.pacemaker_local_timeout_round()  ### wth is bracha timeout
         if len(self.pacemaker_pending_timeouts[tmo_info.round]) == 2*self.f+1: #ppt[2] = [B.ti, C.ti, D.ti]
+            output('received 2f+1 timeouts for round: ', tmo_info.round, pacemaker_current_round)
+            tmo_high_qc_rounds = []
+            for t in self.pacemaker_pending_timeouts[tmo_info.round]:
+                if t.high_qc:
+                    tmo_high_qc_rounds.append(t.high_qc.vote_info.round)
             return TC(round = tmo_info.round,
-                    tmo_high_qc_rounds = [t.high_qc.vote_info.round for t in self.pacemaker_pending_timeouts[tmo_info.round]],
+                    tmo_high_qc_rounds = tmo_high_qc_rounds,
                     tmo_signatures = [t.signature for t in self.pacemaker_pending_timeouts[tmo_info.round]]) ## an array/set of rounds?
+
         return None
     
     def pacemaker_advance_round_qc(qc):
@@ -358,42 +365,6 @@ class Validator(process):
         send('done', to=parent())              
         exit()
 
-def main():
-    config(visualize is True)
-    nvalidators = int(sys.argv[1]) if len(sys.argv) > 1 else 4
-    nclients = int(sys.argv[2]) if len(sys.argv) > 2 else 1
-
-    clients = new(Client, num=nclients)
-    validators = new(Validator, num=nvalidators)
-    public_keys_validators=[]
-    private_keys_validators=[]
-    for _ in range(nvalidators):
-        sk = SigningKey.generate()
-        pk = sk.verify_key
-        public_keys_validators.append(pk)
-        private_keys_validators.append(sk)
-    #print(public_keys_validators)
-    #print(private_keys_validators)
-    public_keys_clients=[]
-    private_keys_clients=[]
-    for _ in range(nclients):
-        sk = SigningKey.generate()
-        pk = sk.verify_key
-        public_keys_clients.append(pk)
-        private_keys_clients.append(sk)
-    #output(validators)
-    for i, v in enumerate(validators):
-        setup({v}, (i, private_keys_validators[i], public_keys_validators, public_keys_clients, list(validators), clients, 10))
-    for i, c in enumerate(clients):
-        setup({c}, (i, private_keys_clients[i], public_keys_validators, validators, 10, 1))
-
-    start(clients)
-    start(validators)
-
-    await (each(v in validators, has= received('done', from_=v)))
-    output('done with all the validator work, quitting')
-
-
 
 class ValidatorX( process, Validator):
     'Twins Validator'
@@ -402,6 +373,7 @@ class ValidatorX( process, Validator):
         super().setup(v_id, private_key, public_keys_validators, public_keys_clients, validators, clients, test_case_id, failures, file_id)
         self.playground = playground
         self.leaders = leaders
+        self.cur=0
 
     def send(message, to):
         updated_message = (*message, to)
@@ -409,8 +381,10 @@ class ValidatorX( process, Validator):
         super().send(updated_message, to=self.playground)
     
     def generate_random_transaction():
-        letters = string.ascii_letters
-        return ''.join(random.choice(letters) for i in range(10))
+        # letters = string.ascii_letters
+        # return ''.join(random.choice(letters) for i in range(10))
+        self.cur+=1
+        return string.ascii_letters[self.cur]+"_"+str(self.v_id)
 
     def process_new_round_event(last_tc):
         current_round = self.pacemaker_current_round # round = 3
@@ -422,6 +396,8 @@ class ValidatorX( process, Validator):
             #     exit()
             # output('message being sent ', pickle.dumps(ProposalMsg(b,last_tc, blockTree.high_commit_qc)))
             output("yay proposal")
+            time.sleep(1)
+            #await(timeout(1))
             output("sending proposal message: ", b, " last timeout certificate: ",last_tc , " high commit qc: ", blockTree.high_commit_qc , " sender: ",self.v_id, " receiver: ",self.validators, level=20)
             send(('proposalMessage',(ProposalMsg(b,last_tc, blockTree.high_commit_qc))), to=validators)                 # broadcast ProposalMsg<b,last_tc,Blcok-Tree.high_commit_qc>
     def receive(msg=('proposalMessagePlay', m,sender), from_= p):

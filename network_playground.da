@@ -6,8 +6,9 @@ class Network_Playground(process):
         self.reverse_twin_config = {}
         self.vote_count_config = None
         self.done = False
-        self.liveness_timeout = 7 * 10              # (7 * delta), configurable, hopes to receive a proposal or vote message
+        self.liveness_timeout = 20 * 2              # (7 * delta), configurable, hopes to receive a proposal or vote message
         self.validators_mp = {}
+        self.round_done = False
 
     def run():
         populate_twin_config()
@@ -21,15 +22,17 @@ class Network_Playground(process):
             print(f'{v}: {i}')
 
         while not done:                             # Stopping condition
-            round_done = False
+            self.round_done = False
+            output("Speculative Round: ", speculative_round)
             if await (speculative_round >= num_rounds+3):   # Over-guesstimating, when the round becomes num_rounds+3
+                output('Playground done, setting done to true')
                 done = True                         # stop processing
-            elif round_done:
+            elif self.round_done:
                 print ('round done')
             elif timeout(liveness_timeout):
                 print ('Liveness Violated')
                 done = True
-
+        output('Playground Done, sending done to parent')
         send (('done', vote_count_config), to=parent())                  # Send a message to parent, ie Executor to let it know of the processing stoppage
 
     '''
@@ -43,7 +46,7 @@ class Network_Playground(process):
     present in the same partition.
     '''
     def receive(msg=('proposalMessage', m, to), from_= p): # eg received(('proposalMessageSent', (proposalMessage, msg, sender), to), from_=vX)
-        round_done = True
+        self.round_done = True
         p_msg = m
         block = p_msg.block
         msg_round = str(block.round)
@@ -78,7 +81,7 @@ class Network_Playground(process):
     def receive(msg=('voteMessage', m, to), from_= p):
         output("checkpoint 1 in votemessageplayground")
         output("RECEIVED VOTE MESSAGE AT PLAYGROUND",m,to,p)
-        round_done = True
+        self.round_done = True
         v_msg = m
         v_info= v_msg.vote_info
         msg_round = str(v_info.round)
@@ -104,6 +107,7 @@ class Network_Playground(process):
             speculative_round = int(msg_round)
 
     def receive(msg=('timeoutMessage', m, to), from_= p):
+        output("checkpoint 1 in timeoutmessageplayground")
         msg_round = str(m.tmo_info.round)
 
         # if not check_failure_config(tag, p, to):            # Check if the message is dropped according to the failure config

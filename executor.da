@@ -25,8 +25,18 @@ class TestExecutor(process):
 
     def run():        
         self.setupValidators()
+        output('Starting the network playground', self.playground)
         start(playground)
         start(validators_lst)
+        await(some(received(('done', m), from_=playground)))
+        output('await done from playground, killing validators')
+        for v in validators_lst:
+            end(v)
+        end(playground)
+        output('executor has ended playground and validators')
+        output('executor has ended, sending done to parent')
+        send('done', to=parent())
+
                 
     def setupValidators():
         for _ in range(self.num_nodes):
@@ -40,10 +50,11 @@ class TestExecutor(process):
             setup({v}, (i, private_keys_validators[i], public_keys_validators, [], list(true_validators), [], self.test_id, None, self.playground, self.round_leaders,i+self.num_nodes))
 
        # Wait for done message from the network playground
-    def receive(msg=('done', vc_config, gdcb_config), from_= _):
-        output('Safety check 1: ', check_safety_1(vc_config))
-        output('Safety check 2: ', check_safety_2(gdcb_config))
-        output('Safety check 3: ', check_safety_3(commit_config))
+    def receive(msg=('done', vc_config), from_= _):
+        output('received done from playground, vc_config: ', vc_config)
+        #output('Safety check 1: ', check_safety_1(vc_config))
+        #output('Safety check 2: ', check_safety_2(gdcb_config))
+        #output('Safety check 3: ', check_safety_3(commit_config))
 
     # In ValidatorX, override the function Ledger.commit() to send a message
     # <commitInfo, commit_id, round, sender> to the parent(executor) and call the 
