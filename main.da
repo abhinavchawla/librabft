@@ -63,9 +63,11 @@ def main():
 
     generator = scenario_generator(fileName="data_syncup.json")
     scenario = generator.generate_scenario()
+    i = 0
     while scenario:
         executor = new(TestExecutor)
-        setup(executor, (scenario,5))
+        setup(executor, (scenario,i))
         start(executor)
         scenario = None
+        i+=1
         

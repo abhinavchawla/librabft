@@ -13,6 +13,7 @@ class TestExecutor(process):
         self.num_rounds = scenario['rounds']
         self.round_partitions = scenario['partitions']
         self.message_drops = {}
+        self.test_id = t
         if 'message-drops' in scenario:
             self.message_drops = scenario['message-drops']
         self.true_validators = new(driver.ValidatorX, num=num_nodes)
@@ -34,9 +35,9 @@ class TestExecutor(process):
             self.public_keys_validators.append(pk)
             self.private_keys_validators.append(sk)
         for i, v in enumerate(true_validators):
-            setup({v}, (i, private_keys_validators[i], public_keys_validators, [], list(true_validators), [], 0, None, self.playground, self.round_leaders,i))
+            setup({v}, (i, private_keys_validators[i], public_keys_validators, [], list(true_validators), [], self.test_id, None, self.playground, self.round_leaders,i))
         for i, v in enumerate(twin_validators):
-            setup({v}, (i, private_keys_validators[i], public_keys_validators, [], list(true_validators), [], 0, None, self.playground, self.round_leaders,i+self.num_nodes))
+            setup({v}, (i, private_keys_validators[i], public_keys_validators, [], list(true_validators), [], self.test_id, None, self.playground, self.round_leaders,i+self.num_nodes))
 
        # Wait for done message from the network playground
     def receive(msg=('done', vc_config, gdcb_config), from_= _):

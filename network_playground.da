@@ -145,10 +145,13 @@ class Network_Playground(process):
         if msg_round > speculative_round:
             speculative_round = msg_round
 
-    def is_message_dropped(round, src, dst):
+    def is_message_dropped(round, src, dst, message_type=None):
         if round in drop_config_round:
             if src in drop_config_round[round]:
                 if dst in drop_config_round[round][src]:
+                    if message_type is not None:
+                        if is_intra_partition_msg_drop(round,src, message_type):
+                            return True
                     return True
         return False
 
