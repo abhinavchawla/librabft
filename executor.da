@@ -25,16 +25,16 @@ class TestExecutor(process):
 
     def run():        
         self.setupValidators()
-        output('Starting the network playground', self.playground)
+        output('Executor: Starting the network playground', self.playground)
         start(playground)
         start(validators_lst)
         await(some(received(('done', m), from_=playground)))
-        output('await done from playground, killing validators')
+        output('Executor: await done from playground, killing validators')
         for v in validators_lst:
             end(v)
         end(playground)
-        output('executor has ended playground and validators')
-        output('executor has ended, sending done to parent')
+        output('Executor: executor has ended playground and validators')
+        output('Executor: executor has ended, sending done to parent')
         print('******************************************** safety property is: ', check_safety_3())
         send('done', to=parent())
 
@@ -52,7 +52,7 @@ class TestExecutor(process):
 
        # Wait for done message from the network playground
     def receive(msg=('done', vc_config), from_= _):
-        output('received done from playground, vc_config: ', vc_config)
+        output('Executor: received done from playground, vc_config: ', vc_config)
         #output('Safety check 1: ', check_safety_1(vc_config))
         #output('Safety check 2: ', check_safety_2(gdcb_config))
         #output('Safety check 3: ', check_safety_3(commit_config))
