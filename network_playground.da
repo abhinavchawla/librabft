@@ -18,26 +18,26 @@ class Network_Playground(process):
         print("Validators", validators)
         print("Twin Config", twin_config)
         print("Drop Config", drop_config_round)
-        output("Network_Playground : Validators", validators)
-        output("Network_Playground : Twin Config", twin_config)
-        output("Network_Playground : Drop Config", drop_config_round)
+        output("Network_Playground : Validators", validators,level=20)
+        output("Network_Playground : Twin Config", twin_config,level=20)
+        output("Network_Playground : Drop Config", drop_config_round,level=20)
         for i, v in enumerate(validators):
             print(f'{v}: {i}')
 
         while not done:                             # Stopping condition
             self.round_done = False
-            output("Network_Playground : Speculative Round: ", speculative_round)
+            output("Network_Playground : Speculative Round: ", speculative_round,level=20)
             if await (speculative_round >= num_rounds+3):   # Over-guesstimating, when the round becomes num_rounds+3
-                output('Network_Playground : Playground done, setting done to true')
+                output('Network_Playground : Playground done, setting done to true',level=20)
                 done = True                         # stop processing
             elif self.round_done:
                 print ('round done')
-                output('Network_Playground : round done')
+                output('Network_Playground : round done',level=20)
             elif timeout(liveness_timeout):
                 print ('Liveness Violated')
-                output('Network_Playground : Liveness Violated')
+                output('Network_Playground : Liveness Violated',level=20)
                 done = True
-        output('Network_Playground : Playground Done, sending done to parent')
+        output('Network_Playground : Playground Done, sending done to parent',level=20)
         send (('done', vote_count_config), to=parent())                  # Send a message to parent, ie Executor to let it know of the processing stoppage
 
     '''
@@ -65,13 +65,13 @@ class Network_Playground(process):
             if validator in twin_config:                               # Route message based on the twin_config
                 twinId = twin_config[validator]
                 if not is_message_dropped(msg_round, p, validator):
-                    output('Network_Playground : Sending Proposal from playground 1', p, validator)
+                    output('Network_Playground : Sending Proposal from playground 1', p, validator,level=20)
                     send(('proposalMessagePlay', m,true_node), to=validator)
                 if not is_message_dropped(msg_round, p, twinId):
-                    output('Network_Playground : Sending Proposal from playground 2', p, twinId)
+                    output('Network_Playground : Sending Proposal from playground 2', p, twinId,level=20)
                     send(('proposalMessagePlay', m,true_node), to=twinId)
             elif not is_message_dropped(msg_round, p, validator):
-                output('Network_Playground : Sending Proposal from playground 3', p, validator)
+                output('Network_Playground : Sending Proposal from playground 3', p, validator,level=20)
                 send(('proposalMessagePlay', m,true_node), to=validator)
             if int(msg_round) > speculative_round:
                 speculative_round = int(msg_round)
@@ -84,8 +84,8 @@ class Network_Playground(process):
     is passed on to the executor, which can then check the safety.
     '''
     def receive(msg=('voteMessage', m, to), from_= p):
-        output("Network_Playground : checkpoint 1 in votemessageplayground")
-        output("Network_Playground : RECEIVED VOTE MESSAGE AT PLAYGROUND",m,to,p)
+        output("Network_Playground : checkpoint 1 in votemessageplayground",level=20)
+        output("Network_Playground : RECEIVED VOTE MESSAGE AT PLAYGROUND",m,to,p,level=20)
         self.round_done = True
         v_msg = m
         v_info= v_msg.vote_info
@@ -100,19 +100,19 @@ class Network_Playground(process):
         if to in twin_config:                               # Route message based on the twin_config
             twinId = twin_config[to]
             if not is_message_dropped(msg_round, p, to):
-                output('Network_Playground : Sending Votes from playground 1', p, to)
+                output('Network_Playground : Sending Votes from playground 1', p, to,level=20)
                 send(('voteMessagePlay', m,true_node), to=to)
             if not is_message_dropped(msg_round, p, twinId):
-                output('Network_Playground : Sending Votes from playground 2', p, twinId)
+                output('Network_Playground : Sending Votes from playground 2', p, twinId,level=20)
                 send(('voteMessagePlay', m,true_node), to=twinId)
         elif not is_message_dropped(msg_round, p, to):
-            output('Network_Playground : Sending Votes from playground 3', p, to, msg_round)
+            output('Network_Playground : Sending Votes from playground 3', p, to, msg_round,level=20)
             send(('voteMessagePlay', m,true_node), to=to)
         if int(msg_round) > speculative_round:
             speculative_round = int(msg_round)
 
     def receive(msg=('timeoutMessage', m, to), from_= p):
-        output("Network_Playground : checkpoint 1 in timeoutmessageplayground")
+        output("Network_Playground : checkpoint 1 in timeoutmessageplayground",level=20)
         msg_round = str(m.tmo_info.round)
 
         # if not check_failure_config(tag, p, to):            # Check if the message is dropped according to the failure config
@@ -125,24 +125,24 @@ class Network_Playground(process):
             if validator in twin_config:  # Route message based on the twin_config
                 twinId = twin_config[validator]
                 if not is_message_dropped(msg_round, p, validator):
-                    output('Network_Playground : Sending Timeout from playground 1', p, validator)
+                    output('Network_Playground : Sending Timeout from playground 1', p, validator,level=20)
                     send(('timeoutMessagePlay', m, true_node), to=validator)
                 if not is_message_dropped(msg_round, p, twinId):
-                    output('Network_Playground : Sending Timeout from playground 2', p, twinId)
+                    output('Network_Playground : Sending Timeout from playground 2', p, twinId,level=20)
                     send(('timeoutMessagePlay', m, true_node), to=twinId)
             elif not is_message_dropped(msg_round, p, validator):
-                output('Network_Playground : Sending Timeout from playground 3', p, validator)
+                output('Network_Playground : Sending Timeout from playground 3', p, validator,level=20)
                 send(('timeoutMessagePlay', m, true_node), to=validator)
             if int(msg_round) > speculative_round:
                 speculative_round = int(msg_round)
 
     def receive(msg=('initiateRecovery', nonce, r1,r2, to), from_= p):
-        output("Network_Playground : initiateRecovery message received at playground from ",p, " to ", to, " message m ", nonce, r1,r2)
+        output("Network_Playground : initiateRecovery message received at playground from ",p, " to ", to, " message m ", nonce, r1,r2,level=20)
 
         send(("initiateRecoveryPlay",nonce,r1,r2,p), to=to)
 
     def receive(msg=('recoveryMsg', m, x, n, to), from_= p):
-        output("Network_Playground : recoveryMsg message received at playground from ",p, " to ", to, " message m ", m,x,n)
+        output("Network_Playground : recoveryMsg message received at playground from ",p, " to ", to, " message m ", m,x,n,level=20)
         send(("recoveryMsgPlay",m,x,n,p), to=to)
 
     def receive(msg=('recoveryMsgSent', m), from_= p):
@@ -229,5 +229,5 @@ class Network_Playground(process):
             ...
         }
         '''
-        output('Network_Playground : Processing Vote')
+        output('Network_Playground : Processing Vote',level=20)
         vote_count_config.find_or_create(v_info.round).find_or_create(v_info.id).add_to_set(sender)
