@@ -384,7 +384,7 @@ class ValidatorX( process, Validator):
         # letters = string.ascii_letters
         # return ''.join(random.choice(letters) for i in range(10))
         self.cur+=1
-        return string.ascii_letters[self.cur]+"_"+str(self.v_id)
+        return string.ascii_letters[self.cur]+"_"+str(self.file_id)
 
     def process_new_round_event(last_tc):
         current_round = self.pacemaker_current_round # round = 3

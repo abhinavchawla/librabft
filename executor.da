@@ -160,8 +160,8 @@ class TestExecutor(process):
     '''
     def check_safety_3():
         LedgerContent = dict()
-        for i in range(0, num_nodes+num_target_nodes):
-            fileName = "Test_"+str(0)+"_persistent_ledger_"+str(i)+".txt"
+        for i in range(0, num_nodes):
+            fileName = "Test_"+str(self.test_id)+"_persistent_ledger_"+str(i)+".txt"
             print(fileName)
             f = open(fileName, "r")
             Lines = f.readlines()

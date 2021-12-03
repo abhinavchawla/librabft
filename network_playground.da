@@ -6,7 +6,7 @@ class Network_Playground(process):
         self.reverse_twin_config = {}
         self.vote_count_config = None
         self.done = False
-        self.liveness_timeout = 20 * 2              # (7 * delta), configurable, hopes to receive a proposal or vote message
+        self.liveness_timeout = 7 * 2              # (7 * delta), configurable, hopes to receive a proposal or vote message
         self.validators_mp = {}
         self.round_done = False
 
@@ -180,6 +180,9 @@ class Network_Playground(process):
                             split_network_round(validators[dst], validators[src], round_key)
 
     def is_intra_partition_msg_drop(rnd, src, message):
+        return False
+        if message_drops=={}:
+            return False
         src = self.validators_mp[src]
         partition_scenario_current = round_partitions[rnd]
         output("partition_scenario_current", message_drops)

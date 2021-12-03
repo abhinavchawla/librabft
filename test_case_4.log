@@ -1,0 +1,906 @@
+./main.da compiled with 0 errors and 0 warnings.
+[216] da.api<MainProcess>:INFO: <Node_:96c01> initialized at 127.0.0.1:(UdpTransport=16885, TcpTransport=38571).
+[216] da.api<MainProcess>:INFO: Starting program <module 'main' from './main.da'>...
+[216] da.api<MainProcess>:INFO: Running iteration 1 ...
+[216] da.api<MainProcess>:INFO: Waiting for remaining child processes to terminate...(Press "Ctrl-C" to force kill)
+[217] main.Node_<Node_:96c01>:OUTPUT: **********************************************************
+[217] main.Node_<Node_:96c01>:OUTPUT: new scenario started
+[217] main.Node_<Node_:96c01>:OUTPUT: **********************************************************
+Scenario:  {'leaders': {'1': 1, '2': 1, '3': 0, '4': 0, '5': 2, '6': 0, '7': 1, '8': 2, '9': 2, '10': 1}, 'partitions': {'1': [[0, 1, 2], [3, 4]], '2': [[0], [1, 2, 4], [3]], '3': [[0], [1, 3, 4], [2]], '4': [[0], [1, 2, 3], [4]], '5': [[0], [1, 2, 4], [3]], '6': [[0], [1, 2, 4], [3]], '7': [[0], [1, 2, 3], [4]], '8': [[0, 1, 2, 3, 4]], '9': [[0, 1, 2, 3, 4]], '10': [[0, 1, 2, 3, 4]]}, 'message-drops': {'1': [[], ['vote', 'timeout']], '2': [['timeout'], ['proposals', 'timeout'], ['vote', 'timeout']], '3': [[], ['vote'], ['proposals', 'timeout']], '4': [[], ['vote', 'proposals'], ['proposals', 'timeout']], '5': [['timeout'], [], ['vote']], '6': [['vote', 'timeout'], ['vote', 'proposals'], ['vote', 'proposals']], '7': [['proposals'], ['vote'], ['vote']], '8': [], '9': [], '10': []}, 'nodes': 4, 'twins': 1, 'rounds': 10}
+[351] executor.TestExecutor<TestExecutor:72402>:OUTPUT: Starting the network playground <Network_Playground:72408>
+[352] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Speculative Round:  0
+[353] driver.ValidatorX<ValidatorX:72404>:OUTPUT: current_round:  1
+[353] driver.ValidatorX<ValidatorX:72406>:OUTPUT: current_round:  1
+[353] driver.ValidatorX<ValidatorX:72407>:OUTPUT: current_round:  1
+[353] driver.ValidatorX<ValidatorX:72403>:OUTPUT: current_round:  1
+[353] driver.ValidatorX<ValidatorX:72405>:OUTPUT: current_round:  1
+[353] driver.ValidatorX<ValidatorX:72404>:OUTPUT: yay proposal
+[1355] driver.ValidatorX<ValidatorX:72404>:INFO: sending proposal message:  <blockTree.Block object at 0x109bfe518>  last timeout certificate:  None  high commit qc:  None  sender:  1  receiver:  [<ValidatorX:72406>, <ValidatorX:72404>, <ValidatorX:72403>, <ValidatorX:72405>]
+[1355] driver.ValidatorX<ValidatorX:72404>:OUTPUT: ('proposalMessage', <messages.ProposalMsg object at 0x109bfe9e8>, [<ValidatorX:72406>, <ValidatorX:72404>, <ValidatorX:72403>, <ValidatorX:72405>])
+[1359] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 1 <ValidatorX:72404> proposals
+[1359] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Proposal from playground 1 <ValidatorX:72404> <ValidatorX:72406>
+[1360] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 1 <ValidatorX:72404> proposals
+[1361] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Proposal from playground 3 <ValidatorX:72404> <ValidatorX:72404>
+[1362] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 1 <ValidatorX:72404> proposals
+[1362] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Proposal from playground 3 <ValidatorX:72404> <ValidatorX:72403>
+[1363] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Speculative Round:  1
+[1364] driver.ValidatorX<ValidatorX:72404>:INFO: proposal message received here:  <messages.ProposalMsg object at 0x109bfeb38>  sender:  <ValidatorX:72404>  receiver:  1
+[1364] driver.ValidatorX<ValidatorX:72404>:OUTPUT: in process_certificate_qc
+[1364] driver.ValidatorX<ValidatorX:72406>:INFO: proposal message received here:  <messages.ProposalMsg object at 0x109bfee48>  sender:  <ValidatorX:72404>  receiver:  0
+[1364] driver.ValidatorX<ValidatorX:72404>:OUTPUT: in process_certificate_qc
+[1364] driver.ValidatorX<ValidatorX:72404>:OUTPUT: in pacemaker_advance_rount_tc
+[1364] driver.ValidatorX<ValidatorX:72406>:OUTPUT: in process_certificate_qc
+[1364] driver.ValidatorX<ValidatorX:72403>:INFO: proposal message received here:  <messages.ProposalMsg object at 0x109d50160>  sender:  <ValidatorX:72404>  receiver:  2
+[1364] driver.ValidatorX<ValidatorX:72406>:OUTPUT: in process_certificate_qc
+[1364] driver.ValidatorX<ValidatorX:72403>:OUTPUT: in process_certificate_qc
+[1364] driver.ValidatorX<ValidatorX:72406>:OUTPUT: in pacemaker_advance_rount_tc
+[1364] driver.ValidatorX<ValidatorX:72403>:OUTPUT: in process_certificate_qc
+[1364] driver.ValidatorX<ValidatorX:72403>:OUTPUT: in pacemaker_advance_rount_tc
+[1364] driver.ValidatorX<ValidatorX:72404>:OUTPUT: vote_msg:  <blockTree.VoteMsg object at 0x109bfec50>
+[1365] driver.ValidatorX<ValidatorX:72404>:INFO: Sending vote message:  <blockTree.VoteMsg object at 0x109bfec50>  sender:  1  receiver:  <ValidatorX:72404>
+[1365] driver.ValidatorX<ValidatorX:72404>:OUTPUT: ('voteMessage', <blockTree.VoteMsg object at 0x109bfec50>, <ValidatorX:72404>)
+[1365] driver.ValidatorX<ValidatorX:72406>:OUTPUT: vote_msg:  <blockTree.VoteMsg object at 0x109bfec50>
+[1365] driver.ValidatorX<ValidatorX:72403>:OUTPUT: vote_msg:  <blockTree.VoteMsg object at 0x109d41e80>
+[1365] driver.ValidatorX<ValidatorX:72406>:INFO: Sending vote message:  <blockTree.VoteMsg object at 0x109bfec50>  sender:  0  receiver:  <ValidatorX:72404>
+[1365] driver.ValidatorX<ValidatorX:72403>:INFO: Sending vote message:  <blockTree.VoteMsg object at 0x109d41e80>  sender:  2  receiver:  <ValidatorX:72404>
+[1365] driver.ValidatorX<ValidatorX:72406>:OUTPUT: ('voteMessage', <blockTree.VoteMsg object at 0x109bfec50>, <ValidatorX:72404>)
+[1365] driver.ValidatorX<ValidatorX:72403>:OUTPUT: ('voteMessage', <blockTree.VoteMsg object at 0x109d41e80>, <ValidatorX:72404>)
+[1365] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: checkpoint 1 in votemessageplayground
+[1365] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: RECEIVED VOTE MESSAGE AT PLAYGROUND <blockTree.VoteMsg object at 0x109d49fd0> <ValidatorX:72404> <ValidatorX:72404>
+[1365] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 1 <ValidatorX:72404> vote
+[1365] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Votes from playground 3 <ValidatorX:72404> <ValidatorX:72404> 1
+[1366] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Speculative Round:  1
+[1366] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: checkpoint 1 in votemessageplayground
+[1366] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: RECEIVED VOTE MESSAGE AT PLAYGROUND <blockTree.VoteMsg object at 0x109d49978> <ValidatorX:72404> <ValidatorX:72403>
+[1366] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 1 <ValidatorX:72403> vote
+[1366] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Votes from playground 3 <ValidatorX:72403> <ValidatorX:72404> 1
+[1366] driver.ValidatorX<ValidatorX:72404>:INFO: Vote message received here:  <blockTree.VoteMsg object at 0x109bfecf8>  sender:  <ValidatorX:72404>  receiver:  1
+[1366] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Speculative Round:  1
+[1366] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: checkpoint 1 in votemessageplayground
+[1367] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: RECEIVED VOTE MESSAGE AT PLAYGROUND <blockTree.VoteMsg object at 0x109d49978> <ValidatorX:72404> <ValidatorX:72406>
+[1367] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 1 <ValidatorX:72406> vote
+[1367] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Votes from playground 3 <ValidatorX:72406> <ValidatorX:72404> 1
+[1367] driver.ValidatorX<ValidatorX:72404>:INFO: Vote message received here:  <blockTree.VoteMsg object at 0x109bfe9e8>  sender:  <ValidatorX:72403>  receiver:  1
+[1367] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Speculative Round:  1
+[1367] driver.ValidatorX<ValidatorX:72404>:INFO: Vote message received here:  <blockTree.VoteMsg object at 0x109bfecc0>  sender:  <ValidatorX:72406>  receiver:  1
+[1367] driver.ValidatorX<ValidatorX:72404>:INFO: Quorum formed. QC:  <blockTree.QC object at 0x109bfedd8> leader:  <ValidatorX:72404>
+[1367] driver.ValidatorX<ValidatorX:72404>:OUTPUT: in process_certificate_qc
+[1367] driver.ValidatorX<ValidatorX:72404>:OUTPUT: current_round:  2
+[1368] driver.ValidatorX<ValidatorX:72404>:OUTPUT: yay proposal
+[2369] driver.ValidatorX<ValidatorX:72404>:INFO: sending proposal message:  <blockTree.Block object at 0x109bfef60>  last timeout certificate:  None  high commit qc:  None  sender:  1  receiver:  [<ValidatorX:72406>, <ValidatorX:72404>, <ValidatorX:72403>, <ValidatorX:72405>]
+[2370] driver.ValidatorX<ValidatorX:72404>:OUTPUT: ('proposalMessage', <messages.ProposalMsg object at 0x109bfea90>, [<ValidatorX:72406>, <ValidatorX:72404>, <ValidatorX:72403>, <ValidatorX:72405>])
+[2372] driver.ValidatorX<ValidatorX:72404>:OUTPUT: round done
+[2374] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 2 <ValidatorX:72404> proposals
+[2374] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Proposal from playground 2 <ValidatorX:72404> <ValidatorX:72407>
+[2375] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 2 <ValidatorX:72404> proposals
+[2375] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Proposal from playground 3 <ValidatorX:72404> <ValidatorX:72404>
+[2376] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 2 <ValidatorX:72404> proposals
+[2376] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Proposal from playground 3 <ValidatorX:72404> <ValidatorX:72403>
+[2377] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Speculative Round:  2
+[2377] driver.ValidatorX<ValidatorX:72404>:INFO: proposal message received here:  <messages.ProposalMsg object at 0x109bfe278>  sender:  <ValidatorX:72404>  receiver:  1
+[2377] driver.ValidatorX<ValidatorX:72404>:OUTPUT: in process_certificate_qc
+[2377] driver.ValidatorX<ValidatorX:72407>:INFO: proposal message received here:  <messages.ProposalMsg object at 0x109d33cc0>  sender:  <ValidatorX:72404>  receiver:  0
+[2377] driver.ValidatorX<ValidatorX:72404>:OUTPUT: in process_certificate_qc
+[2377] driver.ValidatorX<ValidatorX:72407>:OUTPUT: in process_certificate_qc
+[2377] driver.ValidatorX<ValidatorX:72404>:OUTPUT: in pacemaker_advance_rount_tc
+[2378] driver.ValidatorX<ValidatorX:72407>:OUTPUT: in process_certificate_qc
+[2378] driver.ValidatorX<ValidatorX:72407>:OUTPUT: in pacemaker_advance_rount_tc
+[2378] driver.ValidatorX<ValidatorX:72403>:INFO: proposal message received here:  <messages.ProposalMsg object at 0x109d502b0>  sender:  <ValidatorX:72404>  receiver:  2
+[2378] driver.ValidatorX<ValidatorX:72403>:OUTPUT: in process_certificate_qc
+[2378] driver.ValidatorX<ValidatorX:72404>:OUTPUT: vote_msg:  <blockTree.VoteMsg object at 0x109bfea20>
+[2378] driver.ValidatorX<ValidatorX:72404>:INFO: Sending vote message:  <blockTree.VoteMsg object at 0x109bfea20>  sender:  1  receiver:  <ValidatorX:72406>
+[2378] driver.ValidatorX<ValidatorX:72403>:OUTPUT: in process_certificate_qc
+[2378] driver.ValidatorX<ValidatorX:72404>:OUTPUT: ('voteMessage', <blockTree.VoteMsg object at 0x109bfea20>, <ValidatorX:72406>)
+[2378] driver.ValidatorX<ValidatorX:72403>:OUTPUT: in pacemaker_advance_rount_tc
+[2378] driver.ValidatorX<ValidatorX:72407>:ERROR: KeyError(b'9ceb355e9294436bbe31abbb56e215a51e862887729fe24feb44dee9313840a0',) when calling handler '_ValidatorX_handler_2281' with '{'p': <Network_Playground:72408>, 'm': <messages.ProposalMsg object at 0x109d33cc0>, 'sender': <ValidatorX:72404>}': b'9ceb355e9294436bbe31abbb56e215a51e862887729fe24feb44dee9313840a0'
+[2378] driver.ValidatorX<ValidatorX:72407>:OUTPUT: round done
+[2378] driver.ValidatorX<ValidatorX:72403>:OUTPUT: vote_msg:  <blockTree.VoteMsg object at 0x109d41dd8>
+[2378] driver.ValidatorX<ValidatorX:72403>:INFO: Sending vote message:  <blockTree.VoteMsg object at 0x109d41dd8>  sender:  2  receiver:  <ValidatorX:72406>
+[2379] driver.ValidatorX<ValidatorX:72403>:OUTPUT: ('voteMessage', <blockTree.VoteMsg object at 0x109d41dd8>, <ValidatorX:72406>)
+[2379] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: checkpoint 1 in votemessageplayground
+[2379] driver.ValidatorX<ValidatorX:72403>:OUTPUT: round done
+[2379] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: RECEIVED VOTE MESSAGE AT PLAYGROUND <blockTree.VoteMsg object at 0x109d4f0b8> <ValidatorX:72406> <ValidatorX:72404>
+[2379] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 2 <ValidatorX:72404> vote
+[2379] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Votes from playground 2 <ValidatorX:72404> <ValidatorX:72407>
+[2379] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Speculative Round:  2
+[2380] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: checkpoint 1 in votemessageplayground
+[2380] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: RECEIVED VOTE MESSAGE AT PLAYGROUND <blockTree.VoteMsg object at 0x109d49978> <ValidatorX:72406> <ValidatorX:72403>
+[2380] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 2 <ValidatorX:72403> vote
+[2380] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Votes from playground 2 <ValidatorX:72403> <ValidatorX:72407>
+[2380] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Speculative Round:  2
+[2380] driver.ValidatorX<ValidatorX:72407>:INFO: Vote message received here:  <blockTree.VoteMsg object at 0x109d49e10>  sender:  <ValidatorX:72404>  receiver:  0
+[2381] driver.ValidatorX<ValidatorX:72407>:INFO: Vote message received here:  <blockTree.VoteMsg object at 0x109d413c8>  sender:  <ValidatorX:72403>  receiver:  0
+[8355] driver.ValidatorX<ValidatorX:72406>:OUTPUT: no message received from the leader: <ValidatorX:72404>  timeout reported in the system
+[8355] driver.ValidatorX<ValidatorX:72405>:OUTPUT: no message received from the leader: <ValidatorX:72404>  timeout reported in the system
+[8356] driver.ValidatorX<ValidatorX:72406>:INFO: sending timeout message:  <messages.TimeoutInfo object at 0x109bfec50>  pacemaker last round tc:  None  high commit qc:  None
+[8356] driver.ValidatorX<ValidatorX:72406>:OUTPUT: ('timeoutMessage', <messages.TimeoutMsg object at 0x109bfef98>, [<ValidatorX:72406>, <ValidatorX:72404>, <ValidatorX:72403>, <ValidatorX:72405>])
+[8357] driver.ValidatorX<ValidatorX:72405>:INFO: sending timeout message:  <messages.TimeoutInfo object at 0x109bfea90>  pacemaker last round tc:  None  high commit qc:  None
+[8357] driver.ValidatorX<ValidatorX:72405>:OUTPUT: ('timeoutMessage', <messages.TimeoutMsg object at 0x109bfe7f0>, [<ValidatorX:72406>, <ValidatorX:72404>, <ValidatorX:72403>, <ValidatorX:72405>])
+[8358] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: checkpoint 1 in timeoutmessageplayground
+[8359] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 1 <ValidatorX:72406> timeout
+[8359] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Timeout from playground 1 <ValidatorX:72406> <ValidatorX:72406>
+[8360] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 1 <ValidatorX:72406> timeout
+[8360] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Timeout from playground 3 <ValidatorX:72406> <ValidatorX:72404>
+[8360] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 1 <ValidatorX:72406> timeout
+[8360] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Timeout from playground 3 <ValidatorX:72406> <ValidatorX:72403>
+[8362] driver.ValidatorX<ValidatorX:72406>:INFO: Timeout message message received here:  <messages.TimeoutMsg object at 0x109d495f8>  sender:  <ValidatorX:72406>  receiver:  0
+[8362] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: checkpoint 1 in timeoutmessageplayground
+[8362] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 1 <ValidatorX:72405> timeout
+[8362] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Timeout from playground 2 <ValidatorX:72405> <ValidatorX:72407>
+[8362] driver.ValidatorX<ValidatorX:72406>:OUTPUT:  in process_timeout_msg
+[8362] driver.ValidatorX<ValidatorX:72406>:OUTPUT: in process_certificate_qc
+[8362] driver.ValidatorX<ValidatorX:72404>:INFO: Timeout message message received here:  <messages.TimeoutMsg object at 0x109bfea20>  sender:  <ValidatorX:72406>  receiver:  1
+[8362] driver.ValidatorX<ValidatorX:72406>:OUTPUT: in process_certificate_qc
+[8363] driver.ValidatorX<ValidatorX:72404>:OUTPUT:  in process_timeout_msg
+[8363] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 1 <ValidatorX:72405> timeout
+[8363] driver.ValidatorX<ValidatorX:72406>:OUTPUT: in pacemaker_advance_rount_tc
+[8363] driver.ValidatorX<ValidatorX:72404>:OUTPUT: in process_certificate_qc
+[8363] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Timeout from playground 3 <ValidatorX:72405> <ValidatorX:72405>
+[8363] driver.ValidatorX<ValidatorX:72406>:OUTPUT: processing remote timeout message sender:  0  for round:  1  with self.f:  1.0
+[8363] driver.ValidatorX<ValidatorX:72404>:OUTPUT: in process_certificate_qc
+[8363] driver.ValidatorX<ValidatorX:72404>:OUTPUT: in pacemaker_advance_rount_tc
+[8363] driver.ValidatorX<ValidatorX:72404>:OUTPUT: processing remote timeout message sender:  0  for round:  1  with self.f:  1.0
+[8364] driver.ValidatorX<ValidatorX:72403>:INFO: Timeout message message received here:  <messages.TimeoutMsg object at 0x109d50518>  sender:  <ValidatorX:72406>  receiver:  2
+[8364] driver.ValidatorX<ValidatorX:72403>:OUTPUT:  in process_timeout_msg
+[8364] driver.ValidatorX<ValidatorX:72403>:OUTPUT: in process_certificate_qc
+[8364] driver.ValidatorX<ValidatorX:72403>:OUTPUT: in process_certificate_qc
+[8364] driver.ValidatorX<ValidatorX:72403>:OUTPUT: in pacemaker_advance_rount_tc
+[8364] driver.ValidatorX<ValidatorX:72407>:INFO: Timeout message message received here:  <messages.TimeoutMsg object at 0x109d49080>  sender:  <ValidatorX:72405>  receiver:  0
+[8365] driver.ValidatorX<ValidatorX:72403>:OUTPUT: processing remote timeout message sender:  0  for round:  1  with self.f:  1.0
+[8365] driver.ValidatorX<ValidatorX:72407>:OUTPUT:  in process_timeout_msg
+[8365] driver.ValidatorX<ValidatorX:72407>:OUTPUT: in process_certificate_qc
+[8365] driver.ValidatorX<ValidatorX:72407>:OUTPUT: in process_certificate_qc
+[8365] driver.ValidatorX<ValidatorX:72407>:OUTPUT: in pacemaker_advance_rount_tc
+[8365] driver.ValidatorX<ValidatorX:72407>:OUTPUT: processing remote timeout message sender:  3  for round:  1  with self.f:  1.0
+[8365] driver.ValidatorX<ValidatorX:72405>:INFO: Timeout message message received here:  <messages.TimeoutMsg object at 0x109bfec50>  sender:  <ValidatorX:72405>  receiver:  3
+[8366] driver.ValidatorX<ValidatorX:72405>:OUTPUT:  in process_timeout_msg
+[8366] driver.ValidatorX<ValidatorX:72405>:OUTPUT: in process_certificate_qc
+[8366] driver.ValidatorX<ValidatorX:72405>:OUTPUT: in process_certificate_qc
+[8366] driver.ValidatorX<ValidatorX:72405>:OUTPUT: in pacemaker_advance_rount_tc
+[8366] driver.ValidatorX<ValidatorX:72405>:OUTPUT: processing remote timeout message sender:  3  for round:  1  with self.f:  1.0
+[10374] driver.ValidatorX<ValidatorX:72404>:OUTPUT: no message received from the leader: <ValidatorX:72404>  timeout reported in the system
+[10375] driver.ValidatorX<ValidatorX:72404>:INFO: sending timeout message:  <messages.TimeoutInfo object at 0x109bfea20>  pacemaker last round tc:  None  high commit qc:  None
+[10375] driver.ValidatorX<ValidatorX:72404>:OUTPUT: ('timeoutMessage', <messages.TimeoutMsg object at 0x109bfef60>, [<ValidatorX:72406>, <ValidatorX:72404>, <ValidatorX:72403>, <ValidatorX:72405>])
+[10377] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: checkpoint 1 in timeoutmessageplayground
+[10378] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 2 <ValidatorX:72404> timeout
+[10378] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Timeout from playground 2 <ValidatorX:72404> <ValidatorX:72407>
+[10379] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 2 <ValidatorX:72404> timeout
+[10379] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Timeout from playground 3 <ValidatorX:72404> <ValidatorX:72404>
+[10379] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 2 <ValidatorX:72404> timeout
+[10380] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Timeout from playground 3 <ValidatorX:72404> <ValidatorX:72403>
+[10380] driver.ValidatorX<ValidatorX:72407>:INFO: Timeout message message received here:  <messages.TimeoutMsg object at 0x109bfeef0>  sender:  <ValidatorX:72404>  receiver:  0
+[10380] driver.ValidatorX<ValidatorX:72407>:OUTPUT:  in process_timeout_msg
+[10380] driver.ValidatorX<ValidatorX:72407>:OUTPUT: in process_certificate_qc
+[10381] driver.ValidatorX<ValidatorX:72407>:OUTPUT: in process_certificate_qc
+[10381] driver.ValidatorX<ValidatorX:72407>:OUTPUT: in pacemaker_advance_rount_tc
+[10381] driver.ValidatorX<ValidatorX:72404>:INFO: Timeout message message received here:  <messages.TimeoutMsg object at 0x109d9b4a8>  sender:  <ValidatorX:72404>  receiver:  1
+[10381] driver.ValidatorX<ValidatorX:72403>:OUTPUT: no message received from the leader: <ValidatorX:72404>  timeout reported in the system
+[10381] driver.ValidatorX<ValidatorX:72407>:OUTPUT: processing remote timeout message sender:  1  for round:  2  with self.f:  1.0
+[10381] driver.ValidatorX<ValidatorX:72404>:OUTPUT:  in process_timeout_msg
+[10381] driver.ValidatorX<ValidatorX:72404>:OUTPUT: in process_certificate_qc
+[10381] driver.ValidatorX<ValidatorX:72407>:OUTPUT: no message received from the leader: <ValidatorX:72404>  timeout reported in the system
+[10381] driver.ValidatorX<ValidatorX:72404>:OUTPUT: in process_certificate_qc
+[10381] driver.ValidatorX<ValidatorX:72404>:OUTPUT: in pacemaker_advance_rount_tc
+[10381] driver.ValidatorX<ValidatorX:72404>:OUTPUT: processing remote timeout message sender:  1  for round:  2  with self.f:  1.0
+[10382] driver.ValidatorX<ValidatorX:72403>:INFO: sending timeout message:  <messages.TimeoutInfo object at 0x109d41be0>  pacemaker last round tc:  None  high commit qc:  None
+[10382] driver.ValidatorX<ValidatorX:72407>:INFO: sending timeout message:  <messages.TimeoutInfo object at 0x109d49e10>  pacemaker last round tc:  None  high commit qc:  None
+[10382] driver.ValidatorX<ValidatorX:72403>:OUTPUT: ('timeoutMessage', <messages.TimeoutMsg object at 0x109d41dd8>, [<ValidatorX:72406>, <ValidatorX:72404>, <ValidatorX:72403>, <ValidatorX:72405>])
+[10382] driver.ValidatorX<ValidatorX:72407>:OUTPUT: ('timeoutMessage', <messages.TimeoutMsg object at 0x109bfefd0>, [<ValidatorX:72406>, <ValidatorX:72404>, <ValidatorX:72403>, <ValidatorX:72405>])
+[10382] driver.ValidatorX<ValidatorX:72403>:INFO: Timeout message message received here:  <messages.TimeoutMsg object at 0x109d41e80>  sender:  <ValidatorX:72404>  receiver:  2
+[10382] driver.ValidatorX<ValidatorX:72403>:OUTPUT:  in process_timeout_msg
+[10382] driver.ValidatorX<ValidatorX:72403>:OUTPUT: in process_certificate_qc
+[10382] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: checkpoint 1 in timeoutmessageplayground
+[10383] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 2 <ValidatorX:72403> timeout
+[10383] driver.ValidatorX<ValidatorX:72403>:OUTPUT: in process_certificate_qc
+[10383] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Timeout from playground 2 <ValidatorX:72403> <ValidatorX:72407>
+[10383] driver.ValidatorX<ValidatorX:72403>:OUTPUT: in pacemaker_advance_rount_tc
+[10383] driver.ValidatorX<ValidatorX:72403>:OUTPUT: processing remote timeout message sender:  1  for round:  2  with self.f:  1.0
+[10383] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 2 <ValidatorX:72403> timeout
+[10383] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Timeout from playground 3 <ValidatorX:72403> <ValidatorX:72404>
+[10383] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 2 <ValidatorX:72403> timeout
+[10383] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Timeout from playground 3 <ValidatorX:72403> <ValidatorX:72403>
+[10383] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: checkpoint 1 in timeoutmessageplayground
+[10383] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 2 <ValidatorX:72407> timeout
+[10383] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Timeout from playground 2 <ValidatorX:72407> <ValidatorX:72407>
+[10383] driver.ValidatorX<ValidatorX:72407>:INFO: Timeout message message received here:  <messages.TimeoutMsg object at 0x109bfefd0>  sender:  <ValidatorX:72403>  receiver:  0
+[10383] driver.ValidatorX<ValidatorX:72407>:OUTPUT:  in process_timeout_msg
+[10383] driver.ValidatorX<ValidatorX:72407>:OUTPUT: in process_certificate_qc
+[10383] driver.ValidatorX<ValidatorX:72407>:OUTPUT: in process_certificate_qc
+[10383] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 2 <ValidatorX:72407> timeout
+[10383] driver.ValidatorX<ValidatorX:72407>:OUTPUT: in pacemaker_advance_rount_tc
+[10383] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Timeout from playground 3 <ValidatorX:72407> <ValidatorX:72404>
+[10384] driver.ValidatorX<ValidatorX:72407>:OUTPUT: processing remote timeout message sender:  2  for round:  2  with self.f:  1.0
+[10384] driver.ValidatorX<ValidatorX:72407>:OUTPUT: received f+1 timeouts for round:  2 2
+[10384] driver.ValidatorX<ValidatorX:72403>:INFO: Timeout message message received here:  <messages.TimeoutMsg object at 0x109d507f0>  sender:  <ValidatorX:72403>  receiver:  2
+[10384] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 2 <ValidatorX:72407> timeout
+[10384] driver.ValidatorX<ValidatorX:72403>:OUTPUT:  in process_timeout_msg
+[10384] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Timeout from playground 3 <ValidatorX:72407> <ValidatorX:72403>
+[10384] driver.ValidatorX<ValidatorX:72403>:OUTPUT: in process_certificate_qc
+[10384] driver.ValidatorX<ValidatorX:72403>:OUTPUT: in process_certificate_qc
+[10384] driver.ValidatorX<ValidatorX:72403>:OUTPUT: in pacemaker_advance_rount_tc
+[10384] driver.ValidatorX<ValidatorX:72403>:OUTPUT: processing remote timeout message sender:  2  for round:  2  with self.f:  1.0
+[10384] driver.ValidatorX<ValidatorX:72407>:INFO: sending timeout message:  <messages.TimeoutInfo object at 0x109d49080>  pacemaker last round tc:  None  high commit qc:  None
+[10384] driver.ValidatorX<ValidatorX:72403>:OUTPUT: received f+1 timeouts for round:  2 2
+[10384] driver.ValidatorX<ValidatorX:72407>:OUTPUT: ('timeoutMessage', <messages.TimeoutMsg object at 0x109bfeef0>, [<ValidatorX:72406>, <ValidatorX:72404>, <ValidatorX:72403>, <ValidatorX:72405>])
+[10384] driver.ValidatorX<ValidatorX:72404>:INFO: Timeout message message received here:  <messages.TimeoutMsg object at 0x109d9b400>  sender:  <ValidatorX:72403>  receiver:  1
+[10384] driver.ValidatorX<ValidatorX:72404>:OUTPUT:  in process_timeout_msg
+[10384] driver.ValidatorX<ValidatorX:72403>:INFO: sending timeout message:  <messages.TimeoutInfo object at 0x109d41f60>  pacemaker last round tc:  None  high commit qc:  None
+[10384] driver.ValidatorX<ValidatorX:72403>:OUTPUT: ('timeoutMessage', <messages.TimeoutMsg object at 0x109d41dd8>, [<ValidatorX:72406>, <ValidatorX:72404>, <ValidatorX:72403>, <ValidatorX:72405>])
+[10384] driver.ValidatorX<ValidatorX:72404>:OUTPUT: in process_certificate_qc
+[10384] driver.ValidatorX<ValidatorX:72404>:OUTPUT: in process_certificate_qc
+[10384] driver.ValidatorX<ValidatorX:72404>:OUTPUT: in pacemaker_advance_rount_tc
+[10384] driver.ValidatorX<ValidatorX:72404>:OUTPUT: processing remote timeout message sender:  2  for round:  2  with self.f:  1.0
+[10384] driver.ValidatorX<ValidatorX:72404>:OUTPUT: received f+1 timeouts for round:  2 2
+[10384] driver.ValidatorX<ValidatorX:72407>:INFO: Timeout message message received here:  <messages.TimeoutMsg object at 0x109bfedd8>  sender:  <ValidatorX:72406>  receiver:  0
+[10385] driver.ValidatorX<ValidatorX:72407>:OUTPUT:  in process_timeout_msg
+[10385] driver.ValidatorX<ValidatorX:72407>:OUTPUT: in process_certificate_qc
+[10385] driver.ValidatorX<ValidatorX:72404>:INFO: sending timeout message:  <messages.TimeoutInfo object at 0x109bfeeb8>  pacemaker last round tc:  None  high commit qc:  None
+[10385] driver.ValidatorX<ValidatorX:72407>:OUTPUT: in process_certificate_qc
+[10385] driver.ValidatorX<ValidatorX:72404>:OUTPUT: ('timeoutMessage', <messages.TimeoutMsg object at 0x109bfec50>, [<ValidatorX:72406>, <ValidatorX:72404>, <ValidatorX:72403>, <ValidatorX:72405>])
+[10385] driver.ValidatorX<ValidatorX:72403>:INFO: Timeout message message received here:  <messages.TimeoutMsg object at 0x109d509b0>  sender:  <ValidatorX:72406>  receiver:  2
+[10385] driver.ValidatorX<ValidatorX:72407>:OUTPUT: in pacemaker_advance_rount_tc
+[10385] driver.ValidatorX<ValidatorX:72403>:OUTPUT:  in process_timeout_msg
+[10385] driver.ValidatorX<ValidatorX:72403>:OUTPUT: in process_certificate_qc
+[10385] driver.ValidatorX<ValidatorX:72407>:OUTPUT: processing remote timeout message sender:  0  for round:  2  with self.f:  1.0
+[10385] driver.ValidatorX<ValidatorX:72407>:OUTPUT: received 2f+1 timeouts for round:  2 2
+[10385] driver.ValidatorX<ValidatorX:72403>:OUTPUT: in process_certificate_qc
+[10385] driver.ValidatorX<ValidatorX:72403>:OUTPUT: in pacemaker_advance_rount_tc
+[10385] driver.ValidatorX<ValidatorX:72403>:OUTPUT: processing remote timeout message sender:  0  for round:  2  with self.f:  1.0
+[10385] driver.ValidatorX<ValidatorX:72403>:OUTPUT: received 2f+1 timeouts for round:  2 2
+[10385] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: checkpoint 1 in timeoutmessageplayground
+[10385] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 2 <ValidatorX:72407> timeout
+[10385] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Timeout from playground 2 <ValidatorX:72407> <ValidatorX:72407>
+[10385] driver.ValidatorX<ValidatorX:72404>:INFO: Timeout message message received here:  <messages.TimeoutMsg object at 0x109bfec88>  sender:  <ValidatorX:72406>  receiver:  1
+[10385] driver.ValidatorX<ValidatorX:72404>:OUTPUT:  in process_timeout_msg
+[10385] driver.ValidatorX<ValidatorX:72404>:OUTPUT: in process_certificate_qc
+[10385] driver.ValidatorX<ValidatorX:72404>:OUTPUT: in process_certificate_qc
+[10385] driver.ValidatorX<ValidatorX:72404>:OUTPUT: in pacemaker_advance_rount_tc
+[10385] driver.ValidatorX<ValidatorX:72404>:OUTPUT: processing remote timeout message sender:  0  for round:  2  with self.f:  1.0
+[10385] driver.ValidatorX<ValidatorX:72404>:OUTPUT: received 2f+1 timeouts for round:  2 2
+[10385] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 2 <ValidatorX:72407> timeout
+[10385] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Timeout from playground 3 <ValidatorX:72407> <ValidatorX:72404>
+[10386] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 2 <ValidatorX:72407> timeout
+[10386] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Timeout from playground 3 <ValidatorX:72407> <ValidatorX:72403>
+[10386] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: checkpoint 1 in timeoutmessageplayground
+[10386] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 2 <ValidatorX:72403> timeout
+[10386] driver.ValidatorX<ValidatorX:72403>:OUTPUT: timeout certificate created is  b"\x80\x03cmessages\nTC\nq\x00)\x81q\x01}q\x02(X\x05\x00\x00\x00roundq\x03K\x02X\x12\x00\x00\x00tmo_high_qc_roundsq\x04]q\x05(K\x01K\x01K\x01eX\x0e\x00\x00\x00tmo_signaturesq\x06]q\x07(C@%6\xd5\xd6\xa9\xd8\x95K\xf7\x87\xfcu43c\x86\xd3?\xcf\xd3\x07J\xcd;\x0f\x13\x02\xd7d\x92=\x0c(L\x83\xe99\\\x9e\x1b\x0e2\xc9W@\x97\xfarR\xca\x13g\xa7I\xdf\x9ak\x89\xfc\xb8\x1b\x81\x9f\rq\x08C@'\x05\xb8\x11\xa8g\xdc\xe1\xb5@\xc1L\x81\xf0\xb0\xcfz\xac\xac\x0c\xd1\xcf\x82\x0b\x84\xfa\x97\xc0\xcd\xd7\xb5f\x9a_\x1d\xacx\xf5\xa0\n\x01U\xed$\xd36\xd82L<\xc0)J\xd6C\xd0/\xe3\xd9aJ\x05\x07\x05q\tC@\xaa:\xd2\xd1\x12\x8a\xa3\x1eG\xc5(?\xe4\x10d\x1f\xcfu\x908\xd6$\x99\x03\xdf\xd9\x98\x9b\x0e\x15\xd1\x86\x19\xef@\xc4\xec6\xb3\x92\xaeM\x0cR\xbf\x8e.\x89\xa4U\xafe>\xe8\x8f\xef\xa0K|\xfc^\x03\xbf\x04q\neub."
+[10386] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Timeout from playground 2 <ValidatorX:72403> <ValidatorX:72407>
+[10386] driver.ValidatorX<ValidatorX:72407>:OUTPUT: timeout certificate created is  b"\x80\x03cmessages\nTC\nq\x00)\x81q\x01}q\x02(X\x05\x00\x00\x00roundq\x03K\x02X\x12\x00\x00\x00tmo_high_qc_roundsq\x04]q\x05(K\x01K\x01K\x01eX\x0e\x00\x00\x00tmo_signaturesq\x06]q\x07(C@%6\xd5\xd6\xa9\xd8\x95K\xf7\x87\xfcu43c\x86\xd3?\xcf\xd3\x07J\xcd;\x0f\x13\x02\xd7d\x92=\x0c(L\x83\xe99\\\x9e\x1b\x0e2\xc9W@\x97\xfarR\xca\x13g\xa7I\xdf\x9ak\x89\xfc\xb8\x1b\x81\x9f\rq\x08C@'\x05\xb8\x11\xa8g\xdc\xe1\xb5@\xc1L\x81\xf0\xb0\xcfz\xac\xac\x0c\xd1\xcf\x82\x0b\x84\xfa\x97\xc0\xcd\xd7\xb5f\x9a_\x1d\xacx\xf5\xa0\n\x01U\xed$\xd36\xd82L<\xc0)J\xd6C\xd0/\xe3\xd9aJ\x05\x07\x05q\tC@\xaa:\xd2\xd1\x12\x8a\xa3\x1eG\xc5(?\xe4\x10d\x1f\xcfu\x908\xd6$\x99\x03\xdf\xd9\x98\x9b\x0e\x15\xd1\x86\x19\xef@\xc4\xec6\xb3\x92\xaeM\x0cR\xbf\x8e.\x89\xa4U\xafe>\xe8\x8f\xef\xa0K|\xfc^\x03\xbf\x04q\neub."
+[10386] driver.ValidatorX<ValidatorX:72403>:OUTPUT: timeout message for round : 2  added to map:  {0: {'msg_type': 'proposal', 'message': <messages.ProposalMsg object at 0x109d50160>, 'sender': <ValidatorX:72404>}, 1: {'msg_type': 'proposal', 'message': <messages.ProposalMsg object at 0x109d502b0>, 'sender': <ValidatorX:72404>}, 2: {'msg_type': 'timeout', 'message': <messages.TC object at 0x109d41e80>, 'high_qc': <blockTree.QC object at 0x109d508d0>, 'high_commit_qc': None}}
+[10386] driver.ValidatorX<ValidatorX:72407>:OUTPUT: timeout message for round : 2  added to map:  {1: {'msg_type': 'proposal', 'message': <messages.ProposalMsg object at 0x109d33cc0>, 'sender': <ValidatorX:72404>}, 2: {'msg_type': 'timeout', 'message': <messages.TC object at 0x109bfef60>, 'high_qc': <blockTree.QC object at 0x109d96748>, 'high_commit_qc': None}}
+[10386] driver.ValidatorX<ValidatorX:72404>:OUTPUT: timeout certificate created is  b"\x80\x03cmessages\nTC\nq\x00)\x81q\x01}q\x02(X\x05\x00\x00\x00roundq\x03K\x02X\x12\x00\x00\x00tmo_high_qc_roundsq\x04]q\x05(K\x01K\x01K\x01eX\x0e\x00\x00\x00tmo_signaturesq\x06]q\x07(C@%6\xd5\xd6\xa9\xd8\x95K\xf7\x87\xfcu43c\x86\xd3?\xcf\xd3\x07J\xcd;\x0f\x13\x02\xd7d\x92=\x0c(L\x83\xe99\\\x9e\x1b\x0e2\xc9W@\x97\xfarR\xca\x13g\xa7I\xdf\x9ak\x89\xfc\xb8\x1b\x81\x9f\rq\x08C@'\x05\xb8\x11\xa8g\xdc\xe1\xb5@\xc1L\x81\xf0\xb0\xcfz\xac\xac\x0c\xd1\xcf\x82\x0b\x84\xfa\x97\xc0\xcd\xd7\xb5f\x9a_\x1d\xacx\xf5\xa0\n\x01U\xed$\xd36\xd82L<\xc0)J\xd6C\xd0/\xe3\xd9aJ\x05\x07\x05q\tC@\xaa:\xd2\xd1\x12\x8a\xa3\x1eG\xc5(?\xe4\x10d\x1f\xcfu\x908\xd6$\x99\x03\xdf\xd9\x98\x9b\x0e\x15\xd1\x86\x19\xef@\xc4\xec6\xb3\x92\xaeM\x0cR\xbf\x8e.\x89\xa4U\xafe>\xe8\x8f\xef\xa0K|\xfc^\x03\xbf\x04q\neub."
+[10386] driver.ValidatorX<ValidatorX:72403>:OUTPUT: in pacemaker_advance_rount_tc
+[10386] driver.ValidatorX<ValidatorX:72407>:OUTPUT: in pacemaker_advance_rount_tc
+[10386] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 2 <ValidatorX:72403> timeout
+[10386] driver.ValidatorX<ValidatorX:72404>:OUTPUT: timeout message for round : 2  added to map:  {0: {'msg_type': 'proposal', 'message': <messages.ProposalMsg object at 0x109bfeb38>, 'sender': <ValidatorX:72404>}, 1: {'msg_type': 'proposal', 'message': <messages.ProposalMsg object at 0x109bfe278>, 'sender': <ValidatorX:72404>}, 2: {'msg_type': 'timeout', 'message': <messages.TC object at 0x109bfef98>, 'high_qc': <blockTree.QC object at 0x109d9b7f0>, 'high_commit_qc': None}}
+[10386] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Timeout from playground 3 <ValidatorX:72403> <ValidatorX:72404>
+[10386] driver.ValidatorX<ValidatorX:72404>:OUTPUT: in pacemaker_advance_rount_tc
+[10386] driver.ValidatorX<ValidatorX:72404>:OUTPUT: current_round:  3
+[10386] driver.ValidatorX<ValidatorX:72404>:OUTPUT: ############ timeout certificate successfully created for round:  2  system moving to round:  3
+[10386] driver.ValidatorX<ValidatorX:72404>:OUTPUT: round done
+[10386] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 2 <ValidatorX:72403> timeout
+[10386] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Timeout from playground 3 <ValidatorX:72403> <ValidatorX:72403>
+[10386] driver.ValidatorX<ValidatorX:72403>:OUTPUT: current_round:  3
+[10386] driver.ValidatorX<ValidatorX:72407>:OUTPUT: current_round:  3
+[10386] driver.ValidatorX<ValidatorX:72403>:OUTPUT: ############ timeout certificate successfully created for round:  2  system moving to round:  3
+[10386] driver.ValidatorX<ValidatorX:72403>:OUTPUT: round done
+[10386] driver.ValidatorX<ValidatorX:72407>:OUTPUT: yay proposal
+[10387] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: checkpoint 1 in timeoutmessageplayground
+[10387] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 2 <ValidatorX:72404> timeout
+[10387] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Timeout from playground 2 <ValidatorX:72404> <ValidatorX:72407>
+[10387] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 2 <ValidatorX:72404> timeout
+[10387] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Timeout from playground 3 <ValidatorX:72404> <ValidatorX:72404>
+[10387] driver.ValidatorX<ValidatorX:72404>:INFO: Timeout message message received here:  <messages.TimeoutMsg object at 0x109d9bb70>  sender:  <ValidatorX:72406>  receiver:  1
+[10387] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 2 <ValidatorX:72404> timeout
+[10387] driver.ValidatorX<ValidatorX:72404>:OUTPUT:  in process_timeout_msg
+[10387] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Timeout from playground 3 <ValidatorX:72404> <ValidatorX:72403>
+[10387] driver.ValidatorX<ValidatorX:72404>:OUTPUT: in process_certificate_qc
+[10387] driver.ValidatorX<ValidatorX:72404>:OUTPUT: in process_certificate_qc
+[10387] driver.ValidatorX<ValidatorX:72403>:INFO: Timeout message message received here:  <messages.TimeoutMsg object at 0x109d50e10>  sender:  <ValidatorX:72406>  receiver:  2
+[10387] driver.ValidatorX<ValidatorX:72404>:OUTPUT: in pacemaker_advance_rount_tc
+[10387] driver.ValidatorX<ValidatorX:72403>:OUTPUT:  in process_timeout_msg
+[10387] driver.ValidatorX<ValidatorX:72404>:OUTPUT: processing remote timeout message sender:  0  for round:  2  with self.f:  1.0
+[10387] driver.ValidatorX<ValidatorX:72403>:OUTPUT: in process_certificate_qc
+[10387] driver.ValidatorX<ValidatorX:72403>:OUTPUT: in process_certificate_qc
+[10387] driver.ValidatorX<ValidatorX:72403>:OUTPUT: in pacemaker_advance_rount_tc
+[10387] driver.ValidatorX<ValidatorX:72403>:OUTPUT: processing remote timeout message sender:  0  for round:  2  with self.f:  1.0
+[10387] driver.ValidatorX<ValidatorX:72404>:INFO: Timeout message message received here:  <messages.TimeoutMsg object at 0x109d9bbe0>  sender:  <ValidatorX:72403>  receiver:  1
+[10387] driver.ValidatorX<ValidatorX:72404>:OUTPUT:  in process_timeout_msg
+[10387] driver.ValidatorX<ValidatorX:72404>:OUTPUT: in process_certificate_qc
+[10387] driver.ValidatorX<ValidatorX:72404>:OUTPUT: in process_certificate_qc
+[10387] driver.ValidatorX<ValidatorX:72404>:OUTPUT: in pacemaker_advance_rount_tc
+[10387] driver.ValidatorX<ValidatorX:72404>:OUTPUT: processing remote timeout message sender:  2  for round:  2  with self.f:  1.0
+[10388] driver.ValidatorX<ValidatorX:72403>:INFO: Timeout message message received here:  <messages.TimeoutMsg object at 0x109d50ef0>  sender:  <ValidatorX:72403>  receiver:  2
+[10388] driver.ValidatorX<ValidatorX:72403>:OUTPUT:  in process_timeout_msg
+[10388] driver.ValidatorX<ValidatorX:72403>:OUTPUT: in process_certificate_qc
+[10388] driver.ValidatorX<ValidatorX:72403>:OUTPUT: in process_certificate_qc
+[10388] driver.ValidatorX<ValidatorX:72403>:OUTPUT: in pacemaker_advance_rount_tc
+[10388] driver.ValidatorX<ValidatorX:72403>:OUTPUT: processing remote timeout message sender:  2  for round:  2  with self.f:  1.0
+[10388] driver.ValidatorX<ValidatorX:72404>:INFO: Timeout message message received here:  <messages.TimeoutMsg object at 0x109d9bc50>  sender:  <ValidatorX:72404>  receiver:  1
+[10388] driver.ValidatorX<ValidatorX:72404>:OUTPUT:  in process_timeout_msg
+[10388] driver.ValidatorX<ValidatorX:72404>:OUTPUT: in process_certificate_qc
+[10388] driver.ValidatorX<ValidatorX:72404>:OUTPUT: in process_certificate_qc
+[10388] driver.ValidatorX<ValidatorX:72404>:OUTPUT: in pacemaker_advance_rount_tc
+[10388] driver.ValidatorX<ValidatorX:72404>:OUTPUT: processing remote timeout message sender:  1  for round:  2  with self.f:  1.0
+[10388] driver.ValidatorX<ValidatorX:72403>:INFO: Timeout message message received here:  <messages.TimeoutMsg object at 0x109d50f60>  sender:  <ValidatorX:72404>  receiver:  2
+[10388] driver.ValidatorX<ValidatorX:72403>:OUTPUT:  in process_timeout_msg
+[10388] driver.ValidatorX<ValidatorX:72403>:OUTPUT: in process_certificate_qc
+[10388] driver.ValidatorX<ValidatorX:72403>:OUTPUT: in process_certificate_qc
+[10388] driver.ValidatorX<ValidatorX:72403>:OUTPUT: in pacemaker_advance_rount_tc
+[10388] driver.ValidatorX<ValidatorX:72403>:OUTPUT: processing remote timeout message sender:  1  for round:  2  with self.f:  1.0
+[11388] driver.ValidatorX<ValidatorX:72407>:INFO: sending proposal message:  <blockTree.Block object at 0x109bfeef0>  last timeout certificate:  <messages.TC object at 0x109bfef60>  high commit qc:  None  sender:  0  receiver:  [<ValidatorX:72406>, <ValidatorX:72404>, <ValidatorX:72403>, <ValidatorX:72405>]
+[11388] driver.ValidatorX<ValidatorX:72407>:OUTPUT: ('proposalMessage', <messages.ProposalMsg object at 0x109d966a0>, [<ValidatorX:72406>, <ValidatorX:72404>, <ValidatorX:72403>, <ValidatorX:72405>])
+[11389] driver.ValidatorX<ValidatorX:72407>:OUTPUT: ############ timeout certificate successfully created for round:  2  system moving to round:  3
+[11389] driver.ValidatorX<ValidatorX:72407>:OUTPUT: round done
+[11391] driver.ValidatorX<ValidatorX:72407>:INFO: Timeout message message received here:  <messages.TimeoutMsg object at 0x109d96b38>  sender:  <ValidatorX:72406>  receiver:  0
+[11391] driver.ValidatorX<ValidatorX:72407>:OUTPUT:  in process_timeout_msg
+[11391] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 3 <ValidatorX:72407> proposals
+[11391] driver.ValidatorX<ValidatorX:72407>:OUTPUT: in process_certificate_qc
+[11391] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Proposal from playground 2 <ValidatorX:72407> <ValidatorX:72407>
+[11391] driver.ValidatorX<ValidatorX:72407>:OUTPUT: in process_certificate_qc
+[11391] driver.ValidatorX<ValidatorX:72407>:OUTPUT: in pacemaker_advance_rount_tc
+[11391] driver.ValidatorX<ValidatorX:72407>:OUTPUT: processing remote timeout message sender:  0  for round:  2  with self.f:  1.0
+[11392] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 3 <ValidatorX:72407> proposals
+[11392] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Proposal from playground 3 <ValidatorX:72407> <ValidatorX:72404>
+[11393] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 3 <ValidatorX:72407> proposals
+[11393] driver.ValidatorX<ValidatorX:72407>:INFO: Timeout message message received here:  <messages.TimeoutMsg object at 0x109d965f8>  sender:  <ValidatorX:72403>  receiver:  0
+[11393] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Proposal from playground 3 <ValidatorX:72407> <ValidatorX:72405>
+[11393] driver.ValidatorX<ValidatorX:72407>:OUTPUT:  in process_timeout_msg
+[11393] driver.ValidatorX<ValidatorX:72407>:OUTPUT: in process_certificate_qc
+[11393] driver.ValidatorX<ValidatorX:72407>:OUTPUT: in process_certificate_qc
+[11393] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Speculative Round:  3
+[11393] driver.ValidatorX<ValidatorX:72407>:OUTPUT: in pacemaker_advance_rount_tc
+[11394] driver.ValidatorX<ValidatorX:72407>:OUTPUT: processing remote timeout message sender:  2  for round:  2  with self.f:  1.0
+[11395] driver.ValidatorX<ValidatorX:72404>:INFO: proposal message received here:  <messages.ProposalMsg object at 0x109d9bd68>  sender:  <ValidatorX:72406>  receiver:  1
+[11395] driver.ValidatorX<ValidatorX:72407>:INFO: Timeout message message received here:  <messages.TimeoutMsg object at 0x109d968d0>  sender:  <ValidatorX:72404>  receiver:  0
+[11395] driver.ValidatorX<ValidatorX:72404>:OUTPUT: in process_certificate_qc
+[11395] driver.ValidatorX<ValidatorX:72407>:OUTPUT:  in process_timeout_msg
+[11395] driver.ValidatorX<ValidatorX:72404>:OUTPUT: in process_certificate_qc
+[11395] driver.ValidatorX<ValidatorX:72407>:OUTPUT: in process_certificate_qc
+[11395] driver.ValidatorX<ValidatorX:72404>:OUTPUT: in pacemaker_advance_rount_tc
+[11395] driver.ValidatorX<ValidatorX:72407>:OUTPUT: in process_certificate_qc
+[11395] driver.ValidatorX<ValidatorX:72407>:OUTPUT: in pacemaker_advance_rount_tc
+[11395] driver.ValidatorX<ValidatorX:72405>:INFO: proposal message received here:  <messages.ProposalMsg object at 0x109bfee80>  sender:  <ValidatorX:72406>  receiver:  3
+[11395] driver.ValidatorX<ValidatorX:72407>:OUTPUT: processing remote timeout message sender:  1  for round:  2  with self.f:  1.0
+[11395] driver.ValidatorX<ValidatorX:72405>:OUTPUT: seems like the replica is lagging, lets do recovery P.block.round:  3  pacemaker_current_round  1
+[11395] driver.ValidatorX<ValidatorX:72405>:OUTPUT: checkpoint 1 intiateRecoveryProcess called
+[11395] driver.ValidatorX<ValidatorX:72405>:OUTPUT: ('initiateRecovery', 1, 1, 2, <ValidatorX:72406>)
+[11396] driver.ValidatorX<ValidatorX:72404>:OUTPUT: vote_msg:  <blockTree.VoteMsg object at 0x109d9b9b0>
+[11396] driver.ValidatorX<ValidatorX:72404>:INFO: Sending vote message:  <blockTree.VoteMsg object at 0x109d9b9b0>  sender:  1  receiver:  <ValidatorX:72406>
+[11396] driver.ValidatorX<ValidatorX:72404>:OUTPUT: ('voteMessage', <blockTree.VoteMsg object at 0x109d9b9b0>, <ValidatorX:72406>)
+[11396] driver.ValidatorX<ValidatorX:72407>:INFO: proposal message received here:  <messages.ProposalMsg object at 0x109d96978>  sender:  <ValidatorX:72406>  receiver:  0
+[11396] driver.ValidatorX<ValidatorX:72407>:OUTPUT: in process_certificate_qc
+[11396] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: initiateRecovery message received at playground from  <ValidatorX:72405>  to  <ValidatorX:72406>  message m  1 1 2
+[11396] driver.ValidatorX<ValidatorX:72407>:OUTPUT: in process_certificate_qc
+[11396] driver.ValidatorX<ValidatorX:72407>:OUTPUT: in pacemaker_advance_rount_tc
+[11397] driver.ValidatorX<ValidatorX:72407>:ERROR: KeyError(b'6c69d181a2ad97230eddf3dca6e52c08a5f60e39c419d7e1685a8776feaddcde',) when calling handler '_ValidatorX_handler_2281' with '{'p': <Network_Playground:72408>, 'm': <messages.ProposalMsg object at 0x109d96978>, 'sender': <ValidatorX:72406>}': b'6c69d181a2ad97230eddf3dca6e52c08a5f60e39c419d7e1685a8776feaddcde'
+[11397] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: checkpoint 1 in votemessageplayground
+[11397] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: RECEIVED VOTE MESSAGE AT PLAYGROUND <blockTree.VoteMsg object at 0x109d947b8> <ValidatorX:72406> <ValidatorX:72404>
+[11397] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 3 <ValidatorX:72404> vote
+[11397] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Votes from playground 2 <ValidatorX:72404> <ValidatorX:72407>
+[11397] driver.ValidatorX<ValidatorX:72406>:OUTPUT: in initiateRecoveryPlay receive  1
+[11397] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Speculative Round:  3
+[11397] driver.ValidatorX<ValidatorX:72406>:OUTPUT: checkpoint 1 process_recovery_msg called
+[11398] driver.ValidatorX<ValidatorX:72407>:INFO: Vote message received here:  <blockTree.VoteMsg object at 0x109d96da0>  sender:  <ValidatorX:72404>  receiver:  0
+[16359] driver.ValidatorX<ValidatorX:72406>:OUTPUT: no message received from the leader: <ValidatorX:72404>  timeout reported in the system
+[16360] driver.ValidatorX<ValidatorX:72406>:INFO: sending timeout message:  <messages.TimeoutInfo object at 0x109d49ef0>  pacemaker last round tc:  None  high commit qc:  None
+[16361] driver.ValidatorX<ValidatorX:72406>:OUTPUT: ('timeoutMessage', <messages.TimeoutMsg object at 0x109d49dd8>, [<ValidatorX:72406>, <ValidatorX:72404>, <ValidatorX:72403>, <ValidatorX:72405>])
+[16364] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: checkpoint 1 in timeoutmessageplayground
+[16364] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 1 <ValidatorX:72406> timeout
+[16364] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Timeout from playground 1 <ValidatorX:72406> <ValidatorX:72406>
+[16365] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 1 <ValidatorX:72406> timeout
+[16365] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Timeout from playground 3 <ValidatorX:72406> <ValidatorX:72404>
+[16365] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 1 <ValidatorX:72406> timeout
+[16366] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Timeout from playground 3 <ValidatorX:72406> <ValidatorX:72403>
+[16366] driver.ValidatorX<ValidatorX:72406>:INFO: Timeout message message received here:  <messages.TimeoutMsg object at 0x109d41f28>  sender:  <ValidatorX:72406>  receiver:  0
+[16367] driver.ValidatorX<ValidatorX:72406>:OUTPUT:  in process_timeout_msg
+[16367] driver.ValidatorX<ValidatorX:72406>:OUTPUT: in process_certificate_qc
+[16367] driver.ValidatorX<ValidatorX:72404>:INFO: Timeout message message received here:  <messages.TimeoutMsg object at 0x109d9bef0>  sender:  <ValidatorX:72406>  receiver:  1
+[16367] driver.ValidatorX<ValidatorX:72406>:OUTPUT: in process_certificate_qc
+[16367] driver.ValidatorX<ValidatorX:72404>:OUTPUT:  in process_timeout_msg
+[16367] driver.ValidatorX<ValidatorX:72406>:OUTPUT: in pacemaker_advance_rount_tc
+[16367] driver.ValidatorX<ValidatorX:72404>:OUTPUT: in process_certificate_qc
+[16367] driver.ValidatorX<ValidatorX:72406>:OUTPUT: processing remote timeout message sender:  0  for round:  1  with self.f:  1.0
+[16367] driver.ValidatorX<ValidatorX:72404>:OUTPUT: in process_certificate_qc
+[16367] driver.ValidatorX<ValidatorX:72404>:OUTPUT: in pacemaker_advance_rount_tc
+[16368] driver.ValidatorX<ValidatorX:72404>:OUTPUT: processing remote timeout message sender:  0  for round:  1  with self.f:  1.0
+[16368] driver.ValidatorX<ValidatorX:72403>:INFO: Timeout message message received here:  <messages.TimeoutMsg object at 0x109d50e80>  sender:  <ValidatorX:72406>  receiver:  2
+[16368] driver.ValidatorX<ValidatorX:72403>:OUTPUT:  in process_timeout_msg
+[16368] driver.ValidatorX<ValidatorX:72403>:OUTPUT: in process_certificate_qc
+[16368] driver.ValidatorX<ValidatorX:72403>:OUTPUT: in process_certificate_qc
+[16368] driver.ValidatorX<ValidatorX:72403>:OUTPUT: in pacemaker_advance_rount_tc
+[16368] driver.ValidatorX<ValidatorX:72403>:OUTPUT: processing remote timeout message sender:  0  for round:  1  with self.f:  1.0
+[18387] driver.ValidatorX<ValidatorX:72403>:OUTPUT: no message received from the leader: <ValidatorX:72406>  timeout reported in the system
+[18388] driver.ValidatorX<ValidatorX:72404>:OUTPUT: no message received from the leader: <ValidatorX:72406>  timeout reported in the system
+[18389] driver.ValidatorX<ValidatorX:72403>:INFO: sending timeout message:  <messages.TimeoutInfo object at 0x109d50e80>  pacemaker last round tc:  <messages.TC object at 0x109d41e80>  high commit qc:  None
+[18389] driver.ValidatorX<ValidatorX:72403>:OUTPUT: ('timeoutMessage', <messages.TimeoutMsg object at 0x109d50da0>, [<ValidatorX:72406>, <ValidatorX:72404>, <ValidatorX:72403>, <ValidatorX:72405>])
+[18389] driver.ValidatorX<ValidatorX:72404>:INFO: sending timeout message:  <messages.TimeoutInfo object at 0x109bfec50>  pacemaker last round tc:  <messages.TC object at 0x109bfef98>  high commit qc:  None
+[18390] driver.ValidatorX<ValidatorX:72404>:OUTPUT: ('timeoutMessage', <messages.TimeoutMsg object at 0x109d9bef0>, [<ValidatorX:72406>, <ValidatorX:72404>, <ValidatorX:72403>, <ValidatorX:72405>])
+[18392] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: checkpoint 1 in timeoutmessageplayground
+[18392] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 3 <ValidatorX:72403> timeout
+[18392] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Timeout from playground 3 <ValidatorX:72403> <ValidatorX:72403>
+[18393] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: checkpoint 1 in timeoutmessageplayground
+[18394] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 3 <ValidatorX:72404> timeout
+[18394] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Timeout from playground 2 <ValidatorX:72404> <ValidatorX:72407>
+[18395] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 3 <ValidatorX:72404> timeout
+[18395] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Timeout from playground 3 <ValidatorX:72404> <ValidatorX:72404>
+[18395] driver.ValidatorX<ValidatorX:72403>:INFO: Timeout message message received here:  <messages.TimeoutMsg object at 0x109d41dd8>  sender:  <ValidatorX:72403>  receiver:  2
+[18395] driver.ValidatorX<ValidatorX:72403>:OUTPUT:  in process_timeout_msg
+[18396] driver.ValidatorX<ValidatorX:72403>:OUTPUT: in process_certificate_qc
+[18396] driver.ValidatorX<ValidatorX:72403>:OUTPUT: in process_certificate_qc
+[18396] driver.ValidatorX<ValidatorX:72403>:OUTPUT: in pacemaker_advance_rount_tc
+[18396] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 3 <ValidatorX:72404> timeout
+[18396] driver.ValidatorX<ValidatorX:72403>:OUTPUT: processing remote timeout message sender:  2  for round:  3  with self.f:  1.0
+[18396] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Timeout from playground 3 <ValidatorX:72404> <ValidatorX:72405>
+[18396] driver.ValidatorX<ValidatorX:72407>:INFO: Timeout message message received here:  <messages.TimeoutMsg object at 0x109d96dd8>  sender:  <ValidatorX:72404>  receiver:  0
+[18397] driver.ValidatorX<ValidatorX:72407>:OUTPUT:  in process_timeout_msg
+[18397] driver.ValidatorX<ValidatorX:72407>:OUTPUT: in process_certificate_qc
+[18397] driver.ValidatorX<ValidatorX:72404>:INFO: Timeout message message received here:  <messages.TimeoutMsg object at 0x109bfec50>  sender:  <ValidatorX:72404>  receiver:  1
+[18397] driver.ValidatorX<ValidatorX:72407>:OUTPUT: in process_certificate_qc
+[18397] driver.ValidatorX<ValidatorX:72404>:OUTPUT:  in process_timeout_msg
+[18397] driver.ValidatorX<ValidatorX:72407>:OUTPUT: in pacemaker_advance_rount_tc
+[18397] driver.ValidatorX<ValidatorX:72404>:OUTPUT: in process_certificate_qc
+[18397] driver.ValidatorX<ValidatorX:72407>:OUTPUT: processing remote timeout message sender:  1  for round:  3  with self.f:  1.0
+[18397] driver.ValidatorX<ValidatorX:72404>:OUTPUT: in process_certificate_qc
+[18397] driver.ValidatorX<ValidatorX:72404>:OUTPUT: in pacemaker_advance_rount_tc
+[18397] driver.ValidatorX<ValidatorX:72404>:OUTPUT: processing remote timeout message sender:  1  for round:  3  with self.f:  1.0
+[18397] driver.ValidatorX<ValidatorX:72405>:INFO: Timeout message message received here:  <messages.TimeoutMsg object at 0x109bfef28>  sender:  <ValidatorX:72404>  receiver:  3
+[18397] driver.ValidatorX<ValidatorX:72405>:OUTPUT:  in process_timeout_msg
+[18397] driver.ValidatorX<ValidatorX:72405>:OUTPUT: in process_certificate_qc
+[18397] driver.ValidatorX<ValidatorX:72405>:OUTPUT: in process_certificate_qc
+[18397] driver.ValidatorX<ValidatorX:72405>:OUTPUT: in pacemaker_advance_rount_tc
+[18397] driver.ValidatorX<ValidatorX:72405>:OUTPUT: processing remote timeout message sender:  1  for round:  3  with self.f:  1.0
+[19391] driver.ValidatorX<ValidatorX:72407>:OUTPUT: no message received from the leader: <ValidatorX:72406>  timeout reported in the system
+[19392] driver.ValidatorX<ValidatorX:72407>:INFO: sending timeout message:  <messages.TimeoutInfo object at 0x109d49ef0>  pacemaker last round tc:  <messages.TC object at 0x109bfef60>  high commit qc:  None
+[19392] driver.ValidatorX<ValidatorX:72407>:OUTPUT: ('timeoutMessage', <messages.TimeoutMsg object at 0x109d96dd8>, [<ValidatorX:72406>, <ValidatorX:72404>, <ValidatorX:72403>, <ValidatorX:72405>])
+[19394] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: checkpoint 1 in timeoutmessageplayground
+[19394] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 3 <ValidatorX:72407> timeout
+[19394] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Timeout from playground 2 <ValidatorX:72407> <ValidatorX:72407>
+[19395] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 3 <ValidatorX:72407> timeout
+[19395] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Timeout from playground 3 <ValidatorX:72407> <ValidatorX:72404>
+[19396] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 3 <ValidatorX:72407> timeout
+[19396] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Timeout from playground 3 <ValidatorX:72407> <ValidatorX:72405>
+[19397] driver.ValidatorX<ValidatorX:72407>:INFO: Timeout message message received here:  <messages.TimeoutMsg object at 0x109d96fd0>  sender:  <ValidatorX:72406>  receiver:  0
+[19397] driver.ValidatorX<ValidatorX:72407>:OUTPUT:  in process_timeout_msg
+[19397] driver.ValidatorX<ValidatorX:72407>:OUTPUT: in process_certificate_qc
+[19397] driver.ValidatorX<ValidatorX:72407>:OUTPUT: in process_certificate_qc
+[19397] driver.ValidatorX<ValidatorX:72407>:OUTPUT: in pacemaker_advance_rount_tc
+[19397] driver.ValidatorX<ValidatorX:72407>:OUTPUT: processing remote timeout message sender:  0  for round:  3  with self.f:  1.0
+[19397] driver.ValidatorX<ValidatorX:72407>:OUTPUT: received f+1 timeouts for round:  3 3
+[19397] driver.ValidatorX<ValidatorX:72404>:INFO: Timeout message message received here:  <messages.TimeoutMsg object at 0x109bfec50>  sender:  <ValidatorX:72406>  receiver:  1
+[19398] driver.ValidatorX<ValidatorX:72404>:OUTPUT:  in process_timeout_msg
+[19398] driver.ValidatorX<ValidatorX:72404>:OUTPUT: in process_certificate_qc
+[19398] driver.ValidatorX<ValidatorX:72404>:OUTPUT: in process_certificate_qc
+[19398] driver.ValidatorX<ValidatorX:72404>:OUTPUT: in pacemaker_advance_rount_tc
+[19398] driver.ValidatorX<ValidatorX:72407>:INFO: sending timeout message:  <messages.TimeoutInfo object at 0x109d966d8>  pacemaker last round tc:  <messages.TC object at 0x109bfef60>  high commit qc:  None
+[19398] driver.ValidatorX<ValidatorX:72404>:OUTPUT: processing remote timeout message sender:  0  for round:  3  with self.f:  1.0
+[19398] driver.ValidatorX<ValidatorX:72407>:OUTPUT: ('timeoutMessage', <messages.TimeoutMsg object at 0x109d96eb8>, [<ValidatorX:72406>, <ValidatorX:72404>, <ValidatorX:72403>, <ValidatorX:72405>])
+[19398] driver.ValidatorX<ValidatorX:72404>:OUTPUT: received f+1 timeouts for round:  3 3
+[19398] driver.ValidatorX<ValidatorX:72405>:INFO: Timeout message message received here:  <messages.TimeoutMsg object at 0x109d413c8>  sender:  <ValidatorX:72406>  receiver:  3
+[19398] driver.ValidatorX<ValidatorX:72405>:OUTPUT:  in process_timeout_msg
+[19399] driver.ValidatorX<ValidatorX:72405>:OUTPUT: in process_certificate_qc
+[19399] driver.ValidatorX<ValidatorX:72405>:OUTPUT: in process_certificate_qc
+[19399] driver.ValidatorX<ValidatorX:72405>:OUTPUT: in pacemaker_advance_rount_tc
+[19399] driver.ValidatorX<ValidatorX:72404>:INFO: sending timeout message:  <messages.TimeoutInfo object at 0x109d9ba90>  pacemaker last round tc:  <messages.TC object at 0x109bfef98>  high commit qc:  None
+[19399] driver.ValidatorX<ValidatorX:72405>:OUTPUT: processing remote timeout message sender:  0  for round:  3  with self.f:  1.0
+[19399] driver.ValidatorX<ValidatorX:72404>:OUTPUT: ('timeoutMessage', <messages.TimeoutMsg object at 0x109d9bfd0>, [<ValidatorX:72406>, <ValidatorX:72404>, <ValidatorX:72403>, <ValidatorX:72405>])
+[19399] driver.ValidatorX<ValidatorX:72405>:OUTPUT: received f+1 timeouts for round:  3 3
+[19399] driver.ValidatorX<ValidatorX:72405>:INFO: sending timeout message:  <messages.TimeoutInfo object at 0x109bfef28>  pacemaker last round tc:  <messages.TC object at 0x109d982e8>  high commit qc:  None
+[19400] driver.ValidatorX<ValidatorX:72405>:OUTPUT: ('timeoutMessage', <messages.TimeoutMsg object at 0x109bfebe0>, [<ValidatorX:72406>, <ValidatorX:72404>, <ValidatorX:72403>, <ValidatorX:72405>])
+[19400] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: checkpoint 1 in timeoutmessageplayground
+[19400] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 3 <ValidatorX:72407> timeout
+[19400] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Timeout from playground 2 <ValidatorX:72407> <ValidatorX:72407>
+[19400] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 3 <ValidatorX:72407> timeout
+[19400] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Timeout from playground 3 <ValidatorX:72407> <ValidatorX:72404>
+[19400] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 3 <ValidatorX:72407> timeout
+[19400] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Timeout from playground 3 <ValidatorX:72407> <ValidatorX:72405>
+[19400] driver.ValidatorX<ValidatorX:72407>:INFO: Timeout message message received here:  <messages.TimeoutMsg object at 0x109d96fd0>  sender:  <ValidatorX:72406>  receiver:  0
+[19400] driver.ValidatorX<ValidatorX:72407>:OUTPUT:  in process_timeout_msg
+[19400] driver.ValidatorX<ValidatorX:72407>:OUTPUT: in process_certificate_qc
+[19401] driver.ValidatorX<ValidatorX:72407>:OUTPUT: in process_certificate_qc
+[19401] driver.ValidatorX<ValidatorX:72407>:OUTPUT: in pacemaker_advance_rount_tc
+[19401] driver.ValidatorX<ValidatorX:72407>:OUTPUT: processing remote timeout message sender:  0  for round:  3  with self.f:  1.0
+[19401] driver.ValidatorX<ValidatorX:72407>:OUTPUT: received f+1 timeouts for round:  3 3
+[19401] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: checkpoint 1 in timeoutmessageplayground
+[19401] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 3 <ValidatorX:72404> timeout
+[19401] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Timeout from playground 2 <ValidatorX:72404> <ValidatorX:72407>
+[19401] driver.ValidatorX<ValidatorX:72404>:INFO: Timeout message message received here:  <messages.TimeoutMsg object at 0x109bfec50>  sender:  <ValidatorX:72406>  receiver:  1
+[19401] driver.ValidatorX<ValidatorX:72407>:INFO: sending timeout message:  <messages.TimeoutInfo object at 0x109d966d8>  pacemaker last round tc:  <messages.TC object at 0x109bfef60>  high commit qc:  None
+[19401] driver.ValidatorX<ValidatorX:72404>:OUTPUT:  in process_timeout_msg
+[19401] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 3 <ValidatorX:72404> timeout
+[19401] driver.ValidatorX<ValidatorX:72407>:OUTPUT: ('timeoutMessage', <messages.TimeoutMsg object at 0x109bfedd8>, [<ValidatorX:72406>, <ValidatorX:72404>, <ValidatorX:72403>, <ValidatorX:72405>])
+[19401] driver.ValidatorX<ValidatorX:72404>:OUTPUT: in process_certificate_qc
+[19401] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Timeout from playground 3 <ValidatorX:72404> <ValidatorX:72404>
+[19401] driver.ValidatorX<ValidatorX:72404>:OUTPUT: in process_certificate_qc
+[19401] driver.ValidatorX<ValidatorX:72404>:OUTPUT: in pacemaker_advance_rount_tc
+[19401] driver.ValidatorX<ValidatorX:72404>:OUTPUT: processing remote timeout message sender:  0  for round:  3  with self.f:  1.0
+[19401] driver.ValidatorX<ValidatorX:72404>:OUTPUT: received f+1 timeouts for round:  3 3
+[19401] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 3 <ValidatorX:72404> timeout
+[19401] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Timeout from playground 3 <ValidatorX:72404> <ValidatorX:72405>
+[19401] driver.ValidatorX<ValidatorX:72404>:INFO: sending timeout message:  <messages.TimeoutInfo object at 0x109d9bfd0>  pacemaker last round tc:  <messages.TC object at 0x109bfef98>  high commit qc:  None
+[19401] driver.ValidatorX<ValidatorX:72405>:INFO: Timeout message message received here:  <messages.TimeoutMsg object at 0x109d413c8>  sender:  <ValidatorX:72406>  receiver:  3
+[19401] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: checkpoint 1 in timeoutmessageplayground
+[19401] driver.ValidatorX<ValidatorX:72404>:OUTPUT: ('timeoutMessage', <messages.TimeoutMsg object at 0x109d9bd30>, [<ValidatorX:72406>, <ValidatorX:72404>, <ValidatorX:72403>, <ValidatorX:72405>])
+[19401] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 3 <ValidatorX:72405> timeout
+[19401] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Timeout from playground 2 <ValidatorX:72405> <ValidatorX:72407>
+[19402] driver.ValidatorX<ValidatorX:72405>:OUTPUT:  in process_timeout_msg
+[19402] driver.ValidatorX<ValidatorX:72405>:OUTPUT: in process_certificate_qc
+[19402] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 3 <ValidatorX:72405> timeout
+[19402] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Timeout from playground 3 <ValidatorX:72405> <ValidatorX:72404>
+[19402] driver.ValidatorX<ValidatorX:72405>:OUTPUT: in process_certificate_qc
+[19402] driver.ValidatorX<ValidatorX:72407>:INFO: Timeout message message received here:  <messages.TimeoutMsg object at 0x109da55f8>  sender:  <ValidatorX:72404>  receiver:  0
+[19402] driver.ValidatorX<ValidatorX:72405>:OUTPUT: in pacemaker_advance_rount_tc
+[19402] driver.ValidatorX<ValidatorX:72407>:OUTPUT:  in process_timeout_msg
+[19402] driver.ValidatorX<ValidatorX:72405>:OUTPUT: processing remote timeout message sender:  0  for round:  3  with self.f:  1.0
+[19402] driver.ValidatorX<ValidatorX:72407>:OUTPUT: in process_certificate_qc
+[19402] driver.ValidatorX<ValidatorX:72405>:OUTPUT: received f+1 timeouts for round:  3 3
+[19402] driver.ValidatorX<ValidatorX:72407>:OUTPUT: in process_certificate_qc
+[19402] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 3 <ValidatorX:72405> timeout
+[19402] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Timeout from playground 3 <ValidatorX:72405> <ValidatorX:72405>
+[19402] driver.ValidatorX<ValidatorX:72404>:INFO: Timeout message message received here:  <messages.TimeoutMsg object at 0x109d9bef0>  sender:  <ValidatorX:72404>  receiver:  1
+[19402] driver.ValidatorX<ValidatorX:72405>:INFO: sending timeout message:  <messages.TimeoutInfo object at 0x109bfeba8>  pacemaker last round tc:  <messages.TC object at 0x109d982e8>  high commit qc:  None
+[19402] driver.ValidatorX<ValidatorX:72407>:OUTPUT: in pacemaker_advance_rount_tc
+[19402] driver.ValidatorX<ValidatorX:72407>:OUTPUT: processing remote timeout message sender:  1  for round:  3  with self.f:  1.0
+[19402] driver.ValidatorX<ValidatorX:72405>:OUTPUT: ('timeoutMessage', <messages.TimeoutMsg object at 0x109bfebe0>, [<ValidatorX:72406>, <ValidatorX:72404>, <ValidatorX:72403>, <ValidatorX:72405>])
+[19402] driver.ValidatorX<ValidatorX:72407>:OUTPUT: received f+1 timeouts for round:  3 3
+[19402] driver.ValidatorX<ValidatorX:72404>:OUTPUT:  in process_timeout_msg
+[19402] driver.ValidatorX<ValidatorX:72404>:OUTPUT: in process_certificate_qc
+[19402] driver.ValidatorX<ValidatorX:72404>:OUTPUT: in process_certificate_qc
+[19402] driver.ValidatorX<ValidatorX:72404>:OUTPUT: in pacemaker_advance_rount_tc
+[19402] driver.ValidatorX<ValidatorX:72404>:OUTPUT: processing remote timeout message sender:  1  for round:  3  with self.f:  1.0
+[19402] driver.ValidatorX<ValidatorX:72407>:INFO: sending timeout message:  <messages.TimeoutInfo object at 0x109d96fd0>  pacemaker last round tc:  <messages.TC object at 0x109bfef60>  high commit qc:  None
+[19402] driver.ValidatorX<ValidatorX:72404>:OUTPUT: received f+1 timeouts for round:  3 3
+[19402] driver.ValidatorX<ValidatorX:72407>:OUTPUT: ('timeoutMessage', <messages.TimeoutMsg object at 0x109d96eb8>, [<ValidatorX:72406>, <ValidatorX:72404>, <ValidatorX:72403>, <ValidatorX:72405>])
+[19402] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: checkpoint 1 in timeoutmessageplayground
+[19402] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 3 <ValidatorX:72407> timeout
+[19402] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Timeout from playground 2 <ValidatorX:72407> <ValidatorX:72407>
+[19402] driver.ValidatorX<ValidatorX:72404>:INFO: sending timeout message:  <messages.TimeoutInfo object at 0x109bfec50>  pacemaker last round tc:  <messages.TC object at 0x109bfef98>  high commit qc:  None
+[19402] driver.ValidatorX<ValidatorX:72404>:OUTPUT: ('timeoutMessage', <messages.TimeoutMsg object at 0x109d9beb8>, [<ValidatorX:72406>, <ValidatorX:72404>, <ValidatorX:72403>, <ValidatorX:72405>])
+[19402] driver.ValidatorX<ValidatorX:72405>:INFO: Timeout message message received here:  <messages.TimeoutMsg object at 0x109bfef28>  sender:  <ValidatorX:72404>  receiver:  3
+[19402] driver.ValidatorX<ValidatorX:72405>:OUTPUT:  in process_timeout_msg
+[19402] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 3 <ValidatorX:72407> timeout
+[19403] driver.ValidatorX<ValidatorX:72405>:OUTPUT: in process_certificate_qc
+[19403] driver.ValidatorX<ValidatorX:72405>:OUTPUT: in process_certificate_qc
+[19403] driver.ValidatorX<ValidatorX:72405>:OUTPUT: in pacemaker_advance_rount_tc
+[19403] driver.ValidatorX<ValidatorX:72405>:OUTPUT: processing remote timeout message sender:  1  for round:  3  with self.f:  1.0
+[19403] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Timeout from playground 3 <ValidatorX:72407> <ValidatorX:72404>
+[19403] driver.ValidatorX<ValidatorX:72405>:OUTPUT: received f+1 timeouts for round:  3 3
+[19403] driver.ValidatorX<ValidatorX:72407>:INFO: Timeout message message received here:  <messages.TimeoutMsg object at 0x109d96f98>  sender:  <ValidatorX:72405>  receiver:  0
+[19403] driver.ValidatorX<ValidatorX:72407>:OUTPUT:  in process_timeout_msg
+[19403] driver.ValidatorX<ValidatorX:72407>:OUTPUT: in process_certificate_qc
+[19403] driver.ValidatorX<ValidatorX:72407>:OUTPUT: in process_certificate_qc
+[19403] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 3 <ValidatorX:72407> timeout
+[19403] driver.ValidatorX<ValidatorX:72407>:OUTPUT: in pacemaker_advance_rount_tc
+[19403] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Timeout from playground 3 <ValidatorX:72407> <ValidatorX:72405>
+[19403] driver.ValidatorX<ValidatorX:72407>:OUTPUT: processing remote timeout message sender:  3  for round:  3  with self.f:  1.0
+[19403] driver.ValidatorX<ValidatorX:72407>:OUTPUT: received 2f+1 timeouts for round:  3 3
+[19403] driver.ValidatorX<ValidatorX:72405>:INFO: sending timeout message:  <messages.TimeoutInfo object at 0x109d413c8>  pacemaker last round tc:  <messages.TC object at 0x109d982e8>  high commit qc:  None
+[19403] driver.ValidatorX<ValidatorX:72407>:OUTPUT: timeout certificate created is  b'\x80\x03cmessages\nTC\nq\x00)\x81q\x01}q\x02(X\x05\x00\x00\x00roundq\x03K\x03X\x12\x00\x00\x00tmo_high_qc_roundsq\x04]q\x05(K\x01K\x01K\x01eX\x0e\x00\x00\x00tmo_signaturesq\x06]q\x07(C@\xe42\xc4K\xf6\xfe!\xb9\xe8.\xcb\xbd\x12\xe5K$q\x13@\x01b\xf6\xce;\x02\xfexfs\x0f\x00\xe4T\xe1\x0e\xf5\xbb\xe2\x1b\x85\xea\x1eu\xf1\x94N\x88\x03\x1e\xff\xf3\x11\x9a\x90\xb5\xe6r\x85P\xd5\xc4\x8b\xcb\x0bq\x08C@F.\xdc?\xf1,\xca\xbb\x08\xce\xb5\xe8\x07\xa7\xf0\xd5S\xb45\x1dt\xe9\t\x98%\x1c\xf0bd\xc3p\xcbHIq\x9a\xe4\x86\xb5\x9b\xe9\xe6v\x8d\x15[H?c\xd3s\xc2\xd2\x8f\xec\x1e\xa2\x1c\x1a\x80\xaf\x8f\xc1\x08q\tC@\x16xv\x8b\xa5\xcc2l\x1e\xfd?\xd3\xac\x8d\xf4S\xc2y~cd=\xcaR.\x9e\x89\xe6@/\xe2\x94!\xa8Y\xb5`\xe2[i\xc7\xe8\x93\x98y\xfbpW\xfb\xd6\xe9T|\xde\xa6\xab\x01\x03\xad\xfe\xf8\xf6\x1a\tq\neub.'
+[19403] driver.ValidatorX<ValidatorX:72405>:OUTPUT: ('timeoutMessage', <messages.TimeoutMsg object at 0x109bfeba8>, [<ValidatorX:72406>, <ValidatorX:72404>, <ValidatorX:72403>, <ValidatorX:72405>])
+[19403] driver.ValidatorX<ValidatorX:72404>:INFO: Timeout message message received here:  <messages.TimeoutMsg object at 0x109d9bd30>  sender:  <ValidatorX:72405>  receiver:  1
+[19403] driver.ValidatorX<ValidatorX:72404>:OUTPUT:  in process_timeout_msg
+[19403] driver.ValidatorX<ValidatorX:72404>:OUTPUT: in process_certificate_qc
+[19403] driver.ValidatorX<ValidatorX:72404>:OUTPUT: in process_certificate_qc
+[19403] driver.ValidatorX<ValidatorX:72404>:OUTPUT: in pacemaker_advance_rount_tc
+[19403] driver.ValidatorX<ValidatorX:72407>:OUTPUT: timeout message for round : 3  added to map:  {1: {'msg_type': 'proposal', 'message': <messages.ProposalMsg object at 0x109d33cc0>, 'sender': <ValidatorX:72404>}, 2: {'msg_type': 'proposal', 'message': <messages.ProposalMsg object at 0x109d96978>, 'sender': <ValidatorX:72406>}, 3: {'msg_type': 'timeout', 'message': <messages.TC object at 0x109d96da0>, 'high_qc': <blockTree.QC object at 0x109da54e0>, 'high_commit_qc': None}}
+[19403] driver.ValidatorX<ValidatorX:72404>:OUTPUT: processing remote timeout message sender:  3  for round:  3  with self.f:  1.0
+[19403] driver.ValidatorX<ValidatorX:72407>:OUTPUT: in pacemaker_advance_rount_tc
+[19403] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: checkpoint 1 in timeoutmessageplayground
+[19403] driver.ValidatorX<ValidatorX:72404>:OUTPUT: received 2f+1 timeouts for round:  3 3
+[19403] driver.ValidatorX<ValidatorX:72407>:OUTPUT: current_round:  4
+[19403] driver.ValidatorX<ValidatorX:72404>:OUTPUT: timeout certificate created is  b'\x80\x03cmessages\nTC\nq\x00)\x81q\x01}q\x02(X\x05\x00\x00\x00roundq\x03K\x03X\x12\x00\x00\x00tmo_high_qc_roundsq\x04]q\x05(K\x01K\x01K\x01eX\x0e\x00\x00\x00tmo_signaturesq\x06]q\x07(C@\xe42\xc4K\xf6\xfe!\xb9\xe8.\xcb\xbd\x12\xe5K$q\x13@\x01b\xf6\xce;\x02\xfexfs\x0f\x00\xe4T\xe1\x0e\xf5\xbb\xe2\x1b\x85\xea\x1eu\xf1\x94N\x88\x03\x1e\xff\xf3\x11\x9a\x90\xb5\xe6r\x85P\xd5\xc4\x8b\xcb\x0bq\x08C@F.\xdc?\xf1,\xca\xbb\x08\xce\xb5\xe8\x07\xa7\xf0\xd5S\xb45\x1dt\xe9\t\x98%\x1c\xf0bd\xc3p\xcbHIq\x9a\xe4\x86\xb5\x9b\xe9\xe6v\x8d\x15[H?c\xd3s\xc2\xd2\x8f\xec\x1e\xa2\x1c\x1a\x80\xaf\x8f\xc1\x08q\tC@\x16xv\x8b\xa5\xcc2l\x1e\xfd?\xd3\xac\x8d\xf4S\xc2y~cd=\xcaR.\x9e\x89\xe6@/\xe2\x94!\xa8Y\xb5`\xe2[i\xc7\xe8\x93\x98y\xfbpW\xfb\xd6\xe9T|\xde\xa6\xab\x01\x03\xad\xfe\xf8\xf6\x1a\tq\neub.'
+[19403] driver.ValidatorX<ValidatorX:72407>:OUTPUT: yay proposal
+[19403] driver.ValidatorX<ValidatorX:72404>:OUTPUT: timeout message for round : 3  added to map:  {0: {'msg_type': 'proposal', 'message': <messages.ProposalMsg object at 0x109bfeb38>, 'sender': <ValidatorX:72404>}, 1: {'msg_type': 'proposal', 'message': <messages.ProposalMsg object at 0x109bfe278>, 'sender': <ValidatorX:72404>}, 2: {'msg_type': 'proposal', 'message': <messages.ProposalMsg object at 0x109d9bd68>, 'sender': <ValidatorX:72406>}, 3: {'msg_type': 'timeout', 'message': <messages.TC object at 0x109bfec50>, 'high_qc': <blockTree.QC object at 0x109da0668>, 'high_commit_qc': None}}
+[19403] driver.ValidatorX<ValidatorX:72404>:OUTPUT: in pacemaker_advance_rount_tc
+[19403] driver.ValidatorX<ValidatorX:72404>:OUTPUT: current_round:  4
+[19403] driver.ValidatorX<ValidatorX:72404>:OUTPUT: ############ timeout certificate successfully created for round:  3  system moving to round:  4
+[19403] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 3 <ValidatorX:72404> timeout
+[19403] driver.ValidatorX<ValidatorX:72404>:OUTPUT: round done
+[19403] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Timeout from playground 2 <ValidatorX:72404> <ValidatorX:72407>
+[19403] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 3 <ValidatorX:72404> timeout
+[19404] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Timeout from playground 3 <ValidatorX:72404> <ValidatorX:72404>
+[19404] driver.ValidatorX<ValidatorX:72405>:INFO: Timeout message message received here:  <messages.TimeoutMsg object at 0x109d987f0>  sender:  <ValidatorX:72405>  receiver:  3
+[19404] driver.ValidatorX<ValidatorX:72405>:OUTPUT:  in process_timeout_msg
+[19404] driver.ValidatorX<ValidatorX:72405>:OUTPUT: in process_certificate_qc
+[19404] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 3 <ValidatorX:72404> timeout
+[19404] driver.ValidatorX<ValidatorX:72405>:OUTPUT: in process_certificate_qc
+[19404] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Timeout from playground 3 <ValidatorX:72404> <ValidatorX:72405>
+[19404] driver.ValidatorX<ValidatorX:72405>:OUTPUT: in pacemaker_advance_rount_tc
+[19404] driver.ValidatorX<ValidatorX:72405>:OUTPUT: processing remote timeout message sender:  3  for round:  3  with self.f:  1.0
+[19404] driver.ValidatorX<ValidatorX:72404>:INFO: Timeout message message received here:  <messages.TimeoutMsg object at 0x109da0b00>  sender:  <ValidatorX:72406>  receiver:  1
+[19404] driver.ValidatorX<ValidatorX:72405>:OUTPUT: received 2f+1 timeouts for round:  3 3
+[19404] driver.ValidatorX<ValidatorX:72404>:OUTPUT:  in process_timeout_msg
+[19404] driver.ValidatorX<ValidatorX:72404>:OUTPUT: in process_certificate_qc
+[19404] driver.ValidatorX<ValidatorX:72404>:OUTPUT: in process_certificate_qc
+[19404] driver.ValidatorX<ValidatorX:72404>:OUTPUT: in pacemaker_advance_rount_tc
+[19404] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: checkpoint 1 in timeoutmessageplayground
+[19404] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 3 <ValidatorX:72405> timeout
+[19404] driver.ValidatorX<ValidatorX:72404>:OUTPUT: processing remote timeout message sender:  0  for round:  3  with self.f:  1.0
+[19404] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Timeout from playground 2 <ValidatorX:72405> <ValidatorX:72407>
+[19404] driver.ValidatorX<ValidatorX:72405>:OUTPUT: timeout certificate created is  b'\x80\x03cmessages\nTC\nq\x00)\x81q\x01}q\x02(X\x05\x00\x00\x00roundq\x03K\x03X\x12\x00\x00\x00tmo_high_qc_roundsq\x04]q\x05(K\x01K\x01K\x01eX\x0e\x00\x00\x00tmo_signaturesq\x06]q\x07(C@\xe42\xc4K\xf6\xfe!\xb9\xe8.\xcb\xbd\x12\xe5K$q\x13@\x01b\xf6\xce;\x02\xfexfs\x0f\x00\xe4T\xe1\x0e\xf5\xbb\xe2\x1b\x85\xea\x1eu\xf1\x94N\x88\x03\x1e\xff\xf3\x11\x9a\x90\xb5\xe6r\x85P\xd5\xc4\x8b\xcb\x0bq\x08C@F.\xdc?\xf1,\xca\xbb\x08\xce\xb5\xe8\x07\xa7\xf0\xd5S\xb45\x1dt\xe9\t\x98%\x1c\xf0bd\xc3p\xcbHIq\x9a\xe4\x86\xb5\x9b\xe9\xe6v\x8d\x15[H?c\xd3s\xc2\xd2\x8f\xec\x1e\xa2\x1c\x1a\x80\xaf\x8f\xc1\x08q\tC@\x16xv\x8b\xa5\xcc2l\x1e\xfd?\xd3\xac\x8d\xf4S\xc2y~cd=\xcaR.\x9e\x89\xe6@/\xe2\x94!\xa8Y\xb5`\xe2[i\xc7\xe8\x93\x98y\xfbpW\xfb\xd6\xe9T|\xde\xa6\xab\x01\x03\xad\xfe\xf8\xf6\x1a\tq\neub.'
+[19404] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 3 <ValidatorX:72405> timeout
+[19404] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Timeout from playground 3 <ValidatorX:72405> <ValidatorX:72404>
+[19404] driver.ValidatorX<ValidatorX:72405>:OUTPUT: timeout message for round : 3  added to map:  {3: {'msg_type': 'timeout', 'message': <messages.TC object at 0x109bfebe0>, 'high_qc': <blockTree.QC object at 0x109d98a20>, 'high_commit_qc': None}}
+[19404] driver.ValidatorX<ValidatorX:72405>:OUTPUT: in pacemaker_advance_rount_tc
+[19404] driver.ValidatorX<ValidatorX:72405>:OUTPUT: current_round:  4
+[19404] driver.ValidatorX<ValidatorX:72405>:OUTPUT: ############ timeout certificate successfully created for round:  3  system moving to round:  4
+[19404] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 3 <ValidatorX:72405> timeout
+[19404] driver.ValidatorX<ValidatorX:72404>:INFO: Timeout message message received here:  <messages.TimeoutMsg object at 0x109da0b00>  sender:  <ValidatorX:72404>  receiver:  1
+[19404] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Timeout from playground 3 <ValidatorX:72405> <ValidatorX:72405>
+[19404] driver.ValidatorX<ValidatorX:72404>:OUTPUT:  in process_timeout_msg
+[19404] driver.ValidatorX<ValidatorX:72404>:OUTPUT: in process_certificate_qc
+[19404] driver.ValidatorX<ValidatorX:72404>:OUTPUT: in process_certificate_qc
+[19404] driver.ValidatorX<ValidatorX:72404>:OUTPUT: in pacemaker_advance_rount_tc
+[19404] driver.ValidatorX<ValidatorX:72404>:OUTPUT: processing remote timeout message sender:  1  for round:  3  with self.f:  1.0
+[19405] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: checkpoint 1 in timeoutmessageplayground
+[19405] driver.ValidatorX<ValidatorX:72405>:INFO: Timeout message message received here:  <messages.TimeoutMsg object at 0x109d982e8>  sender:  <ValidatorX:72406>  receiver:  3
+[19405] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 3 <ValidatorX:72407> timeout
+[19405] driver.ValidatorX<ValidatorX:72405>:OUTPUT:  in process_timeout_msg
+[19405] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Timeout from playground 2 <ValidatorX:72407> <ValidatorX:72407>
+[19405] driver.ValidatorX<ValidatorX:72405>:OUTPUT: in process_certificate_qc
+[19405] driver.ValidatorX<ValidatorX:72405>:OUTPUT: in process_certificate_qc
+[19405] driver.ValidatorX<ValidatorX:72405>:OUTPUT: in pacemaker_advance_rount_tc
+[19405] driver.ValidatorX<ValidatorX:72405>:OUTPUT: processing remote timeout message sender:  0  for round:  3  with self.f:  1.0
+[19405] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 3 <ValidatorX:72407> timeout
+[19405] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Timeout from playground 3 <ValidatorX:72407> <ValidatorX:72404>
+[19405] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 3 <ValidatorX:72407> timeout
+[19405] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Timeout from playground 3 <ValidatorX:72407> <ValidatorX:72405>
+[19405] driver.ValidatorX<ValidatorX:72404>:INFO: Timeout message message received here:  <messages.TimeoutMsg object at 0x109da0438>  sender:  <ValidatorX:72405>  receiver:  1
+[19405] driver.ValidatorX<ValidatorX:72404>:OUTPUT:  in process_timeout_msg
+[19405] driver.ValidatorX<ValidatorX:72404>:OUTPUT: in process_certificate_qc
+[19405] driver.ValidatorX<ValidatorX:72405>:INFO: Timeout message message received here:  <messages.TimeoutMsg object at 0x109d982e8>  sender:  <ValidatorX:72404>  receiver:  3
+[19405] driver.ValidatorX<ValidatorX:72404>:OUTPUT: in process_certificate_qc
+[19405] driver.ValidatorX<ValidatorX:72405>:OUTPUT:  in process_timeout_msg
+[19405] driver.ValidatorX<ValidatorX:72404>:OUTPUT: in pacemaker_advance_rount_tc
+[19405] driver.ValidatorX<ValidatorX:72405>:OUTPUT: in process_certificate_qc
+[19405] driver.ValidatorX<ValidatorX:72404>:OUTPUT: processing remote timeout message sender:  3  for round:  3  with self.f:  1.0
+[19405] driver.ValidatorX<ValidatorX:72405>:OUTPUT: in process_certificate_qc
+[19405] driver.ValidatorX<ValidatorX:72405>:OUTPUT: in pacemaker_advance_rount_tc
+[19405] driver.ValidatorX<ValidatorX:72405>:OUTPUT: processing remote timeout message sender:  1  for round:  3  with self.f:  1.0
+[19405] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: checkpoint 1 in timeoutmessageplayground
+[19405] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 3 <ValidatorX:72404> timeout
+[19405] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Timeout from playground 2 <ValidatorX:72404> <ValidatorX:72407>
+[19405] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 3 <ValidatorX:72404> timeout
+[19405] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Timeout from playground 3 <ValidatorX:72404> <ValidatorX:72404>
+[19406] driver.ValidatorX<ValidatorX:72404>:INFO: Timeout message message received here:  <messages.TimeoutMsg object at 0x109da0eb8>  sender:  <ValidatorX:72406>  receiver:  1
+[19406] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 3 <ValidatorX:72404> timeout
+[19406] driver.ValidatorX<ValidatorX:72404>:OUTPUT:  in process_timeout_msg
+[19406] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Timeout from playground 3 <ValidatorX:72404> <ValidatorX:72405>
+[19406] driver.ValidatorX<ValidatorX:72404>:OUTPUT: in process_certificate_qc
+[19406] driver.ValidatorX<ValidatorX:72404>:OUTPUT: in process_certificate_qc
+[19406] driver.ValidatorX<ValidatorX:72404>:OUTPUT: in pacemaker_advance_rount_tc
+[19406] driver.ValidatorX<ValidatorX:72404>:OUTPUT: processing remote timeout message sender:  0  for round:  3  with self.f:  1.0
+[19406] driver.ValidatorX<ValidatorX:72405>:INFO: Timeout message message received here:  <messages.TimeoutMsg object at 0x109d98e10>  sender:  <ValidatorX:72405>  receiver:  3
+[19406] driver.ValidatorX<ValidatorX:72405>:OUTPUT:  in process_timeout_msg
+[19406] driver.ValidatorX<ValidatorX:72405>:OUTPUT: in process_certificate_qc
+[19406] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: checkpoint 1 in timeoutmessageplayground
+[19406] driver.ValidatorX<ValidatorX:72405>:OUTPUT: in process_certificate_qc
+[19406] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 3 <ValidatorX:72405> timeout
+[19406] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Timeout from playground 2 <ValidatorX:72405> <ValidatorX:72407>
+[19406] driver.ValidatorX<ValidatorX:72405>:OUTPUT: in pacemaker_advance_rount_tc
+[19406] driver.ValidatorX<ValidatorX:72405>:OUTPUT: processing remote timeout message sender:  3  for round:  3  with self.f:  1.0
+[19406] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 3 <ValidatorX:72405> timeout
+[19406] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Timeout from playground 3 <ValidatorX:72405> <ValidatorX:72404>
+[19406] driver.ValidatorX<ValidatorX:72404>:INFO: Timeout message message received here:  <messages.TimeoutMsg object at 0x109da0940>  sender:  <ValidatorX:72404>  receiver:  1
+[19406] driver.ValidatorX<ValidatorX:72404>:OUTPUT:  in process_timeout_msg
+[19406] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 3 <ValidatorX:72405> timeout
+[19406] driver.ValidatorX<ValidatorX:72404>:OUTPUT: in process_certificate_qc
+[19406] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Timeout from playground 3 <ValidatorX:72405> <ValidatorX:72405>
+[19406] driver.ValidatorX<ValidatorX:72404>:OUTPUT: in process_certificate_qc
+[19406] driver.ValidatorX<ValidatorX:72405>:INFO: Timeout message message received here:  <messages.TimeoutMsg object at 0x109d98ef0>  sender:  <ValidatorX:72406>  receiver:  3
+[19406] driver.ValidatorX<ValidatorX:72404>:OUTPUT: in pacemaker_advance_rount_tc
+[19406] driver.ValidatorX<ValidatorX:72405>:OUTPUT:  in process_timeout_msg
+[19406] driver.ValidatorX<ValidatorX:72404>:OUTPUT: processing remote timeout message sender:  1  for round:  3  with self.f:  1.0
+[19406] driver.ValidatorX<ValidatorX:72405>:OUTPUT: in process_certificate_qc
+[19406] driver.ValidatorX<ValidatorX:72405>:OUTPUT: in process_certificate_qc
+[19407] driver.ValidatorX<ValidatorX:72405>:OUTPUT: in pacemaker_advance_rount_tc
+[19407] driver.ValidatorX<ValidatorX:72405>:OUTPUT: processing remote timeout message sender:  0  for round:  3  with self.f:  1.0
+[19407] driver.ValidatorX<ValidatorX:72404>:INFO: Timeout message message received here:  <messages.TimeoutMsg object at 0x109da0d68>  sender:  <ValidatorX:72405>  receiver:  1
+[19407] driver.ValidatorX<ValidatorX:72404>:OUTPUT:  in process_timeout_msg
+[19407] driver.ValidatorX<ValidatorX:72404>:OUTPUT: in process_certificate_qc
+[19407] driver.ValidatorX<ValidatorX:72404>:OUTPUT: in process_certificate_qc
+[19407] driver.ValidatorX<ValidatorX:72404>:OUTPUT: in pacemaker_advance_rount_tc
+[19407] driver.ValidatorX<ValidatorX:72404>:OUTPUT: processing remote timeout message sender:  3  for round:  3  with self.f:  1.0
+[19407] driver.ValidatorX<ValidatorX:72405>:INFO: Timeout message message received here:  <messages.TimeoutMsg object at 0x109d98f60>  sender:  <ValidatorX:72404>  receiver:  3
+[19407] driver.ValidatorX<ValidatorX:72405>:OUTPUT:  in process_timeout_msg
+[19407] driver.ValidatorX<ValidatorX:72405>:OUTPUT: in process_certificate_qc
+[19407] driver.ValidatorX<ValidatorX:72405>:OUTPUT: in process_certificate_qc
+[19407] driver.ValidatorX<ValidatorX:72405>:OUTPUT: in pacemaker_advance_rount_tc
+[19407] driver.ValidatorX<ValidatorX:72405>:OUTPUT: processing remote timeout message sender:  1  for round:  3  with self.f:  1.0
+[19407] driver.ValidatorX<ValidatorX:72405>:INFO: Timeout message message received here:  <messages.TimeoutMsg object at 0x109d985f8>  sender:  <ValidatorX:72405>  receiver:  3
+[19407] driver.ValidatorX<ValidatorX:72405>:OUTPUT:  in process_timeout_msg
+[19407] driver.ValidatorX<ValidatorX:72405>:OUTPUT: in process_certificate_qc
+[19407] driver.ValidatorX<ValidatorX:72405>:OUTPUT: in process_certificate_qc
+[19407] driver.ValidatorX<ValidatorX:72405>:OUTPUT: in pacemaker_advance_rount_tc
+[19407] driver.ValidatorX<ValidatorX:72405>:OUTPUT: processing remote timeout message sender:  3  for round:  3  with self.f:  1.0
+[20405] driver.ValidatorX<ValidatorX:72407>:INFO: sending proposal message:  <blockTree.Block object at 0x109d96fd0>  last timeout certificate:  <messages.TC object at 0x109d96da0>  high commit qc:  None  sender:  0  receiver:  [<ValidatorX:72406>, <ValidatorX:72404>, <ValidatorX:72403>, <ValidatorX:72405>]
+[20406] driver.ValidatorX<ValidatorX:72407>:OUTPUT: ('proposalMessage', <messages.ProposalMsg object at 0x109da5fd0>, [<ValidatorX:72406>, <ValidatorX:72404>, <ValidatorX:72403>, <ValidatorX:72405>])
+[20408] driver.ValidatorX<ValidatorX:72407>:OUTPUT: ############ timeout certificate successfully created for round:  3  system moving to round:  4
+[20408] driver.ValidatorX<ValidatorX:72407>:OUTPUT: round done
+[20410] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 4 <ValidatorX:72407> proposals
+[20410] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Proposal from playground 2 <ValidatorX:72407> <ValidatorX:72407>
+[20411] driver.ValidatorX<ValidatorX:72407>:INFO: Timeout message message received here:  <messages.TimeoutMsg object at 0x109da56d8>  sender:  <ValidatorX:72406>  receiver:  0
+[20411] driver.ValidatorX<ValidatorX:72407>:OUTPUT:  in process_timeout_msg
+[20411] driver.ValidatorX<ValidatorX:72407>:OUTPUT: in process_certificate_qc
+[20411] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Speculative Round:  4
+[20411] driver.ValidatorX<ValidatorX:72407>:OUTPUT: in process_certificate_qc
+[20411] driver.ValidatorX<ValidatorX:72407>:OUTPUT: in pacemaker_advance_rount_tc
+[20412] driver.ValidatorX<ValidatorX:72407>:OUTPUT: processing remote timeout message sender:  0  for round:  3  with self.f:  1.0
+[20413] driver.ValidatorX<ValidatorX:72407>:INFO: Timeout message message received here:  <messages.TimeoutMsg object at 0x109da5860>  sender:  <ValidatorX:72404>  receiver:  0
+[20413] driver.ValidatorX<ValidatorX:72407>:OUTPUT:  in process_timeout_msg
+[20413] driver.ValidatorX<ValidatorX:72407>:OUTPUT: in process_certificate_qc
+[20414] driver.ValidatorX<ValidatorX:72407>:OUTPUT: in process_certificate_qc
+[20414] driver.ValidatorX<ValidatorX:72407>:OUTPUT: in pacemaker_advance_rount_tc
+[20414] driver.ValidatorX<ValidatorX:72407>:OUTPUT: processing remote timeout message sender:  1  for round:  3  with self.f:  1.0
+[20415] driver.ValidatorX<ValidatorX:72407>:INFO: Timeout message message received here:  <messages.TimeoutMsg object at 0x109da59b0>  sender:  <ValidatorX:72405>  receiver:  0
+[20415] driver.ValidatorX<ValidatorX:72407>:OUTPUT:  in process_timeout_msg
+[20415] driver.ValidatorX<ValidatorX:72407>:OUTPUT: in process_certificate_qc
+[20415] driver.ValidatorX<ValidatorX:72407>:OUTPUT: in process_certificate_qc
+[20415] driver.ValidatorX<ValidatorX:72407>:OUTPUT: in pacemaker_advance_rount_tc
+[20415] driver.ValidatorX<ValidatorX:72407>:OUTPUT: processing remote timeout message sender:  3  for round:  3  with self.f:  1.0
+[20416] driver.ValidatorX<ValidatorX:72407>:INFO: Timeout message message received here:  <messages.TimeoutMsg object at 0x109da5748>  sender:  <ValidatorX:72406>  receiver:  0
+[20416] driver.ValidatorX<ValidatorX:72407>:OUTPUT:  in process_timeout_msg
+[20416] driver.ValidatorX<ValidatorX:72407>:OUTPUT: in process_certificate_qc
+[20417] driver.ValidatorX<ValidatorX:72407>:OUTPUT: in process_certificate_qc
+[20417] driver.ValidatorX<ValidatorX:72407>:OUTPUT: in pacemaker_advance_rount_tc
+[20417] driver.ValidatorX<ValidatorX:72407>:OUTPUT: processing remote timeout message sender:  0  for round:  3  with self.f:  1.0
+[20418] driver.ValidatorX<ValidatorX:72407>:INFO: Timeout message message received here:  <messages.TimeoutMsg object at 0x109da5438>  sender:  <ValidatorX:72404>  receiver:  0
+[20418] driver.ValidatorX<ValidatorX:72407>:OUTPUT:  in process_timeout_msg
+[20418] driver.ValidatorX<ValidatorX:72407>:OUTPUT: in process_certificate_qc
+[20418] driver.ValidatorX<ValidatorX:72407>:OUTPUT: in process_certificate_qc
+[20418] driver.ValidatorX<ValidatorX:72407>:OUTPUT: in pacemaker_advance_rount_tc
+[20418] driver.ValidatorX<ValidatorX:72407>:OUTPUT: processing remote timeout message sender:  1  for round:  3  with self.f:  1.0
+[20419] driver.ValidatorX<ValidatorX:72407>:INFO: Timeout message message received here:  <messages.TimeoutMsg object at 0x109da5ba8>  sender:  <ValidatorX:72405>  receiver:  0
+[20419] driver.ValidatorX<ValidatorX:72407>:OUTPUT:  in process_timeout_msg
+[20419] driver.ValidatorX<ValidatorX:72407>:OUTPUT: in process_certificate_qc
+[20419] driver.ValidatorX<ValidatorX:72407>:OUTPUT: in process_certificate_qc
+[20419] driver.ValidatorX<ValidatorX:72407>:OUTPUT: in pacemaker_advance_rount_tc
+[20419] driver.ValidatorX<ValidatorX:72407>:OUTPUT: processing remote timeout message sender:  3  for round:  3  with self.f:  1.0
+[20420] driver.ValidatorX<ValidatorX:72407>:INFO: proposal message received here:  <messages.ProposalMsg object at 0x109da5cf8>  sender:  <ValidatorX:72406>  receiver:  0
+[20420] driver.ValidatorX<ValidatorX:72407>:OUTPUT: in process_certificate_qc
+[20420] driver.ValidatorX<ValidatorX:72407>:OUTPUT: in process_certificate_qc
+[20420] driver.ValidatorX<ValidatorX:72407>:OUTPUT: in pacemaker_advance_rount_tc
+[20420] driver.ValidatorX<ValidatorX:72407>:ERROR: KeyError(b'afc713a353a66ececd3ed3eebfe84a2f1bcaed5728aed9a00dd0662161b2b595',) when calling handler '_ValidatorX_handler_2281' with '{'p': <Network_Playground:72408>, 'm': <messages.ProposalMsg object at 0x109da5cf8>, 'sender': <ValidatorX:72406>}': b'afc713a353a66ececd3ed3eebfe84a2f1bcaed5728aed9a00dd0662161b2b595'
+[24364] driver.ValidatorX<ValidatorX:72406>:OUTPUT: no message received from the leader: <ValidatorX:72404>  timeout reported in the system
+[24365] driver.ValidatorX<ValidatorX:72406>:INFO: sending timeout message:  <messages.TimeoutInfo object at 0x109d49ef0>  pacemaker last round tc:  None  high commit qc:  None
+[24365] driver.ValidatorX<ValidatorX:72406>:OUTPUT: ('timeoutMessage', <messages.TimeoutMsg object at 0x109d41400>, [<ValidatorX:72406>, <ValidatorX:72404>, <ValidatorX:72403>, <ValidatorX:72405>])
+[24366] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: checkpoint 1 in timeoutmessageplayground
+[24366] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 1 <ValidatorX:72406> timeout
+[24366] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Timeout from playground 1 <ValidatorX:72406> <ValidatorX:72406>
+[24367] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 1 <ValidatorX:72406> timeout
+[24367] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Timeout from playground 3 <ValidatorX:72406> <ValidatorX:72404>
+[24368] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 1 <ValidatorX:72406> timeout
+[24368] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Timeout from playground 3 <ValidatorX:72406> <ValidatorX:72403>
+[24368] driver.ValidatorX<ValidatorX:72406>:INFO: Timeout message message received here:  <messages.TimeoutMsg object at 0x109d49ef0>  sender:  <ValidatorX:72406>  receiver:  0
+[24368] driver.ValidatorX<ValidatorX:72406>:OUTPUT:  in process_timeout_msg
+[24368] driver.ValidatorX<ValidatorX:72406>:OUTPUT: in process_certificate_qc
+[24369] driver.ValidatorX<ValidatorX:72406>:OUTPUT: in process_certificate_qc
+[24369] driver.ValidatorX<ValidatorX:72406>:OUTPUT: in pacemaker_advance_rount_tc
+[24369] driver.ValidatorX<ValidatorX:72406>:OUTPUT: processing remote timeout message sender:  0  for round:  1  with self.f:  1.0
+[24369] driver.ValidatorX<ValidatorX:72404>:INFO: Timeout message message received here:  <messages.TimeoutMsg object at 0x109d9bd30>  sender:  <ValidatorX:72406>  receiver:  1
+[24369] driver.ValidatorX<ValidatorX:72404>:OUTPUT:  in process_timeout_msg
+[24369] driver.ValidatorX<ValidatorX:72404>:OUTPUT: in process_certificate_qc
+[24370] driver.ValidatorX<ValidatorX:72404>:OUTPUT: in process_certificate_qc
+[24370] driver.ValidatorX<ValidatorX:72404>:OUTPUT: in pacemaker_advance_rount_tc
+[24370] driver.ValidatorX<ValidatorX:72403>:INFO: Timeout message message received here:  <messages.TimeoutMsg object at 0x109bdc240>  sender:  <ValidatorX:72406>  receiver:  2
+[24370] driver.ValidatorX<ValidatorX:72404>:OUTPUT: processing remote timeout message sender:  0  for round:  1  with self.f:  1.0
+[24370] driver.ValidatorX<ValidatorX:72403>:OUTPUT:  in process_timeout_msg
+[24370] driver.ValidatorX<ValidatorX:72403>:OUTPUT: in process_certificate_qc
+[24370] driver.ValidatorX<ValidatorX:72403>:OUTPUT: in process_certificate_qc
+[24370] driver.ValidatorX<ValidatorX:72403>:OUTPUT: in pacemaker_advance_rount_tc
+[24370] driver.ValidatorX<ValidatorX:72403>:OUTPUT: processing remote timeout message sender:  0  for round:  1  with self.f:  1.0
+[26392] driver.ValidatorX<ValidatorX:72403>:OUTPUT: no message received from the leader: <ValidatorX:72406>  timeout reported in the system
+[26393] driver.ValidatorX<ValidatorX:72403>:INFO: sending timeout message:  <messages.TimeoutInfo object at 0x109d41be0>  pacemaker last round tc:  <messages.TC object at 0x109d41e80>  high commit qc:  None
+[26393] driver.ValidatorX<ValidatorX:72403>:OUTPUT: ('timeoutMessage', <messages.TimeoutMsg object at 0x109d50da0>, [<ValidatorX:72406>, <ValidatorX:72404>, <ValidatorX:72403>, <ValidatorX:72405>])
+[26395] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: checkpoint 1 in timeoutmessageplayground
+[26395] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 3 <ValidatorX:72403> timeout
+[26395] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Timeout from playground 3 <ValidatorX:72403> <ValidatorX:72403>
+[26397] driver.ValidatorX<ValidatorX:72403>:INFO: Timeout message message received here:  <messages.TimeoutMsg object at 0x109bdc470>  sender:  <ValidatorX:72403>  receiver:  2
+[26397] driver.ValidatorX<ValidatorX:72403>:OUTPUT:  in process_timeout_msg
+[26397] driver.ValidatorX<ValidatorX:72403>:OUTPUT: in process_certificate_qc
+[26397] driver.ValidatorX<ValidatorX:72403>:OUTPUT: in process_certificate_qc
+[26398] driver.ValidatorX<ValidatorX:72403>:OUTPUT: in pacemaker_advance_rount_tc
+[26398] driver.ValidatorX<ValidatorX:72403>:OUTPUT: processing remote timeout message sender:  2  for round:  3  with self.f:  1.0
+[27405] driver.ValidatorX<ValidatorX:72404>:OUTPUT: no message received from the leader: <ValidatorX:72406>  timeout reported in the system
+[27406] driver.ValidatorX<ValidatorX:72404>:INFO: sending timeout message:  <messages.TimeoutInfo object at 0x109d9bd30>  pacemaker last round tc:  <messages.TC object at 0x109bfec50>  high commit qc:  None
+[27406] driver.ValidatorX<ValidatorX:72404>:OUTPUT: ('timeoutMessage', <messages.TimeoutMsg object at 0x109da0dd8>, [<ValidatorX:72406>, <ValidatorX:72404>, <ValidatorX:72403>, <ValidatorX:72405>])
+[27408] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: checkpoint 1 in timeoutmessageplayground
+[27408] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 4 <ValidatorX:72404> timeout
+[27408] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Timeout from playground 3 <ValidatorX:72404> <ValidatorX:72404>
+[27409] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 4 <ValidatorX:72404> timeout
+[27409] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Timeout from playground 3 <ValidatorX:72404> <ValidatorX:72403>
+[27410] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 4 <ValidatorX:72404> timeout
+[27410] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Timeout from playground 3 <ValidatorX:72404> <ValidatorX:72405>
+[27412] driver.ValidatorX<ValidatorX:72404>:INFO: Timeout message message received here:  <messages.TimeoutMsg object at 0x109da32b0>  sender:  <ValidatorX:72404>  receiver:  1
+[27412] driver.ValidatorX<ValidatorX:72403>:INFO: Timeout message message received here:  <messages.TimeoutMsg object at 0x109bdc240>  sender:  <ValidatorX:72404>  receiver:  2
+[27412] driver.ValidatorX<ValidatorX:72404>:OUTPUT:  in process_timeout_msg
+[27412] driver.ValidatorX<ValidatorX:72403>:OUTPUT:  in process_timeout_msg
+[27412] driver.ValidatorX<ValidatorX:72404>:OUTPUT: in process_certificate_qc
+[27412] driver.ValidatorX<ValidatorX:72403>:OUTPUT: in process_certificate_qc
+[27412] driver.ValidatorX<ValidatorX:72403>:OUTPUT: in process_certificate_qc
+[27412] driver.ValidatorX<ValidatorX:72404>:OUTPUT: in process_certificate_qc
+[27412] driver.ValidatorX<ValidatorX:72403>:OUTPUT: in pacemaker_advance_rount_tc
+[27412] driver.ValidatorX<ValidatorX:72404>:OUTPUT: in pacemaker_advance_rount_tc
+[27412] driver.ValidatorX<ValidatorX:72404>:OUTPUT: processing remote timeout message sender:  1  for round:  4  with self.f:  1.0
+[27412] driver.ValidatorX<ValidatorX:72403>:OUTPUT: processing remote timeout message sender:  1  for round:  4  with self.f:  1.0
+[27412] driver.ValidatorX<ValidatorX:72403>:OUTPUT: round done
+[27413] driver.ValidatorX<ValidatorX:72405>:INFO: Timeout message message received here:  <messages.TimeoutMsg object at 0x109bfef28>  sender:  <ValidatorX:72404>  receiver:  3
+[27413] driver.ValidatorX<ValidatorX:72405>:OUTPUT:  in process_timeout_msg
+[27413] driver.ValidatorX<ValidatorX:72405>:OUTPUT: in process_certificate_qc
+[27413] driver.ValidatorX<ValidatorX:72405>:OUTPUT: in process_certificate_qc
+[27413] driver.ValidatorX<ValidatorX:72405>:OUTPUT: in pacemaker_advance_rount_tc
+[27413] driver.ValidatorX<ValidatorX:72405>:OUTPUT: processing remote timeout message sender:  1  for round:  4  with self.f:  1.0
+[28410] driver.ValidatorX<ValidatorX:72407>:OUTPUT: no message received from the leader: <ValidatorX:72406>  timeout reported in the system
+[28412] driver.ValidatorX<ValidatorX:72407>:INFO: sending timeout message:  <messages.TimeoutInfo object at 0x109d96eb8>  pacemaker last round tc:  <messages.TC object at 0x109d96da0>  high commit qc:  None
+[28412] driver.ValidatorX<ValidatorX:72407>:OUTPUT: ('timeoutMessage', <messages.TimeoutMsg object at 0x109d96fd0>, [<ValidatorX:72406>, <ValidatorX:72404>, <ValidatorX:72403>, <ValidatorX:72405>])
+[28415] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: checkpoint 1 in timeoutmessageplayground
+[28415] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 4 <ValidatorX:72407> timeout
+[28415] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Timeout from playground 2 <ValidatorX:72407> <ValidatorX:72407>
+[28417] driver.ValidatorX<ValidatorX:72407>:INFO: Timeout message message received here:  <messages.TimeoutMsg object at 0x109daa358>  sender:  <ValidatorX:72406>  receiver:  0
+[28418] driver.ValidatorX<ValidatorX:72407>:OUTPUT:  in process_timeout_msg
+[28418] driver.ValidatorX<ValidatorX:72407>:OUTPUT: in process_certificate_qc
+[28418] driver.ValidatorX<ValidatorX:72407>:OUTPUT: in process_certificate_qc
+[28418] driver.ValidatorX<ValidatorX:72407>:OUTPUT: in pacemaker_advance_rount_tc
+[28418] driver.ValidatorX<ValidatorX:72407>:OUTPUT: processing remote timeout message sender:  0  for round:  4  with self.f:  1.0
+[32366] driver.ValidatorX<ValidatorX:72406>:OUTPUT: no message received from the leader: <ValidatorX:72404>  timeout reported in the system
+[32367] driver.ValidatorX<ValidatorX:72406>:INFO: sending timeout message:  <messages.TimeoutInfo object at 0x109d49ef0>  pacemaker last round tc:  None  high commit qc:  None
+[32367] driver.ValidatorX<ValidatorX:72406>:OUTPUT: ('timeoutMessage', <messages.TimeoutMsg object at 0x109d41358>, [<ValidatorX:72406>, <ValidatorX:72404>, <ValidatorX:72403>, <ValidatorX:72405>])
+[32368] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: checkpoint 1 in timeoutmessageplayground
+[32368] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 1 <ValidatorX:72406> timeout
+[32368] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Timeout from playground 1 <ValidatorX:72406> <ValidatorX:72406>
+[32369] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 1 <ValidatorX:72406> timeout
+[32369] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Timeout from playground 3 <ValidatorX:72406> <ValidatorX:72404>
+[32370] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Intra partition message not dropped 1 <ValidatorX:72406> timeout
+[32370] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Sending Timeout from playground 3 <ValidatorX:72406> <ValidatorX:72403>
+[32370] driver.ValidatorX<ValidatorX:72406>:INFO: Timeout message message received here:  <messages.TimeoutMsg object at 0x109bfec18>  sender:  <ValidatorX:72406>  receiver:  0
+[32371] driver.ValidatorX<ValidatorX:72406>:OUTPUT:  in process_timeout_msg
+[32371] driver.ValidatorX<ValidatorX:72406>:OUTPUT: in process_certificate_qc
+[32371] driver.ValidatorX<ValidatorX:72406>:OUTPUT: in process_certificate_qc
+[32371] driver.ValidatorX<ValidatorX:72406>:OUTPUT: in pacemaker_advance_rount_tc
+[32371] driver.ValidatorX<ValidatorX:72406>:OUTPUT: processing remote timeout message sender:  0  for round:  1  with self.f:  1.0
+[32371] driver.ValidatorX<ValidatorX:72404>:INFO: Timeout message message received here:  <messages.TimeoutMsg object at 0x109da3390>  sender:  <ValidatorX:72406>  receiver:  1
+[32371] driver.ValidatorX<ValidatorX:72404>:OUTPUT:  in process_timeout_msg
+[32372] driver.ValidatorX<ValidatorX:72404>:OUTPUT: in process_certificate_qc
+[32372] driver.ValidatorX<ValidatorX:72404>:OUTPUT: in process_certificate_qc
+[32372] driver.ValidatorX<ValidatorX:72404>:OUTPUT: in pacemaker_advance_rount_tc
+[32372] driver.ValidatorX<ValidatorX:72404>:OUTPUT: processing remote timeout message sender:  0  for round:  1  with self.f:  1.0
+[32373] driver.ValidatorX<ValidatorX:72403>:INFO: Timeout message message received here:  <messages.TimeoutMsg object at 0x109bdc208>  sender:  <ValidatorX:72406>  receiver:  2
+[32373] driver.ValidatorX<ValidatorX:72403>:OUTPUT:  in process_timeout_msg
+[32373] driver.ValidatorX<ValidatorX:72403>:OUTPUT: in process_certificate_qc
+[32373] driver.ValidatorX<ValidatorX:72403>:OUTPUT: in process_certificate_qc
+[32373] driver.ValidatorX<ValidatorX:72403>:OUTPUT: in pacemaker_advance_rount_tc
+[32373] driver.ValidatorX<ValidatorX:72403>:OUTPUT: processing remote timeout message sender:  0  for round:  1  with self.f:  1.0
+[34413] network_playground.Network_Playground<Network_Playground:72408>:OUTPUT: Playground Done, sending done to parent
+{<ValidatorX:72406>: 0, <ValidatorX:72404>: 1, <ValidatorX:72403>: 2, <ValidatorX:72405>: 3, <ValidatorX:72407>: 4} {'1': [[], ['vote', 'timeout']], '2': [['timeout'], ['proposals', 'timeout'], ['vote', 'timeout']], '3': [[], ['vote'], ['proposals', 'timeout']], '4': [[], ['vote', 'proposals'], ['proposals', 'timeout']], '5': [['timeout'], [], ['vote']], '6': [['vote', 'timeout'], ['vote', 'proposals'], ['vote', 'proposals']], '7': [['proposals'], ['vote'], ['vote']], '8': [], '9': [], '10': []}
+Validators [<ValidatorX:72406>, <ValidatorX:72404>, <ValidatorX:72403>, <ValidatorX:72405>, <ValidatorX:72407>]
+Twin Config {<ValidatorX:72406>: <ValidatorX:72407>}
+Drop Config {'1': {<ValidatorX:72406>: [<ValidatorX:72405>, <ValidatorX:72407>], <ValidatorX:72405>: [<ValidatorX:72406>, <ValidatorX:72404>, <ValidatorX:72403>], <ValidatorX:72407>: [<ValidatorX:72406>, <ValidatorX:72404>, <ValidatorX:72403>], <ValidatorX:72404>: [<ValidatorX:72405>, <ValidatorX:72407>], <ValidatorX:72403>: [<ValidatorX:72405>, <ValidatorX:72407>]}, '2': {<ValidatorX:72406>: [<ValidatorX:72404>, <ValidatorX:72403>, <ValidatorX:72407>, <ValidatorX:72405>], <ValidatorX:72404>: [<ValidatorX:72406>, <ValidatorX:72405>], <ValidatorX:72403>: [<ValidatorX:72406>, <ValidatorX:72405>], <ValidatorX:72407>: [<ValidatorX:72406>, <ValidatorX:72405>], <ValidatorX:72405>: [<ValidatorX:72406>, <ValidatorX:72404>, <ValidatorX:72403>, <ValidatorX:72407>]}, '3': {<ValidatorX:72406>: [<ValidatorX:72404>, <ValidatorX:72405>, <ValidatorX:72407>, <ValidatorX:72403>], <ValidatorX:72404>: [<ValidatorX:72406>, <ValidatorX:72403>], <ValidatorX:72405>: [<ValidatorX:72406>, <ValidatorX:72403>], <ValidatorX:72407>: [<ValidatorX:72406>, <ValidatorX:72403>], <ValidatorX:72403>: [<ValidatorX:72406>, <ValidatorX:72404>, <ValidatorX:72405>, <ValidatorX:72407>]}, '4': {<ValidatorX:72406>: [<ValidatorX:72404>, <ValidatorX:72403>, <ValidatorX:72405>, <ValidatorX:72407>], <ValidatorX:72404>: [<ValidatorX:72406>, <ValidatorX:72407>], <ValidatorX:72403>: [<ValidatorX:72406>, <ValidatorX:72407>], <ValidatorX:72405>: [<ValidatorX:72406>, <ValidatorX:72407>], <ValidatorX:72407>: [<ValidatorX:72406>, <ValidatorX:72404>, <ValidatorX:72403>, <ValidatorX:72405>]}, '5': {<ValidatorX:72406>: [<ValidatorX:72404>, <ValidatorX:72403>, <ValidatorX:72407>, <ValidatorX:72405>], <ValidatorX:72404>: [<ValidatorX:72406>, <ValidatorX:72405>], <ValidatorX:72403>: [<ValidatorX:72406>, <ValidatorX:72405>], <ValidatorX:72407>: [<ValidatorX:72406>, <ValidatorX:72405>], <ValidatorX:72405>: [<ValidatorX:72406>, <ValidatorX:72404>, <ValidatorX:72403>, <ValidatorX:72407>]}, '6': {<ValidatorX:72406>: [<ValidatorX:72404>, <ValidatorX:72403>, <ValidatorX:72407>, <ValidatorX:72405>], <ValidatorX:72404>: [<ValidatorX:72406>, <ValidatorX:72405>], <ValidatorX:72403>: [<ValidatorX:72406>, <ValidatorX:72405>], <ValidatorX:72407>: [<ValidatorX:72406>, <ValidatorX:72405>], <ValidatorX:72405>: [<ValidatorX:72406>, <ValidatorX:72404>, <ValidatorX:72403>, <ValidatorX:72407>]}, '7': {<ValidatorX:72406>: [<ValidatorX:72404>, <ValidatorX:72403>, <ValidatorX:72405>, <ValidatorX:72407>], <ValidatorX:72404>: [<ValidatorX:72406>, <ValidatorX:72407>], <ValidatorX:72403>: [<ValidatorX:72406>, <ValidatorX:72407>], <ValidatorX:72405>: [<ValidatorX:72406>, <ValidatorX:72407>], <ValidatorX:72407>: [<ValidatorX:72406>, <ValidatorX:72404>, <ValidatorX:72403>, <ValidatorX:72405>]}}
+<ValidatorX:72406>: 0
+<ValidatorX:72404>: 1
+<ValidatorX:72403>: 2
+<ValidatorX:72405>: 3
+<ValidatorX:72407>: 4
+round done
+round done
+round done
+round done
+round done
+round done
+round done
+round done
+round done
+round done
+Liveness Violated
+[34416] executor.TestExecutor<TestExecutor:72402>:OUTPUT: received done from playground, vc_config:  None
+[34416] executor.TestExecutor<TestExecutor:72402>:OUTPUT: await done from playground, killing validators
+[34418] executor.TestExecutor<TestExecutor:72402>:OUTPUT: executor has ended playground and validators
+[34418] executor.TestExecutor<TestExecutor:72402>:OUTPUT: executor has ended, sending done to parent
+[34421] main.Node_<Node_:96c01>:OUTPUT: received done from executor
+Test_0_persistent_ledger_0.txt
+Test_0_persistent_ledger_1.txt
+Test_0_persistent_ledger_2.txt
+Test_0_persistent_ledger_3.txt
+{}
+-1
+******************************************** safety property is:  True
+[36427] da.api<MainProcess>:INFO: Main process terminated.

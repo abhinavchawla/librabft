@@ -38,9 +38,9 @@ class Ledger():
         state_id = self.block_id_to_ledger_state_map[block_id].state_id
         state = self.ledger_id_to_ledger_state_map[state_id]
         i = 1
+        lst=[]
         while state.is_committed == False:
-            f.write(state.txns)
-            f.write("\n")
+            lst.append(state.txns)
             state.is_committed = True
             self.recent_committed.append((state.txns,state.state_id))
             state_id = state.prev_state_id
@@ -48,6 +48,9 @@ class Ledger():
                 break 
             state = self.ledger_id_to_ledger_state_map[state_id]
             i+=1
+        for x in range(len(lst)-1,-1,-1):
+            f.write(lst[x])
+            f.write("\n")
         f.close()
 
     def committed_block(self, block_id):                      #// returns a committed block given its id
