@@ -35,6 +35,7 @@ class TestExecutor(process):
         end(playground)
         output('executor has ended playground and validators')
         output('executor has ended, sending done to parent')
+        print('******************************************** safety property is: ', check_safety_3())
         send('done', to=parent())
 
                 
@@ -157,16 +158,34 @@ class TestExecutor(process):
 
     
     '''
-    def check_safety_3(commit_config):
-        for i in range(num_rounds):
-            current = None
-            for node in commit_config:
-                if i>=len(commit_config[node].size()):
-                    continue
-                if current == None:
-                    current = commit_config[node][i]
-                elif current != commit_config[node][i]:
-                    return False
+    def check_safety_3():
+        LedgerContent = dict()
+        for i in range(0, num_nodes+num_target_nodes):
+            fileName = "Test_"+str(0)+"_persistent_ledger_"+str(i)+".txt"
+            print(fileName)
+            f = open(fileName, "r")
+            Lines = f.readlines()
+            for line in Lines:
+                if i in LedgerContent:
+                    LedgerContent[i].append(line)
+                else:
+                    LedgerContent[i] = [line]
+        print (LedgerContent)
+        
+        max_slot = -1
+        for key in LedgerContent:
+            if max_slot < len(LedgerContent[key]):
+                max_slot = len(LedgerContent[key])
+        print (max_slot)
+    
+    
+        for slot in range(0, max_slot):
+            slot_val = set()
+            for key in LedgerContent:
+                if(slot<len(LedgerContent[key])):
+                    slot_val.add(LedgerContent[key][slot])
+            if len(slot_val) > 1:
+                return False
         
         return True
 
