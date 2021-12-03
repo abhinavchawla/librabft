@@ -64,7 +64,7 @@ def main():
         data = json.load(read_file)
 
     # generator = scenario_generator(fileName="data_syncup.json")
-    generator = scenario_generator(fileName="data_syncup.json")
+    generator = scenario_generator(config=data)
     scenario = generator.generate_scenario()
 
     i = 0

@@ -3,7 +3,7 @@
     "twins":1,
     "rounds":10,
     "intra-partition-config":{
-        "message-drops": ["vote","proposals", "timeout"],
+        "message-drops": [],
         "max-message-drops": 2,
         "only-first-message-drop":true
     },
